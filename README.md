@@ -9,10 +9,10 @@ Usage
 
     var client = require('needle');
 
-    client.get(url, [options], callback)
-    client.post(url, [data], [options], callback)
-    client.put(url, [data], [options], callback)
-    client.delete(url, [options], callback)
+    client.get(url, [options], callback);
+    client.post(url, data, [options], callback);
+    client.put(url, data, [options], callback);
+    client.delete(url, [options], callback);
 
     callback receives three arguments: (err, response, body)
 
@@ -29,8 +29,6 @@ Examples
 --------
 
 ### Simple GET.
-
-var client = require('needle');
 
     client.get('http://www.google.com', function(err, resp, body){
 
@@ -53,6 +51,7 @@ You can also skip the 'http://' part if you want, by the way.
     var options = {
       username: 'you',
       password: 'secret',
+      timeout: false,
       headers: {
         'X-Secret-Header': "Even more secret text"
       }
@@ -79,7 +78,7 @@ You can also skip the 'http://' part if you want, by the way.
 
     client.post('http://my.app.com', data, function(err, resp, body){
 
-      // yay
+      // yippie
 
     });
 
@@ -92,12 +91,12 @@ You can also skip the 'http://' part if you want, by the way.
 
     var options = {
       multipart: true,
-      timeout: 10000
+      timeout: 5000
     }
 
     client.post('http://my.other.app.com', data, options, function(err, resp, body){
 
-      // in this case, if the request takes more than 10 seconds
+      // in this case, if the request takes more than 5 seconds
       // the callback will return an error
 
     });
