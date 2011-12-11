@@ -1,23 +1,23 @@
 Needle
 ======
 
-HTTP client for node. Support HTTP basic auth, nested params and multipart form
-uploads. Really simple stuff, less than 200 lines of code.
+HTTP client for node. Supports HTTP basic auth, nested params and multipart form
+uploads. Really simple stuff, around 200 lines of code.
 
 Usage
 -----
 
-var client = require('needle');
+    var client = require('needle');
 
-client.get(url, [options], callback(err, body, resp)
-client.post(url, [data], [options], callback(err, body, resp)
-client.put(url, [data], [options], callback(err, body, resp)
-client.delete(url, [options], callback(err, body, resp)
+    client.get(url, [options], callback(err, body, resp)
+    client.post(url, [data], [options], callback(err, body, resp)
+    client.put(url, [data], [options], callback(err, body, resp)
+    client.delete(url, [options], callback(err, body, resp)
 
 Options
 ------
 
- - timeout: default 10000 (10 secs)
+ - timeout: returns err if response takes more than X. defaults to 10000 (10 secs)
  - multipart: use multipart encoding or not. defaults to false
  - username: for http auth
  - password: for http auth
@@ -75,7 +75,7 @@ var client = require('needle');
 
     var data = {
       foo: bar,
-      image: { file: '/home/tomas/linux.png', type: 'image/png' }
+      image: { file: '/home/tomas/linux.png', content_type: 'image/png' }
     }
 
     var options = {
