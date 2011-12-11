@@ -9,19 +9,21 @@ Usage
 
     var client = require('needle');
 
-    client.get(url, [options], callback(err, body, resp)
-    client.post(url, [data], [options], callback(err, body, resp)
-    client.put(url, [data], [options], callback(err, body, resp)
-    client.delete(url, [options], callback(err, body, resp)
+    client.get(url, [options], callback)
+    client.post(url, [data], [options], callback)
+    client.put(url, [data], [options], callback)
+    client.delete(url, [options], callback)
+
+    callback receives three arguments: (err, response, body)
 
 Options
 ------
 
- - timeout: returns err if response takes more than X. defaults to 10000 (10 secs)
- - multipart: use multipart encoding or not. defaults to false
- - username: for http auth
- - password: for http auth
- - parse: whether to parse XML or JSON response bodies automagically. defaults to true.
+ - timeout: Returns err if response takes more than X. Defaults to 10000 (10 secs).
+ - multipart: Enables multipart/form-data encoding. Defaults to false.
+ - username: For http auth.
+ - password: For http auth. Both are required of course.
+ - parse: Whether to parse XML or JSON response bodies automagically. Defaults to true.
 
 Examples
 --------
@@ -30,7 +32,7 @@ Examples
 
 var client = require('needle');
 
-    client.get('http://www.google.com', function(err, body, resp){
+    client.get('http://www.google.com', function(err, resp, body){
 
       console.log("Got status code: " + resp.statusCode);
 
@@ -42,11 +44,11 @@ var client = require('needle');
       username: 'you',
       password: 'secret',
       headers: {
-        'User-Agent': "MyApp/1.2.3"
+        'X-Secret-Header': "Even more secret text"
       }
     }
 
-    client.get('http://api.server.com', options, function(err, body, resp){
+    client.get('http://api.server.com', options, function(err, resp, body){
 
       // used HTTP auth
 
@@ -59,13 +61,13 @@ var client = require('needle');
       nested: {
         params: {
           are: {
-            also: possible
+            also: 'possible'
           }
         }
       }
     }
 
-    client.post('http://my.app.com', data, function(err, body, resp){
+    client.post('http://my.app.com', data, function(err, resp, body){
 
       // yay
 
@@ -83,7 +85,7 @@ var client = require('needle');
       timeout: 10000
     }
 
-    client.post('http://my.other.app.com', data, options, function(err, body, resp){
+    client.post('http://my.other.app.com', data, options, function(err, resp, body){
 
       // in this case, if the request takes more than 10 seconds
       // the callback will return an error

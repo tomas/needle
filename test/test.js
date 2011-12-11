@@ -1,11 +1,13 @@
 // This is not done yet. Sorry.
 
 var fs = require('fs'),
-    client = require(__dirname + '/index');
+    client = require('./../lib/needle');
+
+process.env.DEBUG = true;
 
 function simple_get(){
 
-	client.get('https://www.google.com', function(err, body, resp){
+	client.get('https://www.google.com', function(err, resp, body){
 
 		console.log(err);
 		console.log(body);
@@ -17,7 +19,7 @@ function simple_get(){
 
 function auth_get(){
 
-	client.get('https://www.myserver.com', {username: 'asd', password: '123'}, function(err, body, resp){
+	client.get('https://www.myserver.com', {username: 'asd', password: '123'}, function(err, resp, body){
 
 		console.log(err);
 		console.log(body);
@@ -35,7 +37,7 @@ function simple_post(){
 		}
 	}
 
-	client.post('http://posttestserver.com/post.php', data, function(err, body, resp){
+	client.post('http://posttestserver.com/post.php', data, function(err, resp, body){
 
 		console.log(err);
 		console.log(body);
@@ -61,7 +63,7 @@ function multipart_post(){
 		}
 	}
 
-	client.post('http://localhost:3000', data, {multipart: true}, function(err, body, resp){
+	client.post('http://posttestserver.com/post.php?dir=example', data, {multipart: true}, function(err, resp, body){
 
 		console.log(err);
 		console.log(body);

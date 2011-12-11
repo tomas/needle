@@ -10,11 +10,11 @@ if(process.argv[3] == null){
 var method = process.argv[2].toLowerCase();
 var url = process.argv[3];
 
-var callback = function(err, body, response){
+var callback = function(err, resp, body){
 
 	if(err) throw(err);
 
-	console.log("Status code: " + response.statusCode);
+	console.log("Status code: " + resp.statusCode);
 	console.log("Response body: " + body);
 
 };
