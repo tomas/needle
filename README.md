@@ -1,8 +1,8 @@
 Needle
 ======
 
-HTTP client for node. Supports HTTP basic auth, nested params and multipart form
-uploads. Really simple stuff, around 200 lines of code.
+HTTP client for node. Supports HTTP basic auth, HTTPS, nested params and multipart
+form uploads. Really simple stuff, around ~200 lines of code.
 
 Usage
 -----
@@ -19,7 +19,7 @@ Usage
 Options
 ------
 
- - timeout: Returns err if response takes more than X. Defaults to 10000 (10 secs).
+ - timeout: Returns error if response takes more than X. Defaults to 10000 (10 secs).
  - multipart: Enables multipart/form-data encoding. Defaults to false.
  - username: For http auth.
  - password: For http auth. Both are required of course.
@@ -35,6 +35,16 @@ var client = require('needle');
     client.get('http://www.google.com', function(err, resp, body){
 
       console.log("Got status code: " + resp.statusCode);
+
+    });
+
+You can also skip the 'http://' part if you want, by the way.
+
+### HTTPS + querystring
+
+    client.get('https://www.google.com/search?q=syd+barrett', function(err, resp, body){
+
+      // works
 
     });
 
