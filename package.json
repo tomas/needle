@@ -8,7 +8,7 @@
   , "dependencies": { "qs": "" }
   , "devDependencies": { "jasmine-node": "" }
   , "scripts": { "test": "npm test" }
-  , "directories" : { "lib" : "./lib" },
+  , "directories" : { "lib" : "./lib" }
   , "main": "./lib/needle"
   , "engines": { "node": ">= 0.4.x < 0.7.0" }
 }
