@@ -1,0 +1,27 @@
+#!/usr/bin/env node
+
+var needle = require('./../lib/needle');
+
+if(process.argv[3] == null){
+	console.log("Usage: needle [get|post|put|delete] url [query]");
+	process.exit(1);
+}
+
+var method = process.argv[2].toLowerCase();
+var url = process.argv[3];
+
+var callback = function(err, body, response){
+
+	if(err) throw(err);
+
+	console.log("Status code: " + response.statusCode);
+	console.log("Response body: " + body);
+
+};
+
+if(method == 'post' || method == 'put'){
+	var query = process.argv[4];
+	needle[method](url, query, callback);
+} else {
+	needle[method](url, callback);
+}

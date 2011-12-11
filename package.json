@@ -1,0 +1,14 @@
+{
+    "name": "needle"
+  , "version": "0.1.0"
+  , "description": "Simplest HTTP client ever. Supports multipart uploads."
+  , "keywords": ["http", "https", "client", "multipart", "simple"]
+  , "author": "Tomás Pollak <tomas@forkhq.com>"
+  , "repository": { "type": "git", "url": "https://github.com/tomas/needle.git" }
+  , "dependencies": { "qs": "" }
+  , "devDependencies": { "jasmine-node": "" }
+  , "scripts": { "test": "npm test" }
+  , "directories" : { "lib" : "./lib" },
+  , "main": "./lib/needle"
+  , "engines": { "node": ">= 0.4.x < 0.7.0" }
+}
