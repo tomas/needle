@@ -1,4 +1,4 @@
-// This is not done yet. Sorry.
+// TODO: write specs. :)
 
 var fs = require('fs'),
     client = require('./../lib/needle');
