@@ -67,6 +67,7 @@ function multipart_post(){
 
 		console.log(err);
 		console.log(body);
+		fs.unlink('important.txt');
 
 	});
 
