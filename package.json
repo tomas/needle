@@ -1,6 +1,6 @@
 {
     "name": "needle"
-  , "version": "0.1.1"
+  , "version": "0.1.2"
   , "description": "Simplest HTTP client ever. Supports multipart uploads."
   , "keywords": ["http", "https", "client", "multipart", "simple"]
   , "author": "Tomás Pollak <tomas@forkhq.com>"
