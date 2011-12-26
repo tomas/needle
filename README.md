@@ -2,7 +2,7 @@ Needle
 ======
 
 HTTP client for node. Supports HTTP basic auth, HTTPS, nested params and multipart
-form uploads. Really simple stuff, around ~200 lines of code.
+form uploads. Really simple stuff, around ~250 lines of code.
 
 Usage
 -----
@@ -19,6 +19,7 @@ Usage
 Options
 ------
 
+ - compressed: Whether to ask for a deflated or gzipped response or not. Defaults to false.
  - timeout: Returns error if response takes more than X. Defaults to 10000 (10 secs).
  - multipart: Enables multipart/form-data encoding. Defaults to false.
  - username: For http auth.
@@ -51,6 +52,7 @@ You can also skip the 'http://' part if you want, by the way.
     var options = {
       username: 'you',
       password: 'secret',
+      compressed: true,
       timeout: false,
       headers: {
         'X-Secret-Header': "Even more secret text"

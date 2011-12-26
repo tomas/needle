@@ -14,6 +14,7 @@ var callback = function(err, resp, body){
 
 	if(err) throw(err);
 
+	console.log(resp.headers);
 	console.log("Status code: " + resp.statusCode);
 	console.log("Response body: " + body);
 
