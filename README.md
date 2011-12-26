@@ -1,8 +1,8 @@
 Needle
 ======
 
-HTTP client for node. Supports HTTP basic auth, HTTPS, nested params and multipart
-form uploads. Really simple stuff, around ~250 lines of code.
+HTTP client for node. Supports HTTPS, basic authentication, nested params, multipart
+form uploads and gzip/deflate compression. Really simple stuff, around ~250 lines of code.
 
 Usage
 -----
