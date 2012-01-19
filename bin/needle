@@ -2,7 +2,10 @@
 
 var needle = require('./../lib/needle');
 
-if(process.argv[3] == null){
+if(process.argv[2] == '-v' || process.argv[2] == '--version') {
+	console.log(needle.version);
+	process.exit();
+} else if(process.argv[3] == null){
 	console.log("Usage: needle [get|post|put|delete] url [query]");
 	process.exit(1);
 }
