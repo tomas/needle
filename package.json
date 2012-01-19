@@ -10,5 +10,6 @@
   , "scripts": { "test": "npm test" }
   , "directories" : { "lib" : "./lib" }
   , "main": "./lib/needle"
+  , "bin": {"needle": "./bin/needle"}
   , "engines": { "node": ">= 0.4.x < 0.7.0" }
 }
