@@ -5,27 +5,22 @@ var fs = require('fs'),
 
 process.env.DEBUG = true;
 
-function simple_get(){
-
-	client.get('https://www.google.com', function(err, resp, body){
-
-		console.log(err);
-		console.log(body);
-
-	});
-
+var response_callback = function(err, resp, body){
+	console.log(err);
+	if(resp) console.log("Got status code " + resp.statusCode)
+	console.log(body);
 }
 
+function simple_get(){
+	client.get('http://www.nodejs.org', response_callback);
+}
+
+function proxy_get(){
+	client.get('https://www.google.com/search?q=nodejs', {proxy: 'http://localhost:1234'}, response_callback);
+}
 
 function auth_get(){
-
-	client.get('https://www.myserver.com', {username: 'asd', password: '123'}, function(err, resp, body){
-
-		console.log(err);
-		console.log(body);
-
-	});
-
+	client.get('https://www.twitter.com', {username: 'asd', password: '123'}, response_callback);
 }
 
 function simple_post(){
@@ -33,30 +28,25 @@ function simple_post(){
 	var data = {
 		foo: 'bar',
 		baz: {
-			nested: 'attributes'
+			nested: 'attribute'
 		}
 	}
 
-	client.post('http://posttestserver.com/post.php', data, function(err, resp, body){
-
-		console.log(err);
-		console.log(body);
-
-	});
+	client.post('http://posttestserver.com/post.php', data, response_callback);
 
 }
 
 function multipart_post(){
 
-	var fd = fs.openSync('important.txt', 'w');
-	fs.writeSync(fd, 'a lot of data\nwoohoo\n\nmore data\n\n');
-	fs.close(fd);
+	var filename = 'test_file.txt';
+	var data = 'Plain text data.\nLorem ipsum dolor sit amet.\nBla bla bla.\n';
+	fs.writeFileSync(filename, data);
 
 	var data = {
 		foo: 'bar',
 		bar: 'baz',
 		nested: {
-			my_document: { file: 'important.txt', content_type: 'text/plain' },
+			my_document: { file: filename, content_type: 'text/plain' },
 			even: {
 				more: 'nesting'
 			}
@@ -66,14 +56,29 @@ function multipart_post(){
 	client.post('http://posttestserver.com/post.php?dir=example', data, {multipart: true}, function(err, resp, body){
 
 		console.log(err);
+		console.log("Got status code " + resp.statusCode)
 		console.log(body);
-		fs.unlink('important.txt');
+		fs.unlink(filename);
 
 	});
 
 }
 
-// simple_get();
-// auth_get();
-// simple_post();
-multipart_post();
+switch(process.argv[2]){
+	case 'get':
+		simple_get();
+		break;
+	case 'auth':
+		auth_get();
+		break;
+	case 'proxy':
+		proxy_get();
+		break;
+	case 'post':
+		simple_post();
+		break;
+	case 'multipart':
+		multipart_post();
+	default:
+		console.log("Usage: ./test.js [get|auth|proxy|multipart]")
+}
