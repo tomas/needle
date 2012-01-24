@@ -1,7 +1,7 @@
 Needle
 ======
 
-HTTP client for node. Supports HTTPS, basic authentication, proxied requests, nested params, multipart
+HTTP client for NodeJS. Supports HTTPS, basic authentication, proxied requests, nested params, multipart
 form uploads and gzip/deflate compression. Really simple stuff, around ~250 lines of code.
 
 Usage
@@ -24,10 +24,10 @@ Options
  - `compressed`: Whether to ask for a deflated or gzipped response or not. Defaults to `false`.
  - `timeout`: Returns error if response takes more than X. Defaults to `10000` (10 secs).
  - `multipart`: Enables multipart/form-data encoding. Defaults to `false`.
- - `username`: For http auth.
- - `password`: For http auth. Both are required of course.
+ - `username`: For HTTP basic auth.
+ - `password`: For HTTP basic auth. Requires username to be passed, obviously.
  - `parse`: Whether to parse XML or JSON response bodies automagically. Defaults to `true`.
- - `proxy`: Sends request via HTTP proxy. Eg. `proxy: 'http://proxy.server.com:3128'}`
+ - `proxy`: Sends request via HTTP proxy. Eg. `proxy: 'http://proxy.server.com:3128'`
 
 Examples
 --------
@@ -100,7 +100,7 @@ var data = {
 
 client.post('http://my.app.com', data, function(err, resp, body){
 
-  // yippie
+  // if you don't pass any data, needle will throw an exception.
 
 });
 ```
@@ -121,7 +121,7 @@ var options = {
 client.post('http://my.other.app.com', data, options, function(err, resp, body){
 
   // in this case, if the request takes more than 5 seconds
-  // the callback will return an error
+  // the callback will return a [Socket closed] error
 
 });
 ```
