@@ -1,12 +1,13 @@
 Needle
 ======
 
-HTTP client for node. Supports HTTPS, basic authentication, nested params, multipart
+HTTP client for node. Supports HTTPS, basic authentication, proxied requests, nested params, multipart
 form uploads and gzip/deflate compression. Really simple stuff, around ~250 lines of code.
 
 Usage
 -----
 
+``` js
     var client = require('needle');
 
     client.get(url, [options], callback);
@@ -15,40 +16,47 @@ Usage
     client.delete(url, [options], callback);
 
     callback receives three arguments: (err, response, body)
+```
 
 Options
 ------
 
- - compressed: Whether to ask for a deflated or gzipped response or not. Defaults to false.
- - timeout: Returns error if response takes more than X. Defaults to 10000 (10 secs).
- - multipart: Enables multipart/form-data encoding. Defaults to false.
- - username: For http auth.
- - password: For http auth. Both are required of course.
- - parse: Whether to parse XML or JSON response bodies automagically. Defaults to true.
+ - `compressed`: Whether to ask for a deflated or gzipped response or not. Defaults to `false`.
+ - `timeout`: Returns error if response takes more than X. Defaults to `10000` (10 secs).
+ - `multipart`: Enables multipart/form-data encoding. Defaults to `false`.
+ - `username`: For http auth.
+ - `password`: For http auth. Both are required of course.
+ - `parse`: Whether to parse XML or JSON response bodies automagically. Defaults to `true`.
+ - `proxy`: Sends request via HTTP proxy. Eg. `proxy: 'http://proxy.server.com:3128'}`
 
 Examples
 --------
 
 ### Simple GET.
 
+``` js
     client.get('http://www.google.com', function(err, resp, body){
 
       console.log("Got status code: " + resp.statusCode);
 
     });
+```
 
 You can also skip the 'http://' part if you want, by the way.
 
 ### HTTPS + querystring
 
+``` js
     client.get('https://www.google.com/search?q=syd+barrett', function(err, resp, body){
 
       // works
 
     });
+```
 
 ### GET with options
 
+``` js
     var options = {
       username: 'you',
       password: 'secret',
@@ -64,15 +72,27 @@ You can also skip the 'http://' part if you want, by the way.
       // used HTTP auth
 
     });
+```
+
+### GET through proxy
+
+``` js
+    client.get('http://search.npmjs.org', { proxy: 'http://localhost:1234' }, function(err, resp, body){
+
+      // request passed through proxy
+
+    });
+```
 
 ### POST/PUT
 
+``` js
     var data = {
       foo: 'bar',
       nested: {
         params: {
           are: {
-            also: 'possible'
+            also: 'supported'
           }
         }
       }
@@ -83,9 +103,11 @@ You can also skip the 'http://' part if you want, by the way.
       // yippie
 
     });
+```
 
 ### Multipart POST
 
+``` js
     var data = {
       foo: bar,
       image: { file: '/home/tomas/linux.png', content_type: 'image/png' }
@@ -102,6 +124,7 @@ You can also skip the 'http://' part if you want, by the way.
       // the callback will return an error
 
     });
+```
 
 Credits
 -------
