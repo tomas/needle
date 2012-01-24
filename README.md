@@ -8,14 +8,14 @@ Usage
 -----
 
 ``` js
-    var client = require('needle');
+var client = require('needle');
 
-    client.get(url, [options], callback);
-    client.post(url, data, [options], callback);
-    client.put(url, data, [options], callback);
-    client.delete(url, [options], callback);
+client.get(url, [options], callback);
+client.post(url, data, [options], callback);
+client.put(url, data, [options], callback);
+client.delete(url, [options], callback);
 
-    callback receives three arguments: (err, response, body)
+callback receives three arguments: (error, response, body)
 ```
 
 Options
@@ -35,11 +35,11 @@ Examples
 ### Simple GET.
 
 ``` js
-    client.get('http://www.google.com', function(err, resp, body){
+client.get('http://www.google.com', function(err, resp, body){
 
-      console.log("Got status code: " + resp.statusCode);
+  console.log("Got status code: " + resp.statusCode);
 
-    });
+});
 ```
 
 You can also skip the 'http://' part if you want, by the way.
@@ -47,83 +47,83 @@ You can also skip the 'http://' part if you want, by the way.
 ### HTTPS + querystring
 
 ``` js
-    client.get('https://www.google.com/search?q=syd+barrett', function(err, resp, body){
+client.get('https://www.google.com/search?q=syd+barrett', function(err, resp, body){
 
-      // works
+  // boom! works.
 
-    });
+});
 ```
 
 ### GET with options
 
 ``` js
-    var options = {
-      username: 'you',
-      password: 'secret',
-      compressed: true,
-      timeout: false,
-      headers: {
-        'X-Secret-Header': "Even more secret text"
-      }
-    }
+var options = {
+  username: 'you',
+  password: 'secret',
+  compressed: true,
+  timeout: false,
+  headers: {
+    'X-Secret-Header': "Even more secret text"
+  }
+}
 
-    client.get('http://api.server.com', options, function(err, resp, body){
+client.get('http://api.server.com', options, function(err, resp, body){
 
-      // used HTTP auth
+  // used HTTP auth
 
-    });
+});
 ```
 
 ### GET through proxy
 
 ``` js
-    client.get('http://search.npmjs.org', { proxy: 'http://localhost:1234' }, function(err, resp, body){
+client.get('http://search.npmjs.org', { proxy: 'http://localhost:1234' }, function(err, resp, body){
 
-      // request passed through proxy
+  // request passed through proxy
 
-    });
+});
 ```
 
 ### POST/PUT
 
 ``` js
-    var data = {
-      foo: 'bar',
-      nested: {
-        params: {
-          are: {
-            also: 'supported'
-          }
-        }
+var data = {
+  foo: 'bar',
+  nested: {
+    params: {
+      are: {
+        also: 'supported'
       }
     }
+  }
+}
 
-    client.post('http://my.app.com', data, function(err, resp, body){
+client.post('http://my.app.com', data, function(err, resp, body){
 
-      // yippie
+  // yippie
 
-    });
+});
 ```
 
 ### Multipart POST
 
 ``` js
-    var data = {
-      foo: bar,
-      image: { file: '/home/tomas/linux.png', content_type: 'image/png' }
-    }
+var data = {
+  foo: bar,
+  image: { file: '/home/tomas/linux.png', content_type: 'image/png' }
+}
 
-    var options = {
-      multipart: true,
-      timeout: 5000
-    }
+var options = {
+  multipart: true,
+  timeout: 5000
+}
 
-    client.post('http://my.other.app.com', data, options, function(err, resp, body){
+client.post('http://my.other.app.com', data, options, function(err, resp, body){
 
-      // in this case, if the request takes more than 5 seconds
-      // the callback will return an error
+  // in this case, if the request takes more than 5 seconds
+  // the callback will return an error
 
-    });
+});
 ```
 
 Credits
