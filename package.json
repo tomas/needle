@@ -1,7 +1,7 @@
 {
     "name": "needle"
-  , "version": "0.1.9"
-  , "description": "Simplest HTTP client ever. Supports multipart uploads."
+  , "version": "0.2.0"
+  , "description": "Tiny yet featureful HTTP client. With deflate & multipart POST support."
   , "keywords": ["http", "https", "client", "multipart", "deflate", "timeout", "basic-auth", "simple"]
   , "author": "Tomás Pollak <tomas@forkhq.com>"
   , "repository": { "type": "git", "url": "https://github.com/tomas/needle.git" }
