@@ -14,9 +14,9 @@ client.get(url, [options], callback);
 client.post(url, data, [options], callback);
 client.put(url, data, [options], callback);
 client.delete(url, [options], callback);
-
-callback receives three arguments: (error, response, body)
 ```
+
+Callback receives three arguments: (error, response, body)
 
 Options
 ------
@@ -131,7 +131,7 @@ Credits
 
 Written by Tomás Pollak.
 
-Legal
+Copyright
 -----
 
-(c) Copyright 2011 Fork Ltd. Licensed under the MIT license.
+(c) 2011 Fork Ltd. Licensed under the MIT license.
