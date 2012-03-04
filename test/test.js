@@ -42,6 +42,8 @@ function multipart_post(){
 	var data = 'Plain text data.\nLorem ipsum dolor sit amet.\nBla bla bla.\n';
 	fs.writeFileSync(filename, data);
 
+	var black_pixel = new Buffer("data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=".replace(/^data:image\/\w+;base64,/, ""), "base64");
+
 	var data = {
 		foo: 'bar',
 		bar: 'baz',
@@ -50,7 +52,8 @@ function multipart_post(){
 			even: {
 				more: 'nesting'
 			}
-		}
+		},
+    buffer: { filename:'black_pixel.gif', buffer:black_pixel, content_type: 'image/gif' },
 	}
 
 	client.post('http://posttestserver.com/post.php?dir=example', data, {multipart: true}, function(err, resp, body){

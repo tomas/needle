@@ -108,9 +108,11 @@ client.post('http://my.app.com', data, function(err, resp, body){
 ### Multipart POST
 
 ``` js
+var base64_input = new Buffer(form_image_input.replace(/^data:image\/\w+;base64,/, ""), "base64");
 var data = {
   foo: bar,
-  image: { file: '/home/tomas/linux.png', content_type: 'image/png' }
+  image: { file: '/home/tomas/linux.png', content_type: 'image/png' },
+  gif: { buffer: base64_input, content_type: 'image/gif' }
 }
 
 var options = {
