@@ -105,7 +105,7 @@ client.post('http://my.app.com', data, function(err, resp, body){
 });
 ```
 
-### Multipart POST
+### Multipart POST: passing file path
 
 ``` js
 var data = {
@@ -127,7 +127,7 @@ client.post('http://my.other.app.com', data, options, function(err, resp, body){
 });
 ```
 
-### Multipart POST 2
+### Multipart POST 2: passing data buffer
 
 ``` js
 var buffer = fs.readFileSync('/path/to/package.zip');
