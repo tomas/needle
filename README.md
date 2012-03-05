@@ -110,8 +110,7 @@ client.post('http://my.app.com', data, function(err, resp, body){
 ``` js
 var data = {
   foo: bar,
-  image: { file: '/home/tomas/linux.png', content_type: 'image/png' },
-  gif: { buffer: base64_input, content_type: 'image/gif' }
+  image: { file: '/home/tomas/linux.png', content_type: 'image/png' }
 }
 
 var options = {
@@ -135,7 +134,7 @@ var data = {
   zip_file: { buffer: buffer, content_type: 'application/octet-stream' },
 }
 
-client.post('http://www.somewhere.com', data, {multipart: true}, function(err, resp, body){
+client.post('http://somewhere.com/over/the/rainbow', data, {multipart: true}, function(err, resp, body){
 
   // got it.
 
@@ -145,7 +144,7 @@ client.post('http://www.somewhere.com', data, {multipart: true}, function(err, r
 Credits
 -------
 
-Written by Tomás Pollak.
+Written by Tomás Pollak, with the help of contributors.
 
 Copyright
 -----
