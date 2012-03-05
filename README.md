@@ -1,7 +1,7 @@
 Needle
 ======
 
-HTTP client for NodeJS. Supports HTTPS, basic authentication, proxied requests, nested params, multipart
+HTTP client for NodeJS. Supports HTTPS, basic authentication, proxied requests, multipart
 form uploads and gzip/deflate compression. Really simple stuff, around ~250 lines of code.
 
 Usage
@@ -108,7 +108,6 @@ client.post('http://my.app.com', data, function(err, resp, body){
 ### Multipart POST
 
 ``` js
-var base64_input = new Buffer(form_image_input.replace(/^data:image\/\w+;base64,/, ""), "base64");
 var data = {
   foo: bar,
   image: { file: '/home/tomas/linux.png', content_type: 'image/png' },
@@ -128,6 +127,21 @@ client.post('http://my.other.app.com', data, options, function(err, resp, body){
 });
 ```
 
+### Multipart POST 2
+
+``` js
+var buffer = fs.readFileSync('/path/to/package.zip');
+var data = {
+  zip_file: { buffer: buffer, content_type: 'application/octet-stream' },
+}
+
+client.post('http://www.somewhere.com', data, {multipart: true}, function(err, resp, body){
+
+  // got it.
+
+});
+```
+
 Credits
 -------
 
@@ -136,4 +150,4 @@ Written by Tomás Pollak.
 Copyright
 -----
 
-(c) 2011 Fork Ltd. Licensed under the MIT license.
+(c) 2012 Fork Ltd. Licensed under the MIT license.
