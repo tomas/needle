@@ -53,7 +53,7 @@ function multipart_post(){
 				more: 'nesting'
 			}
 		},
-    buffer: { filename:'black_pixel.gif', buffer:black_pixel, content_type: 'image/gif' },
+    pixel: { filename:'black_pixel.gif', buffer: black_pixel, content_type: 'image/gif' },
 	}
 
 	client.post('http://posttestserver.com/post.php?dir=example', data, {multipart: true}, function(err, resp, body){
@@ -82,6 +82,7 @@ switch(process.argv[2]){
 		break;
 	case 'multipart':
 		multipart_post();
+		break;
 	default:
 		console.log("Usage: ./test.js [get|auth|proxy|multipart]")
 }
