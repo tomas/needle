@@ -1,7 +1,7 @@
 Needle
 ======
 
-HTTP client for NodeJS. Supports HTTPS, basic authentication, proxied requests, multipart
+Async HTTP client for NodeJS. Supports HTTPS, basic authentication, proxied requests, multipart
 form uploads and gzip/deflate compression. Really simple stuff, around ~250 lines of code.
 
 Usage
@@ -21,12 +21,13 @@ Callback receives three arguments: (error, response, body)
 Options
 ------
 
- - `compressed`: Whether to ask for a deflated or gzipped response or not. Defaults to `false`.
  - `timeout`: Returns error if response takes more than X. Defaults to `10000` (10 secs).
+ - `compressed`: Whether to ask for a deflated or gzipped response or not. Defaults to `false`.
+ - `parse`: Whether to parse XML or JSON response bodies automagically. Defaults to `true`.
  - `multipart`: Enables multipart/form-data encoding. Defaults to `false`.
  - `username`: For HTTP basic auth.
  - `password`: For HTTP basic auth. Requires username to be passed, obviously.
- - `parse`: Whether to parse XML or JSON response bodies automagically. Defaults to `true`.
+ - `agent`: Uses an http.Agent of your choice, instead of the global (default) one. 
  - `proxy`: Sends request via HTTP proxy. Eg. `proxy: 'http://proxy.server.com:3128'`
 
 Examples
@@ -131,12 +132,14 @@ client.post('http://my.other.app.com', data, options, function(err, resp, body){
 ``` js
 var buffer = fs.readFileSync('/path/to/package.zip');
 var data = {
-  zip_file: { buffer: buffer, content_type: 'application/octet-stream' },
+  zip_file: { buffer: buffer, filename: 'mypackage.zip', content_type: 'application/octet-stream' },
 }
 
 client.post('http://somewhere.com/over/the/rainbow', data, {multipart: true}, function(err, resp, body){
 
-  // got it.
+  // if you see, when using buffers we need to pass the filename for the multipart body.
+  // you can also pass a filename when using the file path method, in case you want to override
+  // the default filename.
 
 });
 ```
