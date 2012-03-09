@@ -88,6 +88,16 @@ client.get('http://search.npmjs.org', { proxy: 'http://localhost:1234' }, functi
 ### POST/PUT
 
 ``` js
+client.post('https://my.app.com/endpoint', 'foo=bar', function(err, resp, body){
+
+  // you can pass params as a string or as an object
+
+});
+```
+
+### POST/PUT 2
+
+``` js
 var data = {
   foo: 'bar',
   nested: {
@@ -99,7 +109,7 @@ var data = {
   }
 }
 
-client.post('http://my.app.com', data, function(err, resp, body){
+client.put('https://api.app.com/v2', data, function(err, resp, body){
 
   // if you don't pass any data, needle will throw an exception.
 
@@ -139,7 +149,7 @@ client.post('http://somewhere.com/over/the/rainbow', data, {multipart: true}, fu
 
   // if you see, when using buffers we need to pass the filename for the multipart body.
   // you can also pass a filename when using the file path method, in case you want to override
-  // the default filename.
+  // the default filename to be received on the other end.
 
 });
 ```
