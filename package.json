@@ -1,6 +1,6 @@
 {
     "name": "needle"
-  , "version": "0.2.1"
+  , "version": "0.2.2"
   , "description": "Tiny yet featureful HTTP client. With deflate & multipart POST support."
   , "keywords": ["http", "https", "client", "multipart", "deflate", "timeout", "basic-auth", "simple"]
   , "author": "Tomás Pollak <tomas@forkhq.com>"
