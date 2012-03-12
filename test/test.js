@@ -23,7 +23,7 @@ function auth_get(){
 	client.get('https://www.twitter.com', {username: 'asd', password: '123'}, response_callback);
 }
 
-function simple_post(){
+function simple_post(url){
 
 	var data = {
 		foo: 'bar',
@@ -32,11 +32,11 @@ function simple_post(){
 		}
 	}
 
-	client.post('http://posttestserver.com/post.php', data, response_callback);
+	client.post(url, data, response_callback);
 
 }
 
-function multipart_post(){
+function multipart_post(url){
 
 	var filename = 'test_file.txt';
 	var data = 'Plain text data.\nLorem ipsum dolor sit amet.\nBla bla bla.\n';
@@ -56,7 +56,7 @@ function multipart_post(){
     pixel: { filename:'black_pixel.gif', buffer: black_pixel, content_type: 'image/gif' },
 	}
 
-	client.post('http://posttestserver.com/post.php?dir=example', data, {multipart: true}, function(err, resp, body){
+	client.post(url, data, {multipart: true}, function(err, resp, body){
 
 		console.log(err);
 		console.log("Got status code " + resp.statusCode)
@@ -78,10 +78,10 @@ switch(process.argv[2]){
 		proxy_get();
 		break;
 	case 'post':
-		simple_post();
+		simple_post(process.argv[3] || 'http://posttestserver.com/post.php');
 		break;
 	case 'multipart':
-		multipart_post();
+		multipart_post(process.argv[3] || 'http://posttestserver.com/post.php?dir=example');
 		break;
 	default:
 		console.log("Usage: ./test.js [get|auth|proxy|multipart]")
