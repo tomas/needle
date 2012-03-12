@@ -8,7 +8,7 @@ var exit = function(code, str){
 if(process.argv[2] == '-v' || process.argv[2] == '--version')
 	exit(0, needle.version);
 else if(process.argv[3] == null)
-	exit(1, "Usage: needle [get|post|put|delete] url [query]");
+	exit(1, "Usage: needle [get|head|post|put|delete] url [query]");
 
 var method = process.argv[2].toLowerCase();
 var url = process.argv[3];

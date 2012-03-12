@@ -11,6 +11,10 @@ var response_callback = function(err, resp, body){
 	console.log(body);
 }
 
+function simple_head(){
+	client.head('http://www.amazon.com', response_callback);
+}
+
 function simple_get(){
 	client.get('http://www.nodejs.org', response_callback);
 }
@@ -68,6 +72,9 @@ function multipart_post(url){
 }
 
 switch(process.argv[2]){
+	case 'head':
+		simple_head();
+		break;
 	case 'get':
 		simple_get();
 		break;
@@ -84,5 +91,5 @@ switch(process.argv[2]){
 		multipart_post(process.argv[3] || 'http://posttestserver.com/post.php?dir=example');
 		break;
 	default:
-		console.log("Usage: ./test.js [get|auth|proxy|multipart]")
+		console.log("Usage: ./test.js [head|get|auth|proxy|multipart]")
 }
