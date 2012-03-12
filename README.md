@@ -11,6 +11,7 @@ Usage
 var client = require('needle');
 
 client.get(url, [options], callback);
+client.head(url, [options], callback);
 client.post(url, data, [options], callback);
 client.put(url, data, [options], callback);
 client.delete(url, [options], callback);
