@@ -1,21 +1,33 @@
-var http = require('http');
+var http = require('http'),
+    https = require('https'),
+    url = require('url');
 var port = 1234;
 
 http.createServer(function(request, response) {
-	
+
   console.log("Got request: " + request.url);
-  console.log(request.headers['host']);
+  console.log("Forwarding request to " + request.headers['host']);
 
-  var proxy = http.createClient(80, request.headers['host'])
-  var proxy_request = proxy.request(request.method, request.url, request.headers);
+  var remote = url.parse(request.url);
+  var protocol = remote.protocol == 'https:' ? https : http;
 
-  proxy_request.on('response', function (proxy_response) {
+  var opts = {
+    host: request.headers['host'],
+    port: remote.port || (remote.protocol == 'https:' ? 443 : 80),
+    method: request.method,
+    path: remote.pathname,
+    headers: request.headers
+  }
+
+  var proxy_request = protocol.request(opts, function(proxy_response){
+
     proxy_response.on('data', function(chunk) {
       response.write(chunk, 'binary');
     });
     proxy_response.on('end', function() {
       response.end();
     });
+
     response.writeHead(proxy_response.statusCode, proxy_response.headers);
   });
 
