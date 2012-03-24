@@ -22,6 +22,7 @@ Callback receives three arguments: (error, response, body)
 Options
 ------
 
+ - `follow`: Whether to follow redirects or not. Can be a number (of max redirects), `true` (which translates to 20) or `false` (default).
  - `timeout`: Returns error if response takes more than X. Defaults to `10000` (10 secs). Set to 0 for no timeout.
  - `compressed`: Whether to ask for a deflated or gzipped response or not. Defaults to `false`.
  - `parse`: Whether to parse XML or JSON response bodies automagically. Defaults to `true`.
@@ -29,7 +30,7 @@ Options
  - `username`: For HTTP basic auth.
  - `password`: For HTTP basic auth. Requires username to be passed, obviously.
  - `agent`: Uses an http.Agent of your choice, instead of the global (default) one.
- - `proxy`: Sends request via HTTP proxy. Eg. `proxy: 'http://proxy.server.com:3128'`
+ - `proxy`: Forwards request through HTTP proxy. Eg. `proxy: 'http://proxy.server.com:3128'`
 
 Examples
 --------
@@ -43,8 +44,17 @@ client.get('http://www.google.com', function(err, resp, body){
 
 });
 ```
-
 You can also skip the 'http://' part if you want, by the way.
+
+### GET with redirect.
+
+``` js
+client.get('http://github.com', {follow: true}, function(err, resp, body){
+
+  // will follow redirect to 'https://github.com' as requested
+
+});
+```
 
 ### HTTPS + querystring
 
