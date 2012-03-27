@@ -2,7 +2,7 @@ var formidable = require('formidable'),
     http = require('http'),
     util = require('util');
 
-var port = 8888;
+var port = process.argv[2] || 8888;
 
 http.createServer(function(req, res) {
   var form = new formidable.IncomingForm();
@@ -12,3 +12,5 @@ http.createServer(function(req, res) {
     res.end(util.inspect({fields: fields, files: files}));
   });
 }).listen(port);
+
+console.log('HTTP server listening on port ' + port);
