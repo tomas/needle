@@ -1,8 +1,8 @@
 Needle
 ======
 
-Async HTTP client for NodeJS. Supports HTTPS, basic authentication, proxied requests, multipart
-form uploads and gzip/deflate compression. Really simple stuff, around ~300 lines of code.
+Async HTTP client for Node.js. Supports SSL, basic authentication, proxied requests, multipart
+form POSTs, gzip/deflate compression and redirect following. 
 
 Usage
 -----
