@@ -2,7 +2,7 @@ Needle
 ======
 
 Async HTTP client for NodeJS. Supports HTTPS, basic authentication, proxied requests, multipart
-form uploads and gzip/deflate compression. Really simple stuff, around ~250 lines of code.
+form uploads and gzip/deflate compression. Really simple stuff, around ~300 lines of code.
 
 Usage
 -----
@@ -17,12 +17,12 @@ client.put(url, data, [options], callback);
 client.delete(url, [options], callback);
 ```
 
-Callback receives three arguments: (error, response, body)
+Callback receives three arguments: `(error, response, body)`
 
 Options
 ------
 
- - `follow`: Whether to follow redirects or not. Can be a number (of max redirects), `true` (which translates to 20) or `false` (default).
+ - `follow`: Whether to follow redirects or not. Can be a number (of max redirects), `true` (which translates to 10) or `false` (default).
  - `timeout`: Returns error if response takes more than X. Defaults to `10000` (10 secs). Set to 0 for no timeout.
  - `compressed`: Whether to ask for a deflated or gzipped response or not. Defaults to `false`.
  - `parse`: Whether to parse XML or JSON response bodies automagically. Defaults to `true`.
@@ -110,7 +110,6 @@ client.post('https://my.app.com/endpoint', 'foo=bar', function(err, resp, body){
 
 ``` js
 var data = {
-  foo: 'bar',
   nested: {
     params: {
       are: {
