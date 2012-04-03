@@ -1,0 +1,238 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Needle by tomas</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Needle</h1>
+<p>Tiny yet featureful HTTP client for Node.js. With deflate &amp; multipart support.</p>
+        <p class="view"><a href="https://github.com/tomas/needle">View the Project on GitHub <small>tomas/needle</small></a></p>
+        <ul>
+          <li><a href="https://github.com/tomas/needle/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/tomas/needle/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/tomas/needle">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>Needle</h1>
+
+<p>Async HTTP client for Node.js. Supports SSL, basic authentication, proxied requests, multipart
+form POSTs, gzip/deflate compression and redirect following. </p>
+
+<h2>Usage</h2>
+
+<div class="highlight">
+<pre><span class="kd">var</span> <span class="nx">client</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'needle'</span><span class="p">);</span>
+
+<span class="nx">client</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="p">[</span><span class="nx">options</span><span class="p">],</span> <span class="nx">callback</span><span class="p">);</span>
+<span class="nx">client</span><span class="p">.</span><span class="nx">head</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="p">[</span><span class="nx">options</span><span class="p">],</span> <span class="nx">callback</span><span class="p">);</span>
+<span class="nx">client</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="p">[</span><span class="nx">options</span><span class="p">],</span> <span class="nx">callback</span><span class="p">);</span>
+<span class="nx">client</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="p">[</span><span class="nx">options</span><span class="p">],</span> <span class="nx">callback</span><span class="p">);</span>
+<span class="nx">client</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="p">[</span><span class="nx">options</span><span class="p">],</span> <span class="nx">callback</span><span class="p">);</span>
+</pre>
+</div>
+
+
+<p>Callback receives three arguments: <code>(error, response, body)</code></p>
+
+<h2>Options</h2>
+
+<ul>
+<li>
+<code>follow</code>: Whether to follow redirects or not. Can be a number (of max redirects), <code>true</code> (which translates to 10) or <code>false</code> (default).</li>
+<li>
+<code>timeout</code>: Returns error if response takes more than X. Defaults to <code>10000</code> (10 secs). Set to 0 for no timeout.</li>
+<li>
+<code>compressed</code>: Whether to ask for a deflated or gzipped response or not. Defaults to <code>false</code>.</li>
+<li>
+<code>parse</code>: Whether to parse XML or JSON response bodies automagically. Defaults to <code>true</code>.</li>
+<li>
+<code>multipart</code>: Enables multipart/form-data encoding. Defaults to <code>false</code>.</li>
+<li>
+<code>username</code>: For HTTP basic auth.</li>
+<li>
+<code>password</code>: For HTTP basic auth. Requires username to be passed, obviously.</li>
+<li>
+<code>agent</code>: Uses an http.Agent of your choice, instead of the global (default) one.</li>
+<li>
+<code>proxy</code>: Forwards request through HTTP proxy. Eg. <code>proxy: '<a href="http://proxy.server.com:3128">http://proxy.server.com:3128</a>'</code>
+</li>
+</ul><h2>Examples</h2>
+
+<h3>Simple GET.</h3>
+
+<div class="highlight">
+<pre><span class="nx">client</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'<a href="http://www.google.com">http://www.google.com</a>'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">resp</span><span class="p">,</span> <span class="nx">body</span><span class="p">){</span>
+
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Got status code: "</span> <span class="o">+</span> <span class="nx">resp</span><span class="p">.</span><span class="nx">statusCode</span><span class="p">);</span>
+
+<span class="p">});</span>
+</pre>
+</div>
+
+
+<p>You can also skip the 'http://' part if you want, by the way.</p>
+
+<h3>GET with redirect.</h3>
+
+<div class="highlight">
+<pre><span class="nx">client</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'<a href="http://github.com">http://github.com</a>'</span><span class="p">,</span> <span class="p">{</span><span class="nx">follow</span><span class="o">:</span> <span class="kc">true</span><span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">resp</span><span class="p">,</span> <span class="nx">body</span><span class="p">){</span>
+
+  <span class="c1">// will follow redirect to '<a href="https://github.com">https://github.com</a>' as requested</span>
+
+<span class="p">});</span>
+</pre>
+</div>
+
+
+<h3>HTTPS + querystring</h3>
+
+<div class="highlight">
+<pre><span class="nx">client</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'<a href="https://www.google.com/search?q=syd+barrett">https://www.google.com/search?q=syd+barrett</a>'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">resp</span><span class="p">,</span> <span class="nx">body</span><span class="p">){</span>
+
+  <span class="c1">// boom! works.</span>
+
+<span class="p">});</span>
+</pre>
+</div>
+
+
+<h3>GET with options</h3>
+
+<div class="highlight">
+<pre><span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nx">username</span><span class="o">:</span> <span class="s1">'you'</span><span class="p">,</span>
+  <span class="nx">password</span><span class="o">:</span> <span class="s1">'secret'</span><span class="p">,</span>
+  <span class="nx">compressed</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nx">timeout</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s1">'X-Secret-Header'</span><span class="o">:</span> <span class="s2">"Even more secret text"</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nx">client</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'<a href="http://api.server.com">http://api.server.com</a>'</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">resp</span><span class="p">,</span> <span class="nx">body</span><span class="p">){</span>
+
+  <span class="c1">// used HTTP auth</span>
+
+<span class="p">});</span>
+</pre>
+</div>
+
+
+<h3>GET through proxy</h3>
+
+<div class="highlight">
+<pre><span class="nx">client</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'<a href="http://search.npmjs.org">http://search.npmjs.org</a>'</span><span class="p">,</span> <span class="p">{</span> <span class="nx">proxy</span><span class="o">:</span> <span class="s1">'http://localhost:1234'</span> <span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">resp</span><span class="p">,</span> <span class="nx">body</span><span class="p">){</span>
+
+  <span class="c1">// request passed through proxy</span>
+
+<span class="p">});</span>
+</pre>
+</div>
+
+
+<h3>POST/PUT</h3>
+
+<div class="highlight">
+<pre><span class="nx">client</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">'<a href="https://my.app.com/endpoint">https://my.app.com/endpoint</a>'</span><span class="p">,</span> <span class="s1">'foo=bar'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">resp</span><span class="p">,</span> <span class="nx">body</span><span class="p">){</span>
+
+  <span class="c1">// you can pass params as a string or as an object</span>
+
+<span class="p">});</span>
+</pre>
+</div>
+
+
+<h3>POST/PUT 2</h3>
+
+<div class="highlight">
+<pre><span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nx">nested</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">params</span><span class="o">:</span> <span class="p">{</span>
+      <span class="nx">are</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">also</span><span class="o">:</span> <span class="s1">'supported'</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nx">client</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="s1">'<a href="https://api.app.com/v2">https://api.app.com/v2</a>'</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">resp</span><span class="p">,</span> <span class="nx">body</span><span class="p">){</span>
+
+  <span class="c1">// if you don't pass any data, needle will throw an exception.</span>
+
+<span class="p">});</span>
+</pre>
+</div>
+
+
+<h3>Multipart POST: passing file path</h3>
+
+<div class="highlight">
+<pre><span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nx">foo</span><span class="o">:</span> <span class="nx">bar</span><span class="p">,</span>
+  <span class="nx">image</span><span class="o">:</span> <span class="p">{</span> <span class="nx">file</span><span class="o">:</span> <span class="s1">'/home/tomas/linux.png'</span><span class="p">,</span> <span class="nx">content_type</span><span class="o">:</span> <span class="s1">'image/png'</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nx">multipart</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nx">timeout</span><span class="o">:</span> <span class="mi">5000</span>
+<span class="p">}</span>
+
+<span class="nx">client</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">'<a href="http://my.other.app.com">http://my.other.app.com</a>'</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">resp</span><span class="p">,</span> <span class="nx">body</span><span class="p">){</span>
+
+  <span class="c1">// in this case, if the request takes more than 5 seconds</span>
+  <span class="c1">// the callback will return a [Socket closed] error</span>
+
+<span class="p">});</span>
+</pre>
+</div>
+
+
+<h3>Multipart POST 2: passing data buffer</h3>
+
+<div class="highlight">
+<pre><span class="kd">var</span> <span class="nx">buffer</span> <span class="o">=</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span><span class="p">(</span><span class="s1">'/path/to/package.zip'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nx">zip_file</span><span class="o">:</span> <span class="p">{</span> <span class="nx">buffer</span><span class="o">:</span> <span class="nx">buffer</span><span class="p">,</span> <span class="nx">filename</span><span class="o">:</span> <span class="s1">'mypackage.zip'</span><span class="p">,</span> <span class="nx">content_type</span><span class="o">:</span> <span class="s1">'application/octet-stream'</span> <span class="p">},</span>
+<span class="p">}</span>
+
+<span class="nx">client</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">'<a href="http://somewhere.com/over/the/rainbow">http://somewhere.com/over/the/rainbow</a>'</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="p">{</span><span class="nx">multipart</span><span class="o">:</span> <span class="kc">true</span><span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">resp</span><span class="p">,</span> <span class="nx">body</span><span class="p">){</span>
+
+  <span class="c1">// if you see, when using buffers we need to pass the filename for the multipart body.</span>
+  <span class="c1">// you can also pass a filename when using the file path method, in case you want to override</span>
+  <span class="c1">// the default filename to be received on the other end.</span>
+
+<span class="p">});</span>
+</pre>
+</div>
+
+
+<h2>Credits</h2>
+
+<p>Written by Tomás Pollak, with the help of contributors.</p>
+
+<h2>Copyright</h2>
+
+<p>(c) 2012 Fork Ltd. Licensed under the MIT license.</p>
+      </section>
+    </div>
+    <footer>
+      <p>Project maintained by <a href="https://github.com/tomas">tomas</a></p>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+  </body>
+</html>
