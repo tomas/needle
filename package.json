@@ -1,8 +1,9 @@
 {
     "name": "needle"
   , "version": "0.2.6"
-  , "description": "Tiny yet featureful HTTP client. With deflate & multipart POST support."
+  , "description": "Tiny yet feature-packed HTTP client. With deflate & multipart support."
   , "keywords": ["http", "https", "client", "multipart", "deflate", "timeout", "basic-auth", "simple"]
+  , "tags": ["http", "https", "client", "multipart", "deflate", "timeout", "basic-auth", "simple"]
   , "author": "Tomás Pollak <tomas@forkhq.com>"
   , "repository": { "type": "git", "url": "https://github.com/tomas/needle.git" }
   , "dependencies": { "qs": "" }
