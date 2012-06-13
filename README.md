@@ -1,8 +1,8 @@
 Needle
 ======
 
-Async HTTP client for Node.js. Supports SSL, basic authentication, proxied requests, multipart
-form POSTs, gzip/deflate compression and redirect following. 
+Async HTTP client for Node.js. Supports SSL, basic authentication, proxied
+requests, multipart form POSTs, gzip/deflate compression and redirect following.
 
 Usage
 -----
@@ -10,19 +10,22 @@ Usage
 ``` js
 var client = require('needle');
 
-client.get(url, [options], callback);
-client.head(url, [options], callback);
-client.post(url, data, [options], callback);
-client.put(url, data, [options], callback);
-client.delete(url, [options], callback);
+client.get('http://www.google.com', function(err, resp, body){
+  console.log("Got status code: " + resp.statusCode);
+});
 ```
 
-Callback receives three arguments: `(error, response, body)`
+Install
+-----
+
+```
+npm install needle
+```
 
 Options
 ------
 
- - `follow`: Whether to follow redirects or not. Can be a number (of max redirects), `true` (which translates to 10) or `false` (default).
+ - `follow`: Whether to follow redirects or not. Can be a number (of max redirects), `false` or `true` (default, which translates to 10).
  - `timeout`: Returns error if response takes more than X. Defaults to `10000` (10 secs). Set to 0 for no timeout.
  - `compressed`: Whether to ask for a deflated or gzipped response or not. Defaults to `false`.
  - `parse`: Whether to parse XML or JSON response bodies automagically. Defaults to `true`.
@@ -32,6 +35,18 @@ Options
  - `agent`: Uses an http.Agent of your choice, instead of the global (default) one.
  - `proxy`: Forwards request through HTTP proxy. Eg. `proxy: 'http://proxy.server.com:3128'`
 
+Methods
+-------
+
+``` js
+client.get(url, [options], callback);
+client.head(url, [options], callback);
+client.post(url, data, [options], callback);
+client.put(url, data, [options], callback);
+client.delete(url, [options], callback);
+```
+Callback receives three arguments: `(error, response, body)`
+
 Examples
 --------
 
@@ -39,30 +54,17 @@ Examples
 
 ``` js
 client.get('http://www.google.com', function(err, resp, body){
-
   console.log("Got status code: " + resp.statusCode);
-
 });
 ```
 You can also skip the 'http://' part if you want, by the way.
-
-### GET with redirect.
-
-``` js
-client.get('http://github.com', {follow: true}, function(err, resp, body){
-
-  // will follow redirect to 'https://github.com' as requested
-
-});
-```
 
 ### HTTPS + querystring
 
 ``` js
 client.get('https://www.google.com/search?q=syd+barrett', function(err, resp, body){
-
-  // boom! works.
-
+  if(!err && resp.statusCode == 200)
+    console.log(body); // prints results
 });
 ```
 
@@ -72,7 +74,6 @@ client.get('https://www.google.com/search?q=syd+barrett', function(err, resp, bo
 var options = {
   username: 'you',
   password: 'secret',
-  compressed: true,
   timeout: false,
   headers: {
     'X-Secret-Header': "Even more secret text"
@@ -90,9 +91,7 @@ client.get('http://api.server.com', options, function(err, resp, body){
 
 ``` js
 client.get('http://search.npmjs.org', { proxy: 'http://localhost:1234' }, function(err, resp, body){
-
   // request passed through proxy
-
 });
 ```
 
@@ -100,9 +99,7 @@ client.get('http://search.npmjs.org', { proxy: 'http://localhost:1234' }, functi
 
 ``` js
 client.post('https://my.app.com/endpoint', 'foo=bar', function(err, resp, body){
-
   // you can pass params as a string or as an object
-
 });
 ```
 
@@ -120,9 +117,7 @@ var data = {
 }
 
 client.put('https://api.app.com/v2', data, function(err, resp, body){
-
   // if you don't pass any data, needle will throw an exception.
-
 });
 ```
 
@@ -140,10 +135,8 @@ var options = {
 }
 
 client.post('http://my.other.app.com', data, options, function(err, resp, body){
-
   // in this case, if the request takes more than 5 seconds
   // the callback will return a [Socket closed] error
-
 });
 ```
 
@@ -156,11 +149,9 @@ var data = {
 }
 
 client.post('http://somewhere.com/over/the/rainbow', data, {multipart: true}, function(err, resp, body){
-
   // if you see, when using buffers we need to pass the filename for the multipart body.
   // you can also pass a filename when using the file path method, in case you want to override
   // the default filename to be received on the other end.
-
 });
 ```
 
