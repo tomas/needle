@@ -47,28 +47,21 @@ client.delete(url, [options], callback);
 ```
 Callback receives three arguments: `(error, response, body)`
 
-Examples
---------
+More examples
+-------------
 
-### Simple GET.
-
-``` js
-client.get('http://www.google.com', function(err, resp, body){
-  console.log("Got status code: " + resp.statusCode);
-});
-```
-You can also skip the 'http://' part if you want, by the way.
-
-### HTTPS + querystring
+### GET with querystring
 
 ``` js
-client.get('https://www.google.com/search?q=syd+barrett', function(err, resp, body){
+client.get('http://www.google.com/search?q=syd+barrett', function(err, resp, body){
   if(!err && resp.statusCode == 200)
     console.log(body); // prints results
 });
 ```
 
-### GET with options
+You can also skip the 'http://' part if you want, by the way.
+
+### HTTPS GET with options
 
 ``` js
 var options = {
@@ -80,10 +73,8 @@ var options = {
   }
 }
 
-client.get('http://api.server.com', options, function(err, resp, body){
-
+client.get('https://api.server.com', options, function(err, resp, body){
   // used HTTP auth
-
 });
 ```
 
