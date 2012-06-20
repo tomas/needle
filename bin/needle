@@ -13,6 +13,8 @@ else if(process.argv[3] == null)
 var method = process.argv[2].toLowerCase();
 var url = process.argv[3];
 
+var options = { compressed: true, timeout: 5000 };
+
 var callback = function(err, resp, body){
 
 	if(err) throw(err);
@@ -24,6 +26,6 @@ var callback = function(err, resp, body){
 };
 
 if(method == 'post' || method == 'put')
-	needle[method](url, process.argv[4], callback);
+	needle[method](url, process.argv[4], options, callback);
 else
-	needle[method](url, callback);
+	needle[method](url, options, callback);
