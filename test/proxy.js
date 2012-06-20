@@ -5,6 +5,8 @@ var port = 1234;
 
 http.createServer(function(request, response) {
 
+  console.log(request.headers);
+
   console.log("Got request: " + request.url);
   console.log("Forwarding request to " + request.headers['host']);
 
