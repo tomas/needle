@@ -1,8 +1,9 @@
 Needle
 ======
 
-Async HTTP client for Node.js. Supports SSL, basic authentication, proxied
-requests, multipart form POSTs, gzip/deflate compression and redirect following.
+The most handsome HTTP client in the Nodelands. Supports SSL, basic authentication, proxied
+requests, multipart form POSTs, gzip/deflate compression and, as you would expect, follows 
+redirects. Simple, nimble and to the point.
 
 Usage
 -----
