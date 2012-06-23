@@ -26,8 +26,8 @@ npm install needle
 Options
 ------
 
- - `follow`: Whether to follow redirects or not. Can be a number (of max redirects), `false` or `true` (default, which translates to 10).
- - `timeout`: Returns error if response takes more than X. Defaults to `10000` (10 secs). Set to 0 for no timeout.
+ - `timeout`: Returns error if response takes more than X milisecs. Defaults to `10000` (10 secs). `0` means no timeout.
+ - `follow`: When `false`, Needle won't follow redirects. Can also be a number or `true` (the default, 10 max).
  - `compressed`: Whether to ask for a deflated or gzipped response or not. Defaults to `false`.
  - `parse`: Whether to parse XML or JSON response bodies automagically. Defaults to `true`.
  - `multipart`: Enables multipart/form-data encoding. Defaults to `false`.
