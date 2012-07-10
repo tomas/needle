@@ -2,13 +2,13 @@
 var needle = require('./../lib/needle');
 
 var exit = function(code, str){
-	console.log(str) || process.exit(code);
+  console.log(str) || process.exit(code);
 }
 
 if(process.argv[2] == '-v' || process.argv[2] == '--version')
-	exit(0, needle.version);
+  exit(0, needle.version);
 else if(process.argv[3] == null)
-	exit(1, "Usage: needle [get|head|post|put|delete] url [query]");
+  exit(1, "Usage: needle [get|head|post|put|delete] url [query]");
 
 var method = process.argv[2].toLowerCase();
 var url = process.argv[3];
@@ -17,15 +17,15 @@ var options = { compressed: true, timeout: 5000 };
 
 var callback = function(err, resp, body){
 
-	if(err) throw(err);
+  if(err) throw(err);
 
-	console.log(resp.headers);
-	console.log("Status code: " + resp.statusCode);
-	console.log("Response body: " + body);
+  console.log(resp.headers);
+  console.log("Status code: " + resp.statusCode);
+  console.log("Response body: " + body);
 
 };
 
 if(method == 'post' || method == 'put')
-	needle[method](url, process.argv[4], options, callback);
+  needle[method](url, process.argv[4], options, callback);
 else
-	needle[method](url, options, callback);
+  needle[method](url, options, callback);
