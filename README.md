@@ -9,7 +9,7 @@ Usage
 -----
 
 ``` js
-var client = require('needle');
+var  = require('needle');
 
 client.get('http://www.google.com', function(err, resp, body){
   console.log("Got status code: " + resp.statusCode);
@@ -48,7 +48,7 @@ client.delete(url, [options], callback);
 ```
 Callback receives three arguments: `(error, response, body)`
 
-More examples
+Examples
 -------------
 
 ### GET with querystring
