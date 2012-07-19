@@ -9,7 +9,7 @@ Usage
 -----
 
 ``` js
-var  = require('needle');
+var client = require('needle');
 
 client.get('http://www.google.com', function(err, resp, body){
   console.log("Got status code: " + resp.statusCode);
