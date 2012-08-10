@@ -58,6 +58,7 @@ function multipart_post(url){
 			}
 		},
     pixel: { filename: 'black_pixel.gif', buffer: black_pixel, content_type: 'image/gif' },
+    field2: {value: {"json":[{"one":1},{"two":2}]}, content_type: 'application/json' }
 	}
 
 	client.post(url, data, {multipart: true}, function(err, resp, body){
