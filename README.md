@@ -119,7 +119,7 @@ client.put('https://api.app.com/v2', data, function(err, resp, body){
 var data = {
   foo: bar,
   image: { file: '/home/tomas/linux.png', content_type: 'image/png' },
-  field-with-content-type : {value: 'some json', content_type: 'application/json'}
+  field2 : {value: 'some json', content_type: 'application/json'}
 }
 
 var options = {
