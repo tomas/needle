@@ -58,7 +58,7 @@ function multipart_post(url){
 			}
 		},
     pixel: { filename: 'black_pixel.gif', buffer: black_pixel, content_type: 'image/gif' },
-    field2: {value: {"json":[{"one":1},{"two":2}]}, content_type: 'application/json' }
+    field2: {value: {"json":[ {"one":1}, {"two":2} ]}, content_type: 'application/json' }
 	}
 
 	client.post(url, data, {multipart: true}, function(err, resp, body){
@@ -96,8 +96,8 @@ switch(process.argv[2]){
 		simple_get();
 		auth_get();
 		proxy_get();
-		simple_post('http://posttestserver.com/post.php');
-		multipart_post('http://posttestserver.com/post.php?dir=example');
+		simple_post(process.argv[3] || 'http://posttestserver.com/post.php');
+		multipart_post(process.argv[3] || 'http://posttestserver.com/post.php?dir=example');
 		break;
 	default:
 		console.log("Usage: ./test.js [head|get|auth|proxy|multipart]")
