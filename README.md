@@ -2,7 +2,7 @@ Needle
 ======
 
 The most handsome HTTP client in the Nodelands. Supports SSL, basic authentication, proxied
-requests, multipart form POSTs, gzip/deflate compression and, as you would expect, follows 
+requests, multipart form POSTs (e.g. file uploads), gzip/deflate compression and, of course, follows 
 redirects. Simple, nimble and to the point.
 
 Usage
