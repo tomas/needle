@@ -1,9 +1,9 @@
 Needle
 ======
 
-The most handsome HTTP client in the Nodelands. Supports SSL, basic authentication, proxied
-requests, multipart form POSTs (e.g. file uploads), gzip/deflate compression and, of course, follows 
-redirects. Simple, nimble and to the point.
+The most handsome HTTP client in the Nodelands. Supports SSL, basic auth, requests via proxy,
+multipart form-data (e.g. file uploads), gzip/deflate compression and, as you would expect, 
+follows redirects. Simple, nimble and to the point.
 
 Usage
 -----
@@ -56,11 +56,9 @@ Examples
 ``` js
 needle.get('http://www.google.com/search?q=syd+barrett', function(err, resp, body){
   if(!err && resp.statusCode == 200)
-    console.log(body); // prints results
+    console.log(body); // prints HTML
 });
 ```
-
-You can also skip the 'http://' part if you want, by the way.
 
 ### HTTPS GET with Basic Auth
 
@@ -76,13 +74,15 @@ needle.get('https://api.server.com', { username: 'you', password: 'secret' },
 ``` js
 var options = {
   timeout: false,
+  compressed : true,
+  parse: true,
   headers: {
     'X-Custom-Header': "Bumbaway atuna"
   }
 }
 
-needle.get('https://api.server.com', options, function(err, resp, body){
-  // Alrighty then
+needle.get('server.com/posts.json', options, function(err, resp, body){
+  // Needle prepends 'http://' to the URL if not found
 });
 ```
 
@@ -105,7 +105,7 @@ needle.post('https://my.app.com/endpoint', 'foo=bar', function(err, resp, body){
 ### PUT with data object
 
 ``` js
-var nested: {
+var nested = {
   params: {
     are: {
       also: 'supported'
@@ -127,8 +127,7 @@ var data = {
 }
 
 needle.post('http://my.other.app.com', data, { multipart: true }, function(err, resp, body){
-  // in this case, if the request takes more than 5 seconds
-  // the callback will return a [Socket closed] error
+  // needle will read the file and include it in the form-data as binary
 });
 ```
 
@@ -155,6 +154,7 @@ needle.post('http://somewhere.com/over/the/rainbow', data, {multipart: true}, fu
 
 ``` js
 var data = {
+  timeout: 2000,
   token: 'verysecret',
   body: { 
     value: JSON.stringify({ title: 'test', version: 1 }),
@@ -163,7 +163,8 @@ var data = {
 }
 
 needle.post('http://test.com/endpoint', data, {multipart: true}, function(err, resp, body){
-  // awesome!
+  // in this case, if the request takes more than 5 seconds
+  // the callback will return a [Socket closed] error
 });
 ```
 
