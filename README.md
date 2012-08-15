@@ -143,7 +143,7 @@ var data = {
   },
 }
 
-needle.post('http://somewhere.com/over/the/rainbow', data, {multipart: true}, function(err, resp, body){
+needle.post('http://somewhere.com/over/the/rainbow', data, { multipart: true }, function(err, resp, body){
   // if you see, when using buffers we need to pass the filename for the multipart body.
   // you can also pass a filename when using the file path method, in case you want to override
   // the default filename to be received on the other end.
@@ -154,7 +154,7 @@ needle.post('http://somewhere.com/over/the/rainbow', data, {multipart: true}, fu
 
 ``` js
 var data = {
-  timeout: 2000,
+  timeout: 5000,
   token: 'verysecret',
   body: { 
     value: JSON.stringify({ title: 'test', version: 1 }),
@@ -162,7 +162,7 @@ var data = {
   }
 }
 
-needle.post('http://test.com/endpoint', data, {multipart: true}, function(err, resp, body){
+needle.post('http://test.com/endpoint', data, { multipart: true }, function(err, resp, body){
   // in this case, if the request takes more than 5 seconds
   // the callback will return a [Socket closed] error
 });
