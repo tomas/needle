@@ -9,9 +9,9 @@ Usage
 -----
 
 ``` js
-var client = require('needle');
+var needle = require('needle');
 
-client.get('http://www.google.com', function(err, resp, body){
+needle.get('http://www.google.com', function(err, resp, body){
   console.log("Got status code: " + resp.statusCode);
 });
 ```
@@ -40,11 +40,11 @@ Methods
 -------
 
 ``` js
-client.get(url, [options], callback);
-client.head(url, [options], callback);
-client.post(url, data, [options], callback);
-client.put(url, data, [options], callback);
-client.delete(url, [options], callback);
+needle.get(url, [options], callback);
+needle.head(url, [options], callback);
+needle.post(url, data, [options], callback);
+needle.put(url, data, [options], callback);
+needle.delete(url, [options], callback);
 ```
 Callback receives three arguments: `(error, response, body)`
 
@@ -54,7 +54,7 @@ Examples
 ### GET with querystring
 
 ``` js
-client.get('http://www.google.com/search?q=syd+barrett', function(err, resp, body){
+needle.get('http://www.google.com/search?q=syd+barrett', function(err, resp, body){
   if(!err && resp.statusCode == 200)
     console.log(body); // prints results
 });
@@ -62,53 +62,58 @@ client.get('http://www.google.com/search?q=syd+barrett', function(err, resp, bod
 
 You can also skip the 'http://' part if you want, by the way.
 
-### HTTPS GET with options
+### HTTPS GET with Basic Auth
+
+``` js
+needle.get('https://api.server.com', { username: 'you', password: 'secret' }, 
+  function(err, resp, body){ 
+    // used HTTP auth
+});
+```
+
+### More options
 
 ``` js
 var options = {
-  username: 'you',
-  password: 'secret',
   timeout: false,
   headers: {
-    'X-Secret-Header': "Even more secret text"
+    'X-Custom-Header': "Bumbaway atuna"
   }
 }
 
-client.get('https://api.server.com', options, function(err, resp, body){
-  // used HTTP auth
+needle.get('https://api.server.com', options, function(err, resp, body){
+  // Alrighty then
 });
 ```
 
 ### GET through proxy
 
 ``` js
-client.get('http://search.npmjs.org', { proxy: 'http://localhost:1234' }, function(err, resp, body){
+needle.get('http://search.npmjs.org', { proxy: 'http://localhost:1234' }, function(err, resp, body){
   // request passed through proxy
 });
 ```
 
-### POST/PUT
+### Simple POST
 
 ``` js
-client.post('https://my.app.com/endpoint', 'foo=bar', function(err, resp, body){
+needle.post('https://my.app.com/endpoint', 'foo=bar', function(err, resp, body){
   // you can pass params as a string or as an object
 });
 ```
 
-### POST/PUT 2
+### PUT with data object
 
 ``` js
-var data = {
-  nested: {
-    params: {
-      are: {
-        also: 'supported'
-      }
+var nested: {
+  params: {
+    are: {
+      also: 'supported'
     }
   }
 }
 
-client.put('https://api.app.com/v2', data, function(err, resp, body){
+needle.put('https://api.app.com/v2', nested, function(err, resp, body){
   // if you don't pass any data, needle will throw an exception.
 });
 ```
@@ -117,17 +122,11 @@ client.put('https://api.app.com/v2', data, function(err, resp, body){
 
 ``` js
 var data = {
-  foo: bar,
-  image: { file: '/home/tomas/linux.png', content_type: 'image/png' },
-  field2 : {value: 'some json', content_type: 'application/json'}
+  foo: 'bar',
+  image: { file: '/home/tomas/linux.png', content_type: 'image/png' }
 }
 
-var options = {
-  multipart: true,
-  timeout: 5000
-}
-
-client.post('http://my.other.app.com', data, options, function(err, resp, body){
+needle.post('http://my.other.app.com', data, { multipart: true }, function(err, resp, body){
   // in this case, if the request takes more than 5 seconds
   // the callback will return a [Socket closed] error
 });
@@ -138,13 +137,33 @@ client.post('http://my.other.app.com', data, options, function(err, resp, body){
 ``` js
 var buffer = fs.readFileSync('/path/to/package.zip');
 var data = {
-  zip_file: { buffer: buffer, filename: 'mypackage.zip', content_type: 'application/octet-stream' },
+  zip_file: { 
+    buffer: buffer, 
+    filename: 'mypackage.zip', 
+    content_type: 'application/octet-stream' 
+  },
 }
 
-client.post('http://somewhere.com/over/the/rainbow', data, {multipart: true}, function(err, resp, body){
+needle.post('http://somewhere.com/over/the/rainbow', data, {multipart: true}, function(err, resp, body){
   // if you see, when using buffers we need to pass the filename for the multipart body.
   // you can also pass a filename when using the file path method, in case you want to override
   // the default filename to be received on the other end.
+});
+```
+
+### Multipart with custom Content-Type
+
+``` js
+var data = {
+  token: 'verysecret',
+  body: { 
+    value: JSON.stringify({ title: 'test', version: 1 }),
+    content_type: 'application/json'
+  }
+}
+
+needle.post('http://test.com/endpoint', data, {multipart: true}, function(err, resp, body){
+  // awesome!
 });
 ```
 
@@ -154,6 +173,6 @@ Credits
 Written by Tomás Pollak, with the help of contributors.
 
 Copyright
------
+---------
 
 (c) 2012 Fork Ltd. Licensed under the MIT license.
