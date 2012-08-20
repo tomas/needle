@@ -154,15 +154,14 @@ needle.post('http://somewhere.com/over/the/rainbow', data, { multipart: true }, 
 
 ``` js
 var data = {
-  timeout: 5000,
   token: 'verysecret',
-  body: { 
+  payload: { 
     value: JSON.stringify({ title: 'test', version: 1 }),
     content_type: 'application/json'
   }
 }
 
-needle.post('http://test.com/endpoint', data, { multipart: true }, function(err, resp, body){
+needle.post('http://test.com/', data, { timeout: 5000, multipart: true }, function(err, resp, body){
   // in this case, if the request takes more than 5 seconds
   // the callback will return a [Socket closed] error
 });
