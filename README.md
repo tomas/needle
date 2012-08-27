@@ -2,7 +2,7 @@ Needle
 ======
 
 The most handsome HTTP client in the Nodelands. Supports SSL, basic auth, requests via proxy,
-multipart form-data (e.g. file uploads), gzip/deflate compression and, as you would expect, 
+multipart form-data (e.g. file uploads), gzip/deflate compression and, as you would expect,
 follows redirects. Simple, nimble and to the point.
 
 Usage
@@ -29,6 +29,7 @@ Options
  - `timeout`: Returns error if response takes more than X milisecs. Defaults to `10000` (10 secs). `0` means no timeout.
  - `follow`: When `false`, Needle won't follow redirects. Can also be a number or `true` (the default, 10 max).
  - `compressed`: Whether to ask for a deflated or gzipped response or not. Defaults to `false`.
+ - `decode`: Whether to decode response to UTF-8 if Content-Type charset is different. Defaults to `true`.
  - `parse`: Whether to parse XML or JSON response bodies automagically. Defaults to `true`.
  - `multipart`: Enables multipart/form-data encoding. Defaults to `false`.
  - `username`: For HTTP basic auth.
@@ -63,8 +64,8 @@ needle.get('http://www.google.com/search?q=syd+barrett', function(err, resp, bod
 ### HTTPS GET with Basic Auth
 
 ``` js
-needle.get('https://api.server.com', { username: 'you', password: 'secret' }, 
-  function(err, resp, body){ 
+needle.get('https://api.server.com', { username: 'you', password: 'secret' },
+  function(err, resp, body){
     // used HTTP auth
 });
 ```
@@ -136,10 +137,10 @@ needle.post('http://my.other.app.com', data, { multipart: true }, function(err, 
 ``` js
 var buffer = fs.readFileSync('/path/to/package.zip');
 var data = {
-  zip_file: { 
-    buffer: buffer, 
-    filename: 'mypackage.zip', 
-    content_type: 'application/octet-stream' 
+  zip_file: {
+    buffer: buffer,
+    filename: 'mypackage.zip',
+    content_type: 'application/octet-stream'
   },
 }
 
@@ -155,7 +156,7 @@ needle.post('http://somewhere.com/over/the/rainbow', data, { multipart: true }, 
 ``` js
 var data = {
   token: 'verysecret',
-  payload: { 
+  payload: {
     value: JSON.stringify({ title: 'test', version: 1 }),
     content_type: 'application/json'
   }
