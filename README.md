@@ -23,20 +23,33 @@ Install
 npm install needle
 ```
 
-Options
--------
+Request options
+---------------
 
- - `timeout`: Returns error if response takes more than X milisecs. Defaults to `10000` (10 secs). `0` means no timeout.
+ - `timeout`: Returns error if no response received in X milisecs. Defaults to `10000` (10 secs). `0` means no timeout.
  - `follow`: When `false`, Needle won't follow redirects. Can also be a number or `true` (the default, 10 max).
- - `compressed`: Whether to ask for a deflated or gzipped response or not. Defaults to `false`.
- - `decode`: Whether to decode response to UTF-8 if Content-Type charset is different. Defaults to `true`.
- - `parse`: Whether to parse XML or JSON response bodies automagically. Defaults to `true`.
  - `multipart`: Enables multipart/form-data encoding. Defaults to `false`.
+ - `proxy`: Forwards request through HTTP proxy. Eg. `proxy: 'http://proxy.server.com:3128'`
+ - `agent`: Uses an http.Agent of your choice, instead of the global (default) one.
+ - `headers`: Object containing custom HTTP headers for request. Overrides defaults described below.
+
+Response options
+----------------
+
+ - `decode`: Whether to decode response to UTF-8 if Content-Type charset is different. Defaults to `true`.
+ - `parse`: Whether to parse XML or JSON response bodies automagically (XML requires the `xml2js` module). Defaults to `true`.
+
+HTTP Header options
+-------------------
+
+These are basically shortcuts to the `headers` option described above.
+
+ - `compressed`: If `true`, sets 'Accept-Encoding' header to 'gzip,deflate', and inflates content if zipped. Defaults to `false`.
  - `username`: For HTTP basic auth.
  - `password`: For HTTP basic auth. Requires username to be passed, obviously.
  - `accept`: Sets 'Accept' HTTP header. Defaults to `*/*`.
- - `agent`: Uses an http.Agent of your choice, instead of the global (default) one.
- - `proxy`: Forwards request through HTTP proxy. Eg. `proxy: 'http://proxy.server.com:3128'`
+ - `connection`: Sets 'Connection' HTTP header. Defaults to `close`.
+ - `user_agent`: Sets the 'User-Agent' HTTP header. Defaults to `Needle/{version} (Node.js {node_version})`.
 
 Methods
 -------
