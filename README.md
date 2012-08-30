@@ -24,7 +24,7 @@ npm install needle
 ```
 
 Options
-------
+-------
 
  - `timeout`: Returns error if response takes more than X milisecs. Defaults to `10000` (10 secs). `0` means no timeout.
  - `follow`: When `false`, Needle won't follow redirects. Can also be a number or `true` (the default, 10 max).
@@ -34,6 +34,7 @@ Options
  - `multipart`: Enables multipart/form-data encoding. Defaults to `false`.
  - `username`: For HTTP basic auth.
  - `password`: For HTTP basic auth. Requires username to be passed, obviously.
+ - `accept`: Sets 'Accept' HTTP header. Defaults to `*/*`.
  - `agent`: Uses an http.Agent of your choice, instead of the global (default) one.
  - `proxy`: Forwards request through HTTP proxy. Eg. `proxy: 'http://proxy.server.com:3128'`
 
