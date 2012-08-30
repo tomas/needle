@@ -11,8 +11,8 @@ Usage
 ``` js
 var needle = require('needle');
 
-needle.get('http://www.google.com', function(err, resp, body){
-  console.log("Got status code: " + resp.statusCode);
+needle.get('http://www.google.com', function(error, response, body){
+  console.log("Got status code: " + response.statusCode);
 });
 ```
 
@@ -37,7 +37,9 @@ Response options
 ----------------
 
  - `decode`: Whether to decode response to UTF-8 if Content-Type charset is different. Defaults to `true`.
- - `parse`: Whether to parse XML or JSON response bodies automagically (XML requires the `xml2js` module). Defaults to `true`.
+ - `parse`: Whether to parse XML or JSON response bodies automagically. Defaults to `true`.
+
+Note: To stay light on dependencies, Needle doesn't include the `xml2js` module used for XML parsing. To enable it, simply do `npm install xml2js`.
 
 HTTP Header options
 -------------------
@@ -70,7 +72,7 @@ Examples
 
 ``` js
 needle.get('http://www.google.com/search?q=syd+barrett', function(err, resp, body){
-  if(!err && resp.statusCode == 200)
+  if (!err && resp.statusCode == 200)
     console.log(body); // prints HTML
 });
 ```
