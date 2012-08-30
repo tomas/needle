@@ -53,6 +53,19 @@ These are basically shortcuts to the `headers` option described above.
  - `connection`: Sets 'Connection' HTTP header. Defaults to `close`.
  - `user_agent`: Sets the 'User-Agent' HTTP header. Defaults to `Needle/{version} (Node.js {node_version})`.
 
+Node.js TLS Options
+-------------------
+
+These options are passed directly to `https.request` if present. Taken from the [original documentation](http://nodejs.org/docs/latest/api/https.html):
+
+ - `pfx`: Certificate, Private key and CA certificates to use for SSL.
+ - `key`: Private key to use for SSL.
+ - `passphrase`: A string of passphrase for the private key or pfx.
+ - `cert`: Public x509 certificate to use.
+ - `ca`: An authority certificate or array of authority certificates to check the remote host against.
+ - `ciphers`: A string describing the ciphers to use or exclude.
+ - `rejectUnauthorized`: If true, the server certificate is verified against the list of supplied CAs. An 'error' event is emitted if verification fails. Verification happens at the connection level, before the HTTP request is sent.
+
 Methods
 -------
 
