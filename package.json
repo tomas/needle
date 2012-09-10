@@ -7,8 +7,8 @@
   , "author": "Tomás Pollak <tomas@forkhq.com>"
   , "repository": { "type": "git", "url": "https://github.com/tomas/needle.git" }
   , "dependencies": { "qs": "", "iconv-lite": "" }
-  , "devDependencies": { "jasmine-node": "" }
-  , "scripts": { "test": "jasmine-node test" }
+  , "devDependencies": { "mocha": "", "sinon": "", "should": "" }
+  , "scripts": { "test": "mocha spec" }
   , "directories" : { "lib" : "./lib" }
   , "main": "./lib/needle"
   , "bin": {"needle": "./bin/needle"}
