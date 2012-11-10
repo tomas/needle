@@ -117,6 +117,14 @@ needle.get('server.com/posts.json', options, function(err, resp, body){
 });
 ```
 
+### GET binary, output to file
+
+``` js
+needle.get('http://upload.server.com/tux.png', { output: '/tmp/tux.png' }, function(err, resp, body){
+  // you can dump any response to a file, not only binaries.
+});
+```
+
 ### GET through proxy
 
 ``` js
