@@ -1,6 +1,6 @@
 {
     "name": "needle"
-  , "version": "0.4.3"
+  , "version": "0.4.4"
   , "description": "Tiny yet feature-packed HTTP client. With multipart, charset decoding and proxy support."
   , "keywords": ["http", "https", "simple", "client", "multipart", "upload", "proxy", "deflate", "timeout", "charset", "iconv"]
   , "tags": ["http", "https", "simple", "client", "multipart", "upload", "proxy", "deflate", "timeout", "charset", "iconv"]
