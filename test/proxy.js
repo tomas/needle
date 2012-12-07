@@ -1,7 +1,9 @@
 var http = require('http'),
     https = require('https'),
     url = require('url');
+
 var port = 1234;
+var log  = true;
 
 http.createServer(function(request, response) {
 
@@ -24,6 +26,7 @@ http.createServer(function(request, response) {
   var proxy_request = protocol.request(opts, function(proxy_response){
 
     proxy_response.on('data', function(chunk) {
+      if (log) console.log(chunk.toString());
       response.write(chunk, 'binary');
     });
     proxy_response.on('end', function() {
@@ -34,12 +37,19 @@ http.createServer(function(request, response) {
   });
 
   request.on('data', function(chunk) {
+    if (log) console.log(chunk.toString());
     proxy_request.write(chunk, 'binary');
   });
+
   request.on('end', function() {
     proxy_request.end();
   });
 
 }).listen(port);
+
+process.on('uncaughtException', function(err){
+  console.log('Uncaught exception!');
+  console.log(err);
+});
 
 console.log("Proxy server listening on port " + port);
