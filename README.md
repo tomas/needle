@@ -32,6 +32,8 @@ Request options
  - `proxy`: Forwards request through HTTP proxy. Eg. `proxy: 'http://proxy.server.com:3128'`
  - `agent`: Uses an http.Agent of your choice, instead of the global (default) one.
  - `headers`: Object containing custom HTTP headers for request. Overrides defaults described below.
+ * `port`: Optional port for http . Defaults to 80. (agnunez)
+
 
 Response options
 ----------------
@@ -53,6 +55,7 @@ These are basically shortcuts to the `headers` option described above.
  - `accept`: Sets 'Accept' HTTP header. Defaults to `*/*`.
  - `connection`: Sets 'Connection' HTTP header. Defaults to `close`.
  - `user_agent`: Sets the 'User-Agent' HTTP header. Defaults to `Needle/{version} (Node.js {node_version})`.
+ * `port`: Optional port for http . Defaults to 80. (agnunez)
 
 Node.js TLS Options
 -------------------
@@ -95,6 +98,14 @@ needle.get('http://www.google.com/search?q=syd+barrett', function(err, resp, bod
 
 ``` js
 needle.get('https://api.server.com', { username: 'you', password: 'secret' },
+  function(err, resp, body){
+    // used HTTP auth
+});
+
+### HTTP POST with Basic Auth, parameters and different port (agnunez)
+
+``` js
+needle.post('https://api.server.com', 'par=value', { username: 'you', password: 'secret', port: 8000 },
   function(err, resp, body){
     // used HTTP auth
 });
