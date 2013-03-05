@@ -1,16 +1,23 @@
 var http = require('http'),
     https = require('https'),
     url = require('url');
-
-var port = 1234;
-var log  = true;
+    
+var port = 1234,
+    log  = true,
+    request_auth = false;
 
 http.createServer(function(request, response) {
 
   console.log(request.headers);
-
   console.log("Got request: " + request.url);
   console.log("Forwarding request to " + request.headers['host']);
+
+  if (request_auth) {
+      if (!request.headers['proxy-authorization']) {
+        response.writeHead(407, {'Proxy-Authenticate': 'Basic realm="proxy.com"'})
+        return response.end('Hello.');        
+      }
+  }
 
   var remote = url.parse(request.url);
   var protocol = remote.protocol == 'https:' ? https : http;
