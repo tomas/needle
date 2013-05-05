@@ -32,13 +32,16 @@ Request options
  - `proxy`: Forwards request through HTTP proxy. Eg. `proxy: 'http://proxy.server.com:3128'`
  - `agent`: Uses an http.Agent of your choice, instead of the global (default) one.
  - `headers`: Object containing custom HTTP headers for request. Overrides defaults described below.
+ - `ssl`: Force request through HTTPS protocol to fix Redirect loop. Defaults to `false`.
 
 Response options
 ----------------
 
  - `decode`: Whether to decode response to UTF-8 if Content-Type charset is different. Defaults to `true`.
  - `parse`: Whether to parse XML or JSON response bodies automagically. Defaults to `true`.
+ - `charset`: Specify a charset when decoding response. Defaults to `content-type` of response header.
  - `output`: Dump response output to file. When response is text, this occurs after parsing/decoding is done.
+ - `real_path`: Rename output path according response (Uses with `output`). Defaults to `false`.
 
 Note: To stay light on dependencies, Needle doesn't include the `xml2js` module used for XML parsing. To enable it, simply do `npm install xml2js`.
 

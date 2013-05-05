@@ -6,7 +6,7 @@
   , "tags": ["http", "https", "simple", "client", "multipart", "upload", "proxy", "deflate", "timeout", "charset", "iconv"]
   , "author": "Tomás Pollak <tomas@forkhq.com>"
   , "repository": { "type": "git", "url": "https://github.com/tomas/needle.git" }
-  , "dependencies": { "qs": "", "iconv-lite": "" }
+  , "dependencies": { "qs": "", "iconv-lite": "", "mime": "" }
   , "devDependencies": { "mocha": "", "sinon": "", "should": "" }
   , "scripts": { "test": "mocha spec" }
   , "directories" : { "lib" : "./lib" }
