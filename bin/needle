@@ -12,7 +12,7 @@ else if (process.argv[3] == null)
 
 var method = process.argv[2].toLowerCase(),
     url = process.argv[3],
-    options = { compressed: true, parse: true, timeout: 5000 };
+    options = { compressed: true, parse: true, follow: true, timeout: 5000 };
 
 var callback = function(err, resp, body){
   if (err) return exit(1, "Error: " + err.message);
