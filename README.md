@@ -3,7 +3,9 @@ Needle
 
 The most handsome HTTP client in the Nodelands. Supports SSL, basic auth, proxied requests, 
 non-UTF-8 content decoding, multipart form-data (e.g. file uploads), gzip/deflate compression and, 
-as you would expect, follows redirects. Simple, nimble and to the point.
+as you would expect, follows redirects. 
+
+Nimble, simple and to the point.
 
 Usage
 -----
@@ -27,7 +29,7 @@ Request options
 ---------------
 
  - `timeout`: Returns error if no response received in X milisecs. Defaults to `10000` (10 secs). `0` means no timeout.
- - `follow`: When `false`, Needle won't follow redirects. Can also be a number or `true` (the default, 10 max).
+ - `follow`: Number of redirects to follow. `false` means don't follow any (default), `true` means 10. 
  - `multipart`: Enables multipart/form-data encoding. Defaults to `false`.
  - `proxy`: Forwards request through HTTP proxy. Eg. `proxy: 'http://proxy.server.com:3128'`
  - `agent`: Uses an http.Agent of your choice, instead of the global (default) one.
@@ -214,4 +216,4 @@ Written by Tomás Pollak, with the help of contributors.
 Copyright
 ---------
 
-(c) 2012 Fork Ltd. Licensed under the MIT license.
+(c) 2013 Fork Ltd. Licensed under the MIT license.
