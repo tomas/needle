@@ -1,7 +1,9 @@
 Needle
 ======
 
-The most handsome HTTP client in the Nodelands. Supports SSL, basic auth, proxied requests, multipart form-data (e.g. file uploads), gzip/deflate compression, automatic XML/JSON parsing, follows redirects and decodes non-UTF-8 content. 
+The leanest and most handsome HTTP client in the Nodelands. Supports SSL, basic auth, proxied requests, multipart form-data (e.g. file uploads), gzip/deflate compression, automatic XML/JSON parsing, follows redirects and decodes non-UTF-8 content. Two dependencies only.
+
+Ideal for performing simple, quick HTTP requests in Node.js. If you need OAuth, stream piping or anything fancier, you should check out mikael's request. 
 
 Usage
 -----
