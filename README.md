@@ -101,20 +101,36 @@ needle.get('https://api.server.com', { username: 'you', password: 'secret' },
 });
 ```
 
-### More options
+### Digest Auth
+
+``` js
+needle.get('other.server.com', { username: 'you', password: 'secret', auth: 'digest' },
+  // needle prepends 'http://' to your URL, if missing
+});
+```
+
+### Custom headers, deflate
 
 ``` js
 var options = {
-  timeout: false,
-  compressed : true,
-  parse: true,
-  headers: {
+  compressed : true,       // request a deflated response
+  parse      : true,       // parse JSON
+  headers    : {
     'X-Custom-Header': "Bumbaway atuna"
   }
 }
 
-needle.get('server.com/posts.json', options, function(err, resp, body){
-  // Needle prepends 'http://' to the URL if not found
+needle.get('http://server.com/posts.json', options, function(err, resp, body){
+  // body will contain a JSON.parse(d) object
+  // if parsing fails, you'll simply get the original body
+});
+```
+
+### GET XML object
+
+``` js
+needle.get('https://news.ycombinator.com/rss', function(err, resp, body){
+  // if xml2js is installed, you'll get a nice object containing the nodes in the RSS
 });
 ```
 
@@ -175,11 +191,12 @@ needle.post('http://my.other.app.com', data, { multipart: true }, function(err, 
 
 ``` js
 var buffer = fs.readFileSync('/path/to/package.zip');
+
 var data = {
   zip_file: {
-    buffer: buffer,
-    filename: 'mypackage.zip',
-    content_type: 'application/octet-stream'
+    buffer       : buffer,
+    filename     : 'mypackage.zip',
+    content_type : 'application/octet-stream'
   },
 }
 
