@@ -32,7 +32,7 @@ Request options
  - `proxy`     : Forwards request through HTTP(s) proxy. Eg. `proxy: 'http://proxy.server.com:3128'`
  - `agent`     : Uses an http.Agent of your choice, instead of the global (default) one.
  - `headers`   : Object containing custom HTTP headers for request. Overrides defaults described below.
- - `auth`      : Determines what to do with provided username/password. Options are `digest`, `auto` or `basic` (default).
+ - `auth`      : Determines what to do with provided username/password. Options are `auto`, `digest` or `basic` (default).
 
 Response options
 ----------------
