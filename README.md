@@ -1,9 +1,9 @@
 Needle
 ======
 
-The leanest and most handsome HTTP client in the Nodelands. Supports SSL, basic auth, proxied requests, multipart form-data (e.g. file uploads), gzip/deflate compression, automatic XML/JSON parsing, follows redirects and decodes non-UTF-8 content. Two dependencies only.
+The leanest and most handsome HTTP client in the Nodelands. Supports SSL, basic & digest auth, proxied requests, multipart form-data (e.g. file uploads), gzip/deflate compression, automatic XML/JSON parsing, follows redirects and decodes non-UTF-8 content. Two dependencies only.
 
-Ideal for performing simple, quick HTTP requests in Node.js. If you need OAuth, stream piping or anything fancier, you should check out mikael's request. 
+Ideal for performing simple, quick HTTP requests in Node.js. If you need OAuth, stream piping or anything fancier, you should check out mikeal's request module. 
 
 Usage
 -----
@@ -26,19 +26,20 @@ npm install needle
 Request options
 ---------------
 
- - `timeout`: Returns error if no response received in X milisecs. Defaults to `10000` (10 secs). `0` means no timeout.
- - `follow`: Number of redirects to follow. `false` means don't follow any (default), `true` means 10. 
- - `multipart`: Enables multipart/form-data encoding. Defaults to `false`.
- - `proxy`: Forwards request through HTTP proxy. Eg. `proxy: 'http://proxy.server.com:3128'`
- - `agent`: Uses an http.Agent of your choice, instead of the global (default) one.
- - `headers`: Object containing custom HTTP headers for request. Overrides defaults described below.
+ - `timeout`   : Returns error if no response received in X milisecs. Defaults to `10000` (10 secs). `0` means no timeout.
+ - `follow`    : Number of redirects to follow. `false` means don't follow any (default), `true` means 10. 
+ - `multipart` : Enables multipart/form-data encoding. Defaults to `false`.
+ - `proxy`     : Forwards request through HTTP(s) proxy. Eg. `proxy: 'http://proxy.server.com:3128'`
+ - `agent`     : Uses an http.Agent of your choice, instead of the global (default) one.
+ - `headers`   : Object containing custom HTTP headers for request. Overrides defaults described below.
+ - `auth`      : Determines what to do with provided username/password. Options are `digest`, `auto` or `basic` (default).
 
 Response options
 ----------------
 
- - `decode`: Whether to decode response to UTF-8 if Content-Type charset is different. Defaults to `true`.
- - `parse`: Whether to parse XML or JSON response bodies automagically. Defaults to `true`.
- - `output`: Dump response output to file. When response is text, this occurs after parsing/decoding is done.
+ - `decode`    : Whether to decode response to UTF-8 if Content-Type charset is different. Defaults to `true`.
+ - `parse`     : Whether to parse XML or JSON response bodies automagically. Defaults to `true`.
+ - `output`    : Dump response output to file. When response is text, this occurs after parsing/decoding is done.
 
 Note: To stay light on dependencies, Needle doesn't include the `xml2js` module used for XML parsing. To enable it, simply do `npm install xml2js`.
 
@@ -48,9 +49,9 @@ HTTP Header options
 These are basically shortcuts to the `headers` option described above.
 
  - `compressed`: If `true`, sets 'Accept-Encoding' header to 'gzip,deflate', and inflates content if zipped. Defaults to `false`.
- - `username`: For HTTP basic auth.
- - `password`: For HTTP basic auth. Requires username to be passed, obviously.
- - `accept`: Sets 'Accept' HTTP header. Defaults to `*/*`.
+ - `username`  : For HTTP basic auth.
+ - `password`  : For HTTP basic auth. Requires username to be passed, obviously.
+ - `accept`    : Sets 'Accept' HTTP header. Defaults to `*/*`.
  - `connection`: Sets 'Connection' HTTP header. Defaults to `close`.
  - `user_agent`: Sets the 'User-Agent' HTTP header. Defaults to `Needle/{version} (Node.js {node_version})`.
 
@@ -80,7 +81,7 @@ needle.delete(url, [options], callback);
 Callback receives three arguments: `(error, response, body)`
 
 Examples
--------------
+--------
 
 ### GET with querystring
 
