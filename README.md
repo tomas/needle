@@ -39,7 +39,7 @@ Callback receives `(error, response, body)`. Needle returns the response stream,
 needle.get('google.com/images/logo.png').pipe(fs.createWriteStream('logo.png'));
 ```
 
-And as you can see, Needle is so very nice that even prepends 'http://' for you, if missing. For more examples, scroll down exactly seven turns of your mousewheel.
+For more examples, scroll down exactly seven turns of your mousewheel. Perhaps eight.
 
 
 Request options
