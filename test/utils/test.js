@@ -1,7 +1,7 @@
 // TODO: write specs. :)
 
 var fs = require('fs'),
-    client = require('./../lib/needle');
+    client = require('./../../');
 
 process.env.DEBUG = true;
 
