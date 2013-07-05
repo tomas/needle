@@ -3,7 +3,14 @@ Needle
 
 The leanest and most handsome HTTP client in the Nodelands. Supports SSL, basic & digest auth, proxied requests, multipart form-data (e.g. file uploads), gzip/deflate compression, automatic XML/JSON parsing, follows redirects and decodes non-UTF-8 content. Two dependencies only.
 
-Ideal for performing simple, quick HTTP requests in Node.js. If you need OAuth, stream piping or anything fancier, you should check out mikeal's request module. 
+Ideal for performing simple, quick HTTP requests in Node.js. If you need OAuth, AWS support or anything fancier, you should check out mikeal's request module. 
+
+Install
+-----
+
+```
+npm install needle
+```
 
 Usage
 -----
@@ -16,12 +23,24 @@ needle.get('http://www.google.com', function(error, response, body){
 });
 ```
 
-Install
------
+Methods
+-------
 
+``` js
+needle.get(url, [options], callback);
+needle.head(url, [options], callback);
+needle.post(url, data, [options], callback);
+needle.put(url, data, [options], callback);
+needle.delete(url, [options], callback);
 ```
-npm install needle
+Callback receives `(error, response, body)`. Needle returns the response stream, which means you can pipe it to your heart's content.
+
+``` js
+needle.get('google.com/images/logo.png').pipe(fs.createWriteStream('logo.png'));
 ```
+
+And as you can see, Needle is so very nice that even prepends 'http://' for you, if missing. For more examples, scroll down exactly seven turns of your mousewheel.
+
 
 Request options
 ---------------
@@ -67,18 +86,6 @@ These options are passed directly to `https.request` if present. Taken from the 
  - `ca`: An authority certificate or array of authority certificates to check the remote host against.
  - `ciphers`: A string describing the ciphers to use or exclude.
  - `rejectUnauthorized`: If true, the server certificate is verified against the list of supplied CAs. An 'error' event is emitted if verification fails. Verification happens at the connection level, before the HTTP request is sent.
-
-Methods
--------
-
-``` js
-needle.get(url, [options], callback);
-needle.head(url, [options], callback);
-needle.post(url, data, [options], callback);
-needle.put(url, data, [options], callback);
-needle.delete(url, [options], callback);
-```
-Callback receives three arguments: `(error, response, body)`
 
 Examples
 --------
