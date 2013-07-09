@@ -31,7 +31,7 @@ needle.get(url, [options], callback);
 needle.head(url, [options], callback);
 needle.post(url, data, [options], callback);
 needle.put(url, data, [options], callback);
-needle.delete(url, [options], callback);
+needle.delete(url, data, [options], callback);
 ```
 Callback receives `(error, response, body)`. Needle returns the response stream, which means you can pipe it to your heart's content.
 
