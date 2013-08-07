@@ -1,6 +1,6 @@
 {
     "name": "needle"
-  , "version": "0.5.6"
+  , "version": "0.5.7"
   , "description": "Tiny yet feature-packed HTTP client. With multipart, charset decoding and proxy support."
   , "keywords": ["http", "https", "simple", "request", "client", "multipart", "upload", "proxy", "deflate", "timeout", "charset", "iconv"]
   , "tags": ["http", "https", "simple", "request", "client", "multipart", "upload", "proxy", "deflate", "timeout", "charset", "iconv"]
@@ -8,7 +8,7 @@
   , "repository": { "type": "git", "url": "https://github.com/tomas/needle.git" }
   , "dependencies": { "qs": "", "iconv-lite": "" }
   , "devDependencies": { "mocha": "", "sinon": "", "should": "" }
-  , "scripts": { "test": "mocha spec" }
+  , "scripts": { "test": "mocha test" }
   , "directories" : { "lib" : "./lib" }
   , "main": "./lib/needle"
   , "bin": {"needle": "./bin/needle"}

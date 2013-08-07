@@ -82,7 +82,7 @@ describe('errors', function(){
 
     it('error should be ENOTFOUND', function(done){
       needle.get(url, function(err){
-        err.code.should.equal('ENOTFOUND')
+        err.code.should.match(/ENOTFOUND|EADDRINFO/)
         done();
       })
     })
