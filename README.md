@@ -52,6 +52,7 @@ Request options
  - `agent`     : Uses an http.Agent of your choice, instead of the global (default) one.
  - `headers`   : Object containing custom HTTP headers for request. Overrides defaults described below.
  - `auth`      : Determines what to do with provided username/password. Options are `auto`, `digest` or `basic` (default).
+ - `json`      : When `true`, sets content type to `application/json` and sends request body as JSON string, instead of a query string. 
 
 Response options
 ----------------
@@ -86,6 +87,7 @@ These options are passed directly to `https.request` if present. Taken from the 
  - `ca`: An authority certificate or array of authority certificates to check the remote host against.
  - `ciphers`: A string describing the ciphers to use or exclude.
  - `rejectUnauthorized`: If true, the server certificate is verified against the list of supplied CAs. An 'error' event is emitted if verification fails. Verification happens at the connection level, before the HTTP request is sent.
+ - `secureProtocol`: The SSL method to use, e.g. SSLv3_method to force SSL version 3.
 
 Examples
 --------
