@@ -1,7 +1,16 @@
 Needle
 ======
 
-The leanest and most handsome HTTP client in the Nodelands. Supports SSL, basic & digest auth, proxied requests, multipart form-data (e.g. file uploads), gzip/deflate compression, automatic XML/JSON parsing, follows redirects and decodes non-UTF-8 content. Two dependencies only.
+The leanest and most handsome HTTP client in the Nodelands. With only two dependencies, it supports: 
+
+ - HTTP and HTTPS requests
+ - Basic & Digest auth
+ - Forwarding via proxy
+ - Multipart form-data (e.g. file uploads)
+ - Gzip/deflate compression
+ - Automatic XML & JSON parsing
+ - 301/302 redirect following
+ - Decodes non-UTF-8 content. 
 
 Ideal for performing simple, quick HTTP requests in Node.js. If you need OAuth, AWS support or anything fancier, you should check out mikeal's request module. 
 
@@ -32,6 +41,9 @@ needle.head(url, [options], callback);
 needle.post(url, data, [options], callback);
 needle.put(url, data, [options], callback);
 needle.delete(url, data, [options], callback);
+
+// and a generic one
+needle.request(method, url, data, [options], callback);
 ```
 Callback receives `(error, response, body)`. Needle returns the response stream, which means you can pipe it to your heart's content.
 
