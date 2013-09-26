@@ -115,7 +115,7 @@ describe('errors', function(){
 
       needle.get(url, { timeout: 200 }, function(err){
         var timediff = (new Date() - time);
-        timediff.should.be.within(200, 250);
+        timediff.should.be.within(200, 300);
         done();
       })
 
