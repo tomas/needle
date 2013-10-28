@@ -1,6 +1,9 @@
 Needle
 ======
 
+[![NPM](https://nodei.co/npm/needle.png)](https://nodei.co/npm/needle/)
+
+
 The leanest and most handsome HTTP client in the Nodelands. With only two dependencies, it supports: 
 
  - HTTP and HTTPS requests
