@@ -30,8 +30,9 @@ Usage
 ``` js
 var needle = require('needle');
 
-needle.get('http://www.google.com', function(error, response, body){
-  console.log("Got status code: " + response.statusCode);
+needle.get('http://www.google.com', function(error, response) {
+  console.log('Got status code: ' + response.statusCode);
+  console.log(response.body);
 });
 ```
 
@@ -48,7 +49,15 @@ needle.delete(url, data, [options], callback);
 // and a generic one
 needle.request(method, url, data, [options], callback);
 ```
-Callback receives `(error, response, body)`. Needle returns the response stream, which means you can pipe it to your heart's content.
+
+Callback receives `(error, response, body)`. You can also access the body through `response.body`. 
+If a JSON is received and parsing is enabled, both `body` and `response.body` will contain a Javascript
+object instead of the original response string.
+
+Streaming
+---------
+
+Needle returns the response stream, which means you can pipe it to your heart's content.
 
 ``` js
 needle.get('google.com/images/logo.png').pipe(fs.createWriteStream('logo.png'));
@@ -62,19 +71,19 @@ Request options
 
  - `timeout`   : Returns error if no response received in X milisecs. Defaults to `10000` (10 secs). `0` means no timeout.
  - `follow`    : Number of redirects to follow. `false` means don't follow any (default), `true` means 10. 
- - `multipart` : Enables multipart/form-data encoding. Defaults to `false`.
+ - `multipart` : Enables multipart/form-data encoding. Defaults to `false`. Use it when uploading files.
  - `proxy`     : Forwards request through HTTP(s) proxy. Eg. `proxy: 'http://proxy.server.com:3128'`
- - `agent`     : Uses an http.Agent of your choice, instead of the global (default) one.
+ - `agent`     : Uses an http.Agent of your choice, instead of the global, default one.
  - `headers`   : Object containing custom HTTP headers for request. Overrides defaults described below.
- - `auth`      : Determines what to do with provided username/password. Options are `auto`, `digest` or `basic` (default).
+ - `auth`      : Determines what to do with provided username/password. Options are `auto`, `digest` or `basic` (default). `auto` will detect the type of authentication depending on the response headers.
  - `json`      : When `true`, sets content type to `application/json` and sends request body as JSON string, instead of a query string. 
 
 Response options
 ----------------
 
- - `decode`    : Whether to decode response to UTF-8 if Content-Type charset is different. Defaults to `true`.
+ - `decode`    : Whether to decode the text responses to UTF-8, if Content-Type header shows a different charset. Defaults to `true`.
  - `parse`     : Whether to parse XML or JSON response bodies automagically. Defaults to `true`.
- - `output`    : Dump response output to file. When response is text, this occurs after parsing/decoding is done.
+ - `output`    : Dump response output to file. This occurs after parsing and charset decoding is done.
 
 Note: To stay light on dependencies, Needle doesn't include the `xml2js` module used for XML parsing. To enable it, simply do `npm install xml2js`.
 
@@ -110,9 +119,9 @@ Examples
 ### GET with querystring
 
 ``` js
-needle.get('http://www.google.com/search?q=syd+barrett', function(err, resp, body){
+needle.get('http://www.google.com/search?q=syd+barrett', function(err, resp) {
   if (!err && resp.statusCode == 200)
-    console.log(body); // prints HTML
+    console.log(resp.body); // prints HTML
 });
 ```
 
@@ -120,7 +129,7 @@ needle.get('http://www.google.com/search?q=syd+barrett', function(err, resp, bod
 
 ``` js
 needle.get('https://api.server.com', { username: 'you', password: 'secret' },
-  function(err, resp, body){
+  function(err, resp) {
     // used HTTP auth
 });
 ```
@@ -128,8 +137,9 @@ needle.get('https://api.server.com', { username: 'you', password: 'secret' },
 ### Digest Auth
 
 ``` js
-needle.get('other.server.com', { username: 'you', password: 'secret', auth: 'digest' },
-  // needle prepends 'http://' to your URL, if missing
+needle.get('other.server.com', { username: 'you', password: 'secret', auth: 'digest' }, 
+  function(err, resp, body) {
+    // needle prepends 'http://' to your URL, if missing
 });
 ```
 
@@ -144,7 +154,7 @@ var options = {
   }
 }
 
-needle.get('http://server.com/posts.json', options, function(err, resp, body){
+needle.get('http://server.com/posts.json', options, function(err, resp, body) {
   // body will contain a JSON.parse(d) object
   // if parsing fails, you'll simply get the original body
 });
@@ -153,7 +163,7 @@ needle.get('http://server.com/posts.json', options, function(err, resp, body){
 ### GET XML object
 
 ``` js
-needle.get('https://news.ycombinator.com/rss', function(err, resp, body){
+needle.get('https://news.ycombinator.com/rss', function(err, resp, body) {
   // if xml2js is installed, you'll get a nice object containing the nodes in the RSS
 });
 ```
@@ -161,7 +171,7 @@ needle.get('https://news.ycombinator.com/rss', function(err, resp, body){
 ### GET binary, output to file
 
 ``` js
-needle.get('http://upload.server.com/tux.png', { output: '/tmp/tux.png' }, function(err, resp, body){
+needle.get('http://upload.server.com/tux.png', { output: '/tmp/tux.png' }, function(err, resp, body) {
   // you can dump any response to a file, not only binaries.
 });
 ```
@@ -169,7 +179,7 @@ needle.get('http://upload.server.com/tux.png', { output: '/tmp/tux.png' }, funct
 ### GET through proxy
 
 ``` js
-needle.get('http://search.npmjs.org', { proxy: 'http://localhost:1234' }, function(err, resp, body){
+needle.get('http://search.npmjs.org', { proxy: 'http://localhost:1234' }, function(err, resp, body) {
   // request passed through proxy
 });
 ```
@@ -177,7 +187,7 @@ needle.get('http://search.npmjs.org', { proxy: 'http://localhost:1234' }, functi
 ### Simple POST
 
 ``` js
-needle.post('https://my.app.com/endpoint', 'foo=bar', function(err, resp, body){
+needle.post('https://my.app.com/endpoint', 'foo=bar', function(err, resp, body) {
   // you can pass params as a string or as an object
 });
 ```
@@ -193,7 +203,7 @@ var nested = {
   }
 }
 
-needle.put('https://api.app.com/v2', nested, function(err, resp, body){
+needle.put('https://api.app.com/v2', nested, function(err, resp, body) {
   // if you don't pass any data, needle will throw an exception.
 });
 ```
@@ -206,7 +216,7 @@ var data = {
   image: { file: '/home/tomas/linux.png', content_type: 'image/png' }
 }
 
-needle.post('http://my.other.app.com', data, { multipart: true }, function(err, resp, body){
+needle.post('http://my.other.app.com', data, { multipart: true }, function(err, resp, body) {
   // needle will read the file and include it in the form-data as binary
 });
 ```
@@ -224,7 +234,7 @@ var data = {
   },
 }
 
-needle.post('http://somewhere.com/over/the/rainbow', data, { multipart: true }, function(err, resp, body){
+needle.post('http://somewhere.com/over/the/rainbow', data, { multipart: true }, function(err, resp, body) {
   // if you see, when using buffers we need to pass the filename for the multipart body.
   // you can also pass a filename when using the file path method, in case you want to override
   // the default filename to be received on the other end.
@@ -242,7 +252,7 @@ var data = {
   }
 }
 
-needle.post('http://test.com/', data, { timeout: 5000, multipart: true }, function(err, resp, body){
+needle.post('http://test.com/', data, { timeout: 5000, multipart: true }, function(err, resp, body) {
   // in this case, if the request takes more than 5 seconds
   // the callback will return a [Socket closed] error
 });
