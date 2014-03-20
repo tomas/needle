@@ -20,10 +20,10 @@ describe('parsing', function(){
     })
 
     describe('and parse option is not passed', function() {
-
       it('should return object', function(){
+
         needle.get('localhost:' + port, function(err, response, body){
-          should.not.exist(err);
+          should.ifError(err);
           body.should.have.property('foo', 'bar')
         })
       })
