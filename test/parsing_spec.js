@@ -10,7 +10,7 @@ describe('parsing', function(){
 
     before(function(){
       server = http.createServer(function(req, res) {
-        res.setHeaders({'Content-Type': 'application/json'})
+        res.setHeader('Content-Type', 'application/json')
         res.end('{"foo":"bar"}')
       }).listen(port);
     });
