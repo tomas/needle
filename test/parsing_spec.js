@@ -32,10 +32,11 @@ describe('parsing', function(){
 
     describe('and parse option is true', function() {
 
-      it('should return object', function(){
+      it('should return object', function(done){
         needle.get('localhost:' + port, { parse: true }, function(err, response, body){
           should.not.exist(err);
           body.should.have.property('foo', 'bar')
+          done();
         })
       })
 

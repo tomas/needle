@@ -6,9 +6,12 @@ var should = require('should'),
     port = 11111,
     server;
 
-describe('compression', function(){
+describe('compression', function(){  
   
   require.bind(null, 'zlib').should.not.throw()
+
+  var jsonData = '{"foo":"bar"}';
+  
 
   describe('when server supports compression', function(){
 
@@ -32,7 +35,7 @@ describe('compression', function(){
         }
 
         res.setHeader('Content-Type', 'application/json')
-        raw.end('{"foo":"bar"}')
+        raw.end(jsonData)
       }).listen(port);
     });
 
@@ -41,29 +44,34 @@ describe('compression', function(){
     })
 
     describe('and client requests no compression', function() {
-      it('it should have the body decompressed', function(){
+      it('should have the body decompressed', function(done){
         needle.get('localhost:' + port, function(err, response, body){
           should.ifError(err);
           body.should.have.property('foo', 'bar');
+          response.bytes.should.equal(jsonData.length);
+          done();
         })        
       })
     })
 
     describe('and client requests gzip compression', function() {
-      it('it should have the body decompressed', function(){
+      it('should have the body decompressed', function(done){
         needle.get('localhost:' + port, {headers: {'Accept-Encoding': 'gzip'}}, function(err, response, body){
           should.ifError(err);
           body.should.have.property('foo', 'bar');
+          response.bytes.should.not.equal(jsonData.length);
+          done();
         })        
       })
     })
 
-
     describe('and client requests deflate compression', function() {
-      it('it should have the body decompressed', function(){
+      it('should have the body decompressed', function(done){
         needle.get('localhost:' + port, {headers: {'Accept-Encoding': 'deflate'}}, function(err, response, body){
           should.ifError(err);
           body.should.have.property('foo', 'bar');
+          response.bytes.should.not.equal(jsonData.length);
+          done();
         })        
       })
     })

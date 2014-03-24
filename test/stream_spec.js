@@ -36,6 +36,8 @@ describe('stream', function(){
             readableCalled.should.be.true;
             done();
           });
+
+          stream.resume();
         })
 
         it('should should emit a single data item which is our JSON object', function(done) {
