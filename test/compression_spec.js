@@ -6,12 +6,11 @@ var should = require('should'),
     port = 11111,
     server;
 
-describe('compression', function(){  
-  
+describe('compression', function(){
+
   require.bind(null, 'zlib').should.not.throw()
 
   var jsonData = '{"foo":"bar"}';
-  
 
   describe('when server supports compression', function(){
 
@@ -30,7 +29,7 @@ describe('compression', function(){
         } else if (acceptEncoding.match(/\bgzip\b/)) {
           res.setHeader('Content-Encoding', 'gzip');
           raw.pipe(zlib.createGzip()).pipe(res);
-        } else {          
+        } else {
           raw.pipe(res);
         }
 
@@ -50,7 +49,7 @@ describe('compression', function(){
           body.should.have.property('foo', 'bar');
           response.bytes.should.equal(jsonData.length);
           done();
-        })        
+        })
       })
     })
 
@@ -61,7 +60,7 @@ describe('compression', function(){
           body.should.have.property('foo', 'bar');
           response.bytes.should.not.equal(jsonData.length);
           done();
-        })        
+        })
       })
     })
 
@@ -72,7 +71,7 @@ describe('compression', function(){
           body.should.have.property('foo', 'bar');
           response.bytes.should.not.equal(jsonData.length);
           done();
-        })        
+        })
       })
     })
   })
