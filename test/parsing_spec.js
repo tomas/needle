@@ -10,7 +10,7 @@ describe('parsing', function(){
 
     before(function(){
       server = http.createServer(function(req, res) {
-        res.setHeaders({'Content-Type': 'application/json'})
+        res.setHeader('Content-Type', 'application/json')
         res.end('{"foo":"bar"}')
       }).listen(port);
     });
@@ -20,11 +20,11 @@ describe('parsing', function(){
     })
 
     describe('and parse option is not passed', function() {
-
       it('should return object', function(){
+
         needle.get('localhost:' + port, function(err, response, body){
-          should.not.exist(err);
-          body.should.equal({foo: 'bar'});
+          should.ifError(err);
+          body.should.have.property('foo', 'bar')
         })
       })
 
@@ -32,10 +32,11 @@ describe('parsing', function(){
 
     describe('and parse option is true', function() {
 
-      it('should return object', function(){
+      it('should return object', function(done){
         needle.get('localhost:' + port, { parse: true }, function(err, response, body){
           should.not.exist(err);
-          body.should.equal({foo: 'bar'});
+          body.should.have.property('foo', 'bar')
+          done();
         })
       })
 
@@ -46,7 +47,8 @@ describe('parsing', function(){
       it('does NOT return object', function(){
         needle.get('localhost:' + port, { parse: false }, function(err, response, body) {
           should.not.exist(err);
-          body.should.equal('{"foo":"bar"}');
+          body.should.be.an.instanceof(Buffer)
+          body.toString().should.eql('{"foo":"bar"}');
         })
       })
 
@@ -69,12 +71,14 @@ describe('parsing', function(){
 
     describe('and xml2js library is present', function(){
 
+      require.bind(null, 'xml2js').should.not.throw();
+
       describe('and parse_response is true', function(){
 
         it('should return JSON object', function(){
           needle.get('localhost:' + port, function(err, response, body){
             should.not.exist(err);
-            body.should.equal({post: {body: 'hello there'}});
+            body.post.should.have.property('body', 'hello there');
           })
         })
 
