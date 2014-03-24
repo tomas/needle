@@ -1,22 +1,37 @@
 var should = require('should'),
     needle = require('./../'),
-    http = require('http'),
-    port = 11111,
+    http   = require('http'),
+    port   = 11111,
     server;
 
 describe('parsing', function(){
 
+  var get_catch = function(url, opts, cb) {
+    var done = function(e) {
+      cb(e);
+    }
+    try {
+      needle.get(url, opts, function() {
+        done();
+      });
+    } catch(e) {
+      done(e);
+    }
+  }
+
   describe('when response is an JSON string', function(){
 
-    before(function(){
+    var json_string = '{"foo":"bar"}';
+
+    before(function(done){
       server = http.createServer(function(req, res) {
-        res.setHeader('Content-Type', 'application/json')
-        res.end('{"foo":"bar"}')
-      }).listen(port);
+        res.setHeader('Content-Type', 'application/json');
+        res.end(json_string);
+      }).listen(port, done);
     });
 
-    after(function(){
-      server.close();
+    after(function(done){
+      server.close(done);
     })
 
     describe('and parse option is not passed', function() {
@@ -32,13 +47,47 @@ describe('parsing', function(){
 
     describe('and parse option is true', function() {
 
-      it('should return object', function(done){
-        needle.get('localhost:' + port, { parse: true }, function(err, response, body){
-          should.not.exist(err);
-          body.should.have.property('foo', 'bar')
-          done();
+      describe('and JSON is valid', function() {
+
+        it('should return object', function(done){
+          needle.get('localhost:' + port, { parse: true }, function(err, response, body){
+            should.not.exist(err);
+            body.should.have.property('foo', 'bar')
+            done();
+          })
         })
-      })
+
+      });
+
+      describe('and JSON is invalid', function() {
+
+        var old_json_string;
+
+        before(function() {
+          old_json_string = json_string;
+          json_string = "this is not going to work";
+        });
+
+        after(function() {
+          json_string = old_json_string;
+        });
+
+        it('does not throw', function(done) {
+          (function(){
+            needle.get('localhost:' + port, { parse: true }, done);
+          }).should.not.throw();
+        });
+
+        it('does NOT return object', function(done) {
+          needle.get('localhost:' + port, { parse: true }, function(err, response, body) {
+            should.not.exist(err);
+            body.should.be.an.instanceof(Buffer)
+            body.toString().should.eql('this is not going to work');
+            done();
+          })
+        })
+
+      });
 
     })
 
@@ -58,15 +107,15 @@ describe('parsing', function(){
 
   describe('when response is an XML string', function(){
 
-    before(function(){
+    before(function(done){
       server = http.createServer(function(req, res) {
         res.writeHeader(200, {'Content-Type': 'application/xml'})
         res.end("<post><body>hello there</body></post>")
-      }).listen(port);
+      }).listen(port, done);
     });
 
-    after(function(){
-      server.close();
+    after(function(done){
+      server.close(done);
     })
 
     describe('and xml2js library is present', function(){
@@ -75,7 +124,7 @@ describe('parsing', function(){
 
       describe('and parse_response is true', function(){
 
-        it('should return JSON object', function(){
+        it('should return valid object', function(){
           needle.get('localhost:' + port, function(err, response, body){
             should.not.exist(err);
             body.post.should.have.property('body', 'hello there');
