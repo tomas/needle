@@ -84,6 +84,7 @@ Response options
 
  - `decode`    : Whether to decode the text responses to UTF-8, if Content-Type header shows a different charset. Defaults to `true`.
  - `parse`     : Whether to parse XML or JSON response bodies automagically. Defaults to `true`.
+ - `strict`    : When parsing or decoding text responses, be very strict about accepted characters. Defaults to `false`.
  - `output`    : Dump response output to file. This occurs after parsing and charset decoding is done.
 
 Note: To stay light on dependencies, Needle doesn't include the `xml2js` module used for XML parsing. To enable it, simply do `npm install xml2js`.
