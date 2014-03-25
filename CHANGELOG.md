@@ -1,5 +1,5 @@
-<a name='v0.7' /> Upgrading from v0.6 to v0.7
----------------------------------------------
+<a name='v0.7' /> Api changes between v0.6 and v0.7
+---------------------------------------------------
 
 In version 0.7 a lot of work was done on the Needle internals to make streams a first class citizen. Needle can now be used as a streams2-compatible stream and you gain a lot of performance improvements come with it.
 
@@ -22,3 +22,5 @@ While great care was taken not to introduce any breaking changes, there are prob
    console.log(res.body);
  });
 ```
+
+If you use the regular callback interface of Needle, this will be a backwards-compatible upgrade.
