@@ -11,16 +11,16 @@ While great care was taken not to introduce any breaking changes, there are prob
  
  * In the v0.6 release, the HTTP body was always buffered and processed, regardless of whether or not you are using streams. This means that if you did weird things to a response even when using streams, your code will likely break. To illustrate:
 
-```javascript
- var res;
- var stream = Needle.get('http://www.google.com/');
- stream.on('response', function (response) { 
-   res = response;
- });
- stream.on('end', function () {
-   // In version 0.7, res.body will be null.
-   console.log(res.body);
- });
-```
+  ```javascript
+   var res;
+   var stream = Needle.get('http://www.google.com/');
+   stream.on('response', function (response) { 
+     res = response;
+   });
+   stream.on('end', function () {
+     // In version 0.7, res.body will be null.
+     console.log(res.body);
+   });
+  ```
 
 If you use the regular callback interface of Needle, this will be a backwards-compatible upgrade.
