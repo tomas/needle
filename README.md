@@ -3,6 +3,7 @@ Needle
 
 [![NPM](https://nodei.co/npm/needle.png)](https://nodei.co/npm/needle/)
 
+**Current stable version is 0.7** Please read [Api changes between v0.6 and v0.7](CHANGELOG.md#v0.7), and update your programs accordingly.
 
 The leanest and most handsome HTTP client in the Nodelands. With only two dependencies, it supports: 
 
