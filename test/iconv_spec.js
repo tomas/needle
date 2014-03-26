@@ -18,7 +18,7 @@ describe('character encoding', function(){
 
       var results = tasks.map(function (task) {
         return task.then(function (obj) {
-          return obj[0].body;
+          return obj.body;
         });
       });
 
