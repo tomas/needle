@@ -8,13 +8,13 @@ Needle
 The leanest and most handsome HTTP client in the Nodelands. With only two dependencies, it supports: 
 
  - HTTP and HTTPS requests
- - Basic & Digest auth
- - Forwarding via proxy
+ - Basic & Digest authentication
+ - Forwarding via proxy (optionally with authentication)
  - Multipart form-data (e.g. file uploads)
- - Gzip/deflate compression
+ - Streaming gzip or deflate decompression
  - Automatic XML & JSON parsing
  - 301/302 redirect following
- - Decodes non-UTF-8 content. 
+ - Streaming non-UTF-8 charset decoding, via `iconv-lite`. 
 
 Ideal for performing simple, quick HTTP requests in Node.js. If you need OAuth, AWS support or anything fancier, you should check out mikeal's request module. 
 
@@ -31,10 +31,15 @@ Usage
 ``` js
 var needle = require('needle');
 
+// using callback
 needle.get('http://www.google.com', function(error, response) {
   console.log('Got status code: ' + response.statusCode);
   console.log(response.body);
 });
+
+// using streams
+var out = fs.createWriteStream('/tmp/out.tar.gz');
+needle.get('http://wordpress.com/latest.tar.gz', out);
 ```
 
 Methods
