@@ -1,3 +1,8 @@
+//////////////////////////////////////////
+// This example demonstrates what happends
+// when you use the built-in JSON parser.
+//////////////////////////////////////////
+
 var fs     = require('fs'),
     stream = require('stream'),
     needle = require('./../');
@@ -5,10 +10,14 @@ var fs     = require('fs'),
 var url    = 'http://ip.jsontest.com/';
 var resp   = needle.get(url, { parse: true });
 
-resp.on('data', function(obj) {
-  console.log(obj);
-})
+resp.on('readable', function(obj) {
+  var chunk;
+
+  while (rootNode = this.read()) {
+    console.log('root = ', rootNode);
+  }
+});
 
 resp.on('end', function(data) {
   console.log('Done');
-})
+});

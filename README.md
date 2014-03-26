@@ -3,6 +3,7 @@ Needle
 
 [![NPM](https://nodei.co/npm/needle.png)](https://nodei.co/npm/needle/)
 
+**Current stable version is 0.7** Please read [Api changes between v0.6 and v0.7](CHANGELOG.md#v0.7), and update your programs accordingly.
 
 The leanest and most handsome HTTP client in the Nodelands. With only two dependencies, it supports: 
 
@@ -157,6 +158,44 @@ var options = {
 needle.get('http://server.com/posts.json', options, function(err, resp, body) {
   // body will contain a JSON.parse(d) object
   // if parsing fails, you'll simply get the original body
+});
+```
+
+### GET a very large document in a stream (Needle 0.7+ only)
+```js
+var stream = needle.get('http://www.as35662.net/100.log');
+
+stream.on('readable', function () {
+  var chunk;
+  while (chunk = this.read()) {
+    console.log('got data: ', chunk);
+  }
+});
+```
+
+### GET JSON object in a stream (Needle 0.7+ only)
+```js
+var stream = needle.get('http://jsonplaceholder.typicode.com/db', {parse: true});
+
+stream.on('readable', function () {
+  var chunk;
+  
+  // our stream will only emit a single JSON root node.
+  while (jsonRoot = this.read()) {
+    console.log('got data: ', jsonRoot);
+  }
+});
+```
+
+### GET JSONStream flexible parser with search query (Needle 0.7+ only)
+```js
+var stream = needle.get('http://jsonplaceholder.typicode.com/db', {parse: true})
+   // The 'data' element of this stream will be the string representation
+   // of the titles of all posts.
+   .pipe(new JSONStream.parse('posts.*.title'));
+
+stream.on('data', function (obj) {
+  console.log('got post title: %s', obj);
 });
 ```
 
