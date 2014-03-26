@@ -35,8 +35,8 @@ describe('parsing', function(){
     })
 
     describe('and parse option is not passed', function() {
-      it('should return object', function(){
 
+      it('should return object', function(){
         needle.get('localhost:' + port, function(err, response, body){
           should.ifError(err);
           body.should.have.property('foo', 'bar')
@@ -58,6 +58,29 @@ describe('parsing', function(){
         })
 
       });
+
+      describe('and response is empty', function() {
+
+        var old_json_string;
+
+        before(function() {
+          old_json_string = json_string;
+          json_string = "";
+        });
+
+        after(function() {
+          json_string = old_json_string;
+        });
+
+        it('should return an empty string', function(done) {
+          needle.get('localhost:' + port, { parse: true }, function(err, resp) {
+            should.not.exist(err);
+            resp.body.should.equal('');
+            done();
+          })
+        })
+
+      })
 
       describe('and JSON is invalid', function() {
 
@@ -81,7 +104,7 @@ describe('parsing', function(){
         it('does NOT return object', function(done) {
           needle.get('localhost:' + port, { parse: true }, function(err, response, body) {
             should.not.exist(err);
-            body.should.be.an.instanceof(Buffer)
+            body.should.be.a.String;
             body.toString().should.eql('this is not going to work');
             done();
           })
@@ -136,8 +159,6 @@ describe('parsing', function(){
       describe('and parse response is not true', function(){
 
         it('should return xml string', function(){
-
-
 
         })
 

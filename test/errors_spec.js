@@ -75,7 +75,7 @@ describe('errors', function(){
 
     it('callbacks an error', function(done){
       needle.get(url, function(err){
-        err.should.an.instanceOf(Error);
+        err.should.be.a.Error;
         done();
       })
     })
@@ -123,7 +123,7 @@ describe('errors', function(){
 
     it('callbacks an error', function(done){
       needle.get(url, { timeout: 200 }, function(err){
-        err.should.an.instanceOf(Error);
+        err.should.be.a.Error;
         done();
       })
     })
@@ -135,7 +135,7 @@ describe('errors', function(){
       })
     })
 
-    it('does not callback a response', function(done){
+    it('does not callback a response', function(done) {
       needle.get(url, { timeout: 200 }, function(err, resp){
         should.not.exist(resp);
         done();
