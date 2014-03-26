@@ -1,6 +1,6 @@
-var should = require('should'),
-    needle = require('./../'),
-    Q      = require('q'),
+var should  = require('should'),
+    needle  = require('./../'),
+    async   = require('async'),
     chardet = require('jschardet');
 
 describe('character encoding', function(){
@@ -10,35 +10,37 @@ describe('character encoding', function(){
     it('client should convert this to UTF-8', function(done){
 
       // Our Needle wrapper that requests a chinese website.
-      var task    = Q.nbind(needle.get, needle, 'http://www.chinesetop100.com/');
+      var task    = needle.get.bind(needle, 'http://www.chinesetop100.com/');
 
       // Different instantiations of this task
-      var tasks   = [Q.fcall(task, {decode: true}),
-                     Q.fcall(task, {decode: false})];
+      var streams = [task({decode: true}),
+                     task({decode: false})];
 
-      var results = tasks.map(function (task) {
-        return task.then(function (obj) {
-          return obj[0].body;
-        });
-      });
+      // Async function that detects a stream's encoding
+      var detectEncoding = function (stream, done) {
+        var buf = [];
 
-      var charsets = results.map(function (task) {
-        return task.then(function (body) {
-          return chardet.detect(body).encoding;
-        });
-      })
+        stream.on('readable', function () {
+          var stream = this,
+              chunk  = null;
 
-      // Execute all requests concurrently
-      Q.all(charsets).done(function (results) {
-        // We wanted to decode our first stream..
-        results[0].should.have.equal('utf-8')
+          while (chunk = stream.read()) {
+            buf.push(chunk);
+          }
+        })
 
-        // But not our second stream..
-        results[1].should.not.equal(results[0]);
+        stream.on('end', function () {
+          done(null, chardet.detect(Buffer.concat(buf)))
+        })
+      }
 
-        // :TODO: is there any other way we can validate this?
+      // Collect all encoding results and validate.
+      async.map(streams, detectEncoding, function (err, results) {
+        results[0].encoding.should.equal('utf-8')
+        results[1].encoding.should.not.equal(results[0].encoding);
+
         done();
-      });
+      })
     })
   })
 })
