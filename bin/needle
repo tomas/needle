@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 var needle = require('./../lib/needle');
 
-var exit = function(code, str){
+var exit = function(code, str) {
   console.log(str) || process.exit(code);
 }
 
@@ -10,17 +10,17 @@ if (process.argv[2] == '-v' || process.argv[2] == '--version')
 else if (process.argv[3] == null)
   exit(1, 'Usage: needle [get|head|post|put|delete] url [query]');
 
-var method = process.argv[2].toLowerCase(),
-    url = process.argv[3],
-    options = { compressed: true, parse: true, follow: true, timeout: 5000 };
+var method   = process.argv[2].toLowerCase(),
+    url      = process.argv[3],
+    options  = { compressed: true, parse: true, follow: true, timeout: 5000 };
 
-var callback = function(err, resp, body){
+var callback = function(err, resp) {
   if (err) return exit(1, "Error: " + err.message);
 
   if (process.argv.indexOf('-i') != -1)
     console.log(resp.headers) || console.log('');
 
-  console.log(body);
+  console.log(resp.body);
 };
 
 if (method == 'post' || method == 'put')
