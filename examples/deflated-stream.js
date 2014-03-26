@@ -5,11 +5,16 @@ var fs     = require('fs'),
 var url  = 'http://ibl.gamechaser.net/f/tagqfxtteucbuldhezkz/bt_level1.gz';
 
 var resp = needle.get(url, { compressed: true, follow: true });
+console.log('Downloading...');
 
-resp.on('data', function(data) {
-  var lines = data.toString().split('\n');
-  console.log('Got ' + lines.length + ' items.');
-  console.log(lines);
+resp.on('readable', function() {
+
+  while (data = this.read()) {
+    var lines = data.toString().split('\n');
+    console.log('Got ' + lines.length + ' items.');
+    // console.log(lines);
+  }
+
 })
 
 resp.on('end', function(data) {
