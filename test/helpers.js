@@ -22,7 +22,7 @@ helpers.server = function(opts, cb) {
 
     req.setEncoding('utf8'); // get as string
     req.body = '';
-    req.on('data', function(str) { body += str })
+    req.on('data', function(str) { req.body += str })
 
     setTimeout(function(){
       finish(req, res);
