@@ -100,7 +100,7 @@ These are basically shortcuts to the `headers` option described above.
 
  - `compressed`: If `true`, sets 'Accept-Encoding' header to 'gzip,deflate', and inflates content if zipped. Defaults to `false`.
  - `username`  : For HTTP basic auth.
- - `password`  : For HTTP basic auth. Requires username to be passed, obviously.
+ - `password`  : For HTTP basic auth. Requires username to be passed, but is optional.
  - `accept`    : Sets 'Accept' HTTP header. Defaults to `*/*`.
  - `connection`: Sets 'Connection' HTTP header. Defaults to `close`.
  - `user_agent`: Sets the 'User-Agent' HTTP header. Defaults to `Needle/{version} (Node.js {node_version})`.
