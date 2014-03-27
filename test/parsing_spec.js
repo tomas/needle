@@ -36,10 +36,11 @@ describe('parsing', function(){
 
     describe('and parse option is not passed', function() {
 
-      it('should return object', function(){
+      it('should return object', function(done){
         needle.get('localhost:' + port, function(err, response, body){
           should.ifError(err);
-          body.should.have.property('foo', 'bar')
+          body.should.have.property('foo', 'bar');
+          done();
         })
       })
 
@@ -116,11 +117,12 @@ describe('parsing', function(){
 
     describe('and parse option is false', function() {
 
-      it('does NOT return object', function(){
+      it('does NOT return object', function(done){
         needle.get('localhost:' + port, { parse: false }, function(err, response, body) {
           should.not.exist(err);
           body.should.be.an.instanceof(Buffer)
           body.toString().should.eql('{"foo":"bar"}');
+          done();
         })
       })
 
@@ -147,10 +149,11 @@ describe('parsing', function(){
 
       describe('and parse_response is true', function(){
 
-        it('should return valid object', function(){
+        it('should return valid object', function(done){
           needle.get('localhost:' + port, function(err, response, body){
             should.not.exist(err);
             body.post.should.have.property('body', 'hello there');
+            done();
           })
         })
 
