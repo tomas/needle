@@ -5,7 +5,7 @@ Needle
 
 The leanest and most handsome HTTP client in the Nodelands. With only two dependencies, it supports: 
 
- - HEAD/GET/POST/PUT/DELETE requests, either via HTTP or HTTPS
+ - HTTP/HTTPS requests, with the usual verbs you would expect.
  - All of Node's native TLS options, such as 'rejectUnauthorized' (see below).
  - Basic & Digest authentication
  - Multipart form-data (e.g. file uploads)
