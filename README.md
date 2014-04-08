@@ -3,6 +3,15 @@ Needle
 
 [![NPM](https://nodei.co/npm/needle.png)](https://nodei.co/npm/needle/)
 
+```js
+var needle = require('needle');
+
+needle.get('http://www.google.com', function(error, response) {
+  if (!error && response.statusCode == 200)
+    console.log(response.body);
+});
+```
+
 The leanest and most handsome HTTP client in the Nodelands. With only two dependencies, it supports: 
 
  - HTTP/HTTPS requests, with the usual verbs you would expect.
@@ -12,7 +21,7 @@ The leanest and most handsome HTTP client in the Nodelands. With only two depend
  - HTTP Proxy forwarding, optionally with authentication.
  - Streaming gzip or deflate decompression
  - Automatic XML & JSON parsing
- - 301/302 redirect following, and
+ - 301/302 redirect following, if enabled, and
  - Streaming non-UTF-8 charset decoding, via `iconv-lite`.
 
 And yes, Mr. Wayne, it does come with the latest streams2 support.
@@ -29,49 +38,143 @@ $ npm install needle
 Usage
 -----
 
-``` js
-var needle = require('needle');
-
+```js
 // using callback
-needle.get('http://www.google.com', function(error, response) {
-  console.log('Got status code: ' + response.statusCode);
-  console.log(response.body);
+needle.get('http://ifconfig.me/all.json', function(error, response) {
+  if (!error)
+    console.log(response.body.ip_addr); // JSON decoding magic. :)
 });
 
 // using streams
-var out = fs.createWriteStream('/tmp/out.tar.gz');
-needle.get('http://wordpress.com/latest.tar.gz', out);
+var out = fs.createWriteStream('logo.png');
+needle.get('https://google.com/images/logo.png').pipe(out);
 ```
 
-Methods
--------
+As you can see, you can call Needle with a callback or without it. When passed, the response body will be buffered and written to `response.body`, and the callback will be fired when all of the data has been collected and processed (e.g. decompressed, decoded and/or parsed).
 
-``` js
-needle.get(url, [options], callback);
-needle.head(url, [options], callback);
-needle.post(url, data, [options], callback);
-needle.put(url, data, [options], callback);
-needle.delete(url, data, [options], callback);
+When no callback is passed, the buffering logic will be skipped but the response stream will still go through Needle's processing pipeline, so you get all the benefits of post-processing while keeping the streamishness we all love from Node.
 
-// and a generic one
-needle.request(method, url, data, [options], callback);
+Response pipeline
+-----------------
+
+Depending on the response's Content-Type, Needle will either attempt to parse JSON or XML streams, or, if a text response was received, will ensure that the final encoding you get is UTF-8. For XML decoding to work, though, you'll need to install the `xml2js` package as we don't enforce unneeded dependencies unless strictly needed.
+
+You can also request a gzip/deflated response, which, if sent by the server, will be processed before parsing or decoding is performed.
+
+```js
+needle.get('http://stackoverflow.com/feeds', { compressed: true }, function(err, resp) {
+  console.log(resp.body); // this little guy won't be a Gzipped binary blob 
+                          // but a nice object containing all the latest entries
+});
 ```
 
-Callback receives `(error, response, body)`. You can also access the body through `response.body`. 
-If a JSON is received and parsing is enabled, both `body` and `response.body` will contain a Javascript
-object instead of the original response string.
+Or without callback, with a few other options:
 
-Streaming
----------
+```js
+var options = {
+  compressed         : true,
+  follow             : true,
+  rejectUnauthorized : true
+}
 
-Needle returns the response stream, which means you can pipe it to your heart's content.
+// in this case, we'll ask Needle to follow redirects (disabled by default), 
+// but also to verify their SSL certificates when connecting.
+var stream = needle.get('https://backend.server.com/everything.html', options);
 
-``` js
-needle.get('google.com/images/logo.png').pipe(fs.createWriteStream('logo.png'));
+stream.on('readable', function() {
+  while (data = this.read()) {
+    console.log(data.toString()); 
+  }
+})
 ```
 
-For more examples, scroll down exactly seven turns of your mousewheel. Perhaps eight.
+API
+---
 
+All of Needle's methods return a Readable stream, and both `options` and `callback` are optional.
+
+### needle.head(url, options, callback)
+
+```js
+var options = {
+  timeout: 5000 // if we don't get a response in 5 seconds, boom.
+}
+
+needle.head('https://my.backend.server.com', function(err, resp) {
+  if (err)
+    console.log('Shoot! Something is wrong: ' + err.message)
+  else
+    console.log('Yup, still alive.')
+})
+```
+
+### needle.get(url, options, callback)
+
+```js
+needle.get('google.com/search?q=syd+barrett', function(err, resp) {
+  // if no http:// is found, Needle will automagically prepend it.
+});
+```
+
+### needle.post(url, data, options, callback)
+
+```js
+var options = {
+  headers: { 'X-Custom-Header': 'Bumbaway atuna' }
+}
+
+needle.post('https://my.app.com/endpoint', 'foo=bar', options, function(err, resp) {
+  // you can pass params as a string or as an object
+});
+```
+
+### needle.put(url, data, options, callback)
+
+```js
+var nested = {
+  params: {
+    are: {
+      also: 'supported'
+    }
+  }
+}
+
+needle.put('https://api.app.com/v2', nested, function(err, resp) {
+  // in POST or PUT requests, if you don't pass any data, Needle will throw.
+});
+```
+
+### needle.delete(url, data, options, callback)
+
+```js
+var options = {
+  username: 'fidelio',
+  password: 'x'
+}
+
+needle.delete('https://api.app.com/v2', null, options, function(err, resp) {
+  // in this case, data may be null, but you need to explicity pass it.
+});
+```
+
+### needle.request(method, url, data, options, callback)
+
+Generic request. This not only allows for flexibility, but also lets you perform a GET request with data, in which case will be appended to the request as a query string. 
+
+```js
+var data = {
+  q      : 'a very smart query',
+  page   : 2,
+  format : 'json'
+}
+
+needle.request('get', 'forum.com/search', data, function(err, resp) {
+  if (!err && resp.statusCode == 200)
+    console.log(resp.body); // here you go, mister.
+});
+```
+
+More examples after this short break.
 
 Request options
 ---------------
@@ -120,21 +223,12 @@ These options are passed directly to `https.request` if present. Taken from the 
  - `rejectUnauthorized`: If true, the server certificate is verified against the list of supplied CAs. An 'error' event is emitted if verification fails. Verification happens at the connection level, before the HTTP request is sent.
  - `secureProtocol`: The SSL method to use, e.g. SSLv3_method to force SSL version 3.
 
-Examples
---------
-
-### GET with querystring
-
-``` js
-needle.get('http://www.google.com/search?q=syd+barrett', function(err, resp) {
-  if (!err && resp.statusCode == 200)
-    console.log(resp.body); // prints HTML
-});
-```
+Examples Galore
+---------------
 
 ### HTTPS GET with Basic Auth
 
-``` js
+```js
 needle.get('https://api.server.com', { username: 'you', password: 'secret' },
   function(err, resp) {
     // used HTTP auth
@@ -143,31 +237,30 @@ needle.get('https://api.server.com', { username: 'you', password: 'secret' },
 
 ### Digest Auth
 
-``` js
+```js
 needle.get('other.server.com', { username: 'you', password: 'secret', auth: 'digest' }, 
   function(err, resp, body) {
     // needle prepends 'http://' to your URL, if missing
 });
 ```
 
-### Custom headers, deflate
+### Custom Accept header, deflate
 
-``` js
+```js
 var options = {
-  compressed : true,       // request a deflated response
-  parse      : true,       // parse JSON
-  headers    : {
-    'X-Custom-Header': "Bumbaway atuna"
-  }
+  compressed : true, 
+  follow     : true,
+  accept     : 'application/vnd.github.full+json'
 }
 
-needle.get('http://server.com/posts.json', options, function(err, resp, body) {
+needle.get('api.github.com/users/tomas', options, function(err, resp, body) {
   // body will contain a JSON.parse(d) object
   // if parsing fails, you'll simply get the original body
 });
 ```
 
 ### GET a very large document in a stream (Needle 0.7+ only)
+
 ```js
 var stream = needle.get('http://www.as35662.net/100.log');
 
@@ -180,6 +273,7 @@ stream.on('readable', function () {
 ```
 
 ### GET JSON object in a stream (Needle 0.7+ only)
+
 ```js
 var stream = needle.get('http://jsonplaceholder.typicode.com/db', {parse: true});
 
@@ -194,6 +288,7 @@ stream.on('readable', function () {
 ```
 
 ### GET JSONStream flexible parser with search query (Needle 0.7+ only)
+
 ```js
 var stream = needle.get('http://jsonplaceholder.typicode.com/db', {parse: true})
    // The 'data' element of this stream will be the string representation
@@ -207,7 +302,7 @@ stream.on('data', function (obj) {
 
 ### GET XML object
 
-``` js
+```js
 needle.get('https://news.ycombinator.com/rss', function(err, resp, body) {
   // if xml2js is installed, you'll get a nice object containing the nodes in the RSS
 });
@@ -215,7 +310,7 @@ needle.get('https://news.ycombinator.com/rss', function(err, resp, body) {
 
 ### GET binary, output to file
 
-``` js
+```js
 needle.get('http://upload.server.com/tux.png', { output: '/tmp/tux.png' }, function(err, resp, body) {
   // you can dump any response to a file, not only binaries.
 });
@@ -223,33 +318,9 @@ needle.get('http://upload.server.com/tux.png', { output: '/tmp/tux.png' }, funct
 
 ### GET through proxy
 
-``` js
+```js
 needle.get('http://search.npmjs.org', { proxy: 'http://localhost:1234' }, function(err, resp, body) {
   // request passed through proxy
-});
-```
-
-### Simple POST
-
-``` js
-needle.post('https://my.app.com/endpoint', 'foo=bar', function(err, resp, body) {
-  // you can pass params as a string or as an object
-});
-```
-
-### PUT with data object
-
-``` js
-var nested = {
-  params: {
-    are: {
-      also: 'supported'
-    }
-  }
-}
-
-needle.put('https://api.app.com/v2', nested, function(err, resp, body) {
-  // if you don't pass any data, needle will throw an exception.
 });
 ```
 
