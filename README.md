@@ -91,7 +91,7 @@ stream.on('readable', function() {
 API
 ---
 
-All of Needle's methods return a Readable stream, and both `options` and `callback` are optional. If passed, the callback will return three arguments: `error`, `response` and `body`, which is basically an alias for `response.body`.
+All of Needle's requests methods return a Readable stream, and both `options` and `callback` are optional. If passed, the callback will return three arguments: `error`, `response` and `body`, which is basically an alias for `response.body`.
 
 ### needle.head(url, options, callback)
 
@@ -222,6 +222,17 @@ These options are passed directly to `https.request` if present. Taken from the 
  - `ciphers`: A string describing the ciphers to use or exclude.
  - `rejectUnauthorized`: If true, the server certificate is verified against the list of supplied CAs. An 'error' event is emitted if verification fails. Verification happens at the connection level, before the HTTP request is sent.
  - `secureProtocol`: The SSL method to use, e.g. SSLv3_method to force SSL version 3.
+
+Overriding Defaults
+-------------------
+
+Yes sir, we have it. Needle includes a `defaults()` method, that lets you override some of the defaults for all future requests. Like this:
+
+```js
+needle.defaults({ timeout: 60000, user_agent: 'MyApp/1.2.3' });
+```
+
+This will override Needle's default user agent and 10-second timeout, so you don't need to pass those options in every other request.
 
 Examples Galore
 ---------------
