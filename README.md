@@ -68,7 +68,7 @@ needle.get('http://stackoverflow.com/feeds', { compressed: true }, function(err,
 });
 ```
 
-Or without callback, with a few other options:
+Or in anti-callback mode, using a few other options:
 
 ```js
 var options = {
@@ -91,7 +91,7 @@ stream.on('readable', function() {
 API
 ---
 
-All of Needle's methods return a Readable stream, and both `options` and `callback` are optional.
+All of Needle's methods return a Readable stream, and both `options` and `callback` are optional. If passed, the callback will return three arguments: `error`, `response` and `body`, which is basically an alias for `response.body`.
 
 ### needle.head(url, options, callback)
 
@@ -111,8 +111,9 @@ needle.head('https://my.backend.server.com', function(err, resp) {
 ### needle.get(url, options, callback)
 
 ```js
+// if no http:// is found, Needle will automagically prepend it.
 needle.get('google.com/search?q=syd+barrett', function(err, resp) {
-  // if no http:// is found, Needle will automagically prepend it.
+  console.log('Got ' + resp.bytes + ' bytes.') // another nice treat from this handsome fella.
 });
 ```
 
@@ -326,7 +327,7 @@ needle.get('http://search.npmjs.org', { proxy: 'http://localhost:1234' }, functi
 
 ### File upload using multipart, passing file path
 
-``` js
+```js
 var data = {
   foo: 'bar',
   image: { file: '/home/tomas/linux.png', content_type: 'image/png' }
@@ -339,7 +340,7 @@ needle.post('http://my.other.app.com', data, { multipart: true }, function(err, 
 
 ### Multipart POST, passing data buffer
 
-``` js
+```js
 var buffer = fs.readFileSync('/path/to/package.zip');
 
 var data = {
@@ -359,7 +360,7 @@ needle.post('http://somewhere.com/over/the/rainbow', data, { multipart: true }, 
 
 ### Multipart with custom Content-Type
 
-``` js
+```js
 var data = {
   token: 'verysecret',
   payload: {
@@ -382,4 +383,4 @@ Written by Tomás Pollak, with the help of contributors.
 Copyright
 ---------
 
-(c) 2013 Fork Ltd. Licensed under the MIT license.
+(c) 2014 Fork Ltd. Licensed under the MIT license.
