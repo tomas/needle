@@ -111,9 +111,8 @@ needle.head('https://my.backend.server.com', function(err, resp) {
 ### needle.get(url, options, callback)
 
 ```js
-// if no http:// is found, Needle will automagically prepend it.
 needle.get('google.com/search?q=syd+barrett', function(err, resp) {
-  console.log('Got ' + resp.bytes + ' bytes.') // another nice treat from this handsome fella.
+  // if no http:// is found, Needle will automagically prepend it.
 });
 ```
 
@@ -125,7 +124,7 @@ var options = {
 }
 
 needle.post('https://my.app.com/endpoint', 'foo=bar', options, function(err, resp) {
-  // you can pass params as a string or as an object
+  // you can pass params as a string or as an object.
 });
 ```
 
@@ -141,7 +140,7 @@ var nested = {
 }
 
 needle.put('https://api.app.com/v2', nested, function(err, resp) {
-  // in POST or PUT requests, if you don't pass any data, Needle will throw.
+  console.log('Got ' + resp.bytes + ' bytes.') // another nice treat from this handsome fella.
 });
 ```
 
@@ -153,7 +152,7 @@ var options = {
   password: 'x'
 }
 
-needle.delete('https://api.app.com/v2', null, options, function(err, resp) {
+needle.delete('https://api.app.com/messages/123', null, options, function(err, resp) {
   // in this case, data may be null, but you need to explicity pass it.
 });
 ```
@@ -374,6 +373,8 @@ needle.post('http://test.com/', data, { timeout: 5000, multipart: true }, functi
   // the callback will return a [Socket closed] error
 });
 ```
+
+For even more examples, check out the examples directory in the repo.
 
 Credits
 -------
