@@ -3,26 +3,27 @@ Needle
 
 [![NPM](https://nodei.co/npm/needle.png)](https://nodei.co/npm/needle/)
 
-**Current stable version is 0.7** Please read [Api changes between v0.6 and v0.7](CHANGELOG.md#v0.7), and update your programs accordingly.
-
 The leanest and most handsome HTTP client in the Nodelands. With only two dependencies, it supports: 
 
- - HTTP and HTTPS requests
+ - HEAD/GET/POST/PUT/DELETE requests, either via HTTP or HTTPS
+ - All of Node's native TLS options, such as 'rejectUnauthorized' (see below).
  - Basic & Digest authentication
- - Forwarding via proxy (optionally with authentication)
  - Multipart form-data (e.g. file uploads)
+ - HTTP Proxy forwarding, optionally with authentication.
  - Streaming gzip or deflate decompression
  - Automatic XML & JSON parsing
- - 301/302 redirect following
- - Streaming non-UTF-8 charset decoding, via `iconv-lite`. 
+ - 301/302 redirect following, and
+ - Streaming non-UTF-8 charset decoding, via `iconv-lite`.
 
-Ideal for performing simple, quick HTTP requests in Node.js. If you need OAuth, AWS support or anything fancier, you should check out mikeal's request module. 
+And yes, Mr. Wayne, it does come with the latest streams2 support.
+
+This makes Needle an ideal alternative for performing quick HTTP requests in Node, either for API interaction, downloading or uploading streams of data, and so on. If you need OAuth, AWS support or anything fancier, you should check out mikeal's request module. 
 
 Install
 -----
 
 ```
-npm install needle
+$ npm install needle
 ```
 
 Usage
