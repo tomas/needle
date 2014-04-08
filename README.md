@@ -91,7 +91,7 @@ stream.on('readable', function() {
 API
 ---
 
-All of Needle's requests methods return a Readable stream, and both `options` and `callback` are optional. If passed, the callback will return three arguments: `error`, `response` and `body`, which is basically an alias for `response.body`.
+All of Needle's request methods return a Readable stream, and both `options` and `callback` are optional. If passed, the callback will return three arguments: `error`, `response` and `body`, which is basically an alias for `response.body`.
 
 ### needle.head(url, options, callback)
 
