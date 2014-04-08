@@ -12,7 +12,7 @@ needle.get('http://www.google.com', function(error, response) {
 });
 ```
 
-The leanest and most handsome HTTP client in the Nodelands. With only two dependencies, it supports: 
+Needle is the leanest and most handsome HTTP client in the Nodelands. With only two dependencies, it supports: 
 
  - HTTP/HTTPS requests, with the usual verbs you would expect.
  - All of Node's native TLS options, such as 'rejectUnauthorized' (see below).
@@ -29,7 +29,7 @@ And yes, Mr. Wayne, it does come with the latest streams2 support.
 This makes Needle an ideal alternative for performing quick HTTP requests in Node, either for API interaction, downloading or uploading streams of data, and so on. If you need OAuth, AWS support or anything fancier, you should check out mikeal's request module. 
 
 Install
------
+-------
 
 ```
 $ npm install needle
