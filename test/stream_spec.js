@@ -5,7 +5,7 @@ var should = require('should'),
     port   = 11111,
     server;
 
-describe('stream', function(){
+describe('stream', function() {
 
   describe('when the server sends back json', function(){
 
@@ -22,60 +22,60 @@ describe('stream', function(){
 
     describe('and the client uses streams', function(){
 
-        it('should create a proper streams2 stream', function(done) {
-          var stream     = needle.get('localhost:' + port)          
+      it('should create a proper streams2 stream', function(done) {
+        var stream     = needle.get('localhost:' + port)
 
-          stream._readableState.flowing.should.be.false;
+        stream._readableState.flowing.should.be.false;
 
-          var readableCalled = false;
-          stream.on('readable', function () {
-            readableCalled = true;
-          })
-
-          stream.on('end', function () {
-            readableCalled.should.be.true;
-            done();
-          });
-
-          stream.resume();
+        var readableCalled = false;
+        stream.on('readable', function () {
+          readableCalled = true;
         })
 
-        it('should should emit a single data item which is our JSON object', function(done) {
-            var stream     = needle.get('localhost:' + port)          
+        stream.on('end', function () {
+          readableCalled.should.be.true;
+          done();
+        });
 
-            var chunks = [];
-            stream.on('readable', function () {
-              while (chunk = this.read()) {
-                chunk.should.be.an.Object;
-                chunks.push(chunk);
-              }
-            })
+        stream.resume();
+      })
 
-            stream.on('end', function () {
-              chunks.should.have.length(1)
-              chunks[0].should.have.property('foo', 'bar');
-              done();
-            });
+      it('should should emit a single data item which is our JSON object', function(done) {
+        var stream     = needle.get('localhost:' + port)
+
+        var chunks = [];
+        stream.on('readable', function () {
+          while (chunk = this.read()) {
+            chunk.should.be.an.Object;
+            chunks.push(chunk);
+          }
         })
 
+        stream.on('end', function () {
+          chunks.should.have.length(1)
+          chunks[0].should.have.property('foo', 'bar');
+          done();
+        });
+      })
 
-        it('should should emit a raw buffer if we do not want to parse JSON', function(done) {
-            var stream     = needle.get('localhost:' + port, {parse: false})
+      it('should should emit a raw buffer if we do not want to parse JSON', function(done) {
+        var stream     = needle.get('localhost:' + port, {parse: false})
 
-            var chunks = [];
-            stream.on('readable', function () {
-              while (chunk = this.read()) {
-                Buffer.isBuffer(chunk).should.be.true;
-                chunks.push(chunk);
-              }
-            })
-
-            stream.on('end', function () {
-              var body = Buffer.concat(chunks).toString();
-                body.should.equal('{"foo":"bar"}')
-                done();
-            });
+        var chunks = [];
+        stream.on('readable', function () {
+          while (chunk = this.read()) {
+            Buffer.isBuffer(chunk).should.be.true;
+            chunks.push(chunk);
+          }
         })
+
+        stream.on('end', function () {
+          var body = Buffer.concat(chunks).toString();
+          body.should.equal('{"foo":"bar"}')
+          done();
+        });
+      })
+
     })
   })
 })
