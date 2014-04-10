@@ -7,17 +7,17 @@ var fs     = require('fs'),
     stream = require('stream'),
     needle = require('./../');
 
-var url    = 'http://ip.jsontest.com/';
-var resp   = needle.get(url, { parse: true });
+var url    = 'http://ip.jsontest.com/',
+    resp   = needle.get(url, { parse: true });
 
 resp.on('readable', function(obj) {
   var chunk;
 
-  while (rootNode = this.read()) {
-    console.log('root = ', rootNode);
+  while (chunk = this.read()) {
+    console.log('root = ', chunk);
   }
 });
 
 resp.on('end', function(data) {
-  console.log('Done');
+  console.log('Done.');
 });

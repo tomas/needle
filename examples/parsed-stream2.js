@@ -4,7 +4,7 @@
 //////////////////////////////////////////
 
 var needle     = require('./../'),
-  JSONStream = require('JSONStream');
+    JSONStream = require('JSONStream');
 
 var url  = 'http://jsonplaceholder.typicode.com/db';
 
