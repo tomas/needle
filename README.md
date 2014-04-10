@@ -3,6 +3,8 @@ Needle
 
 [![NPM](https://nodei.co/npm/needle.png)](https://nodei.co/npm/needle/)
 
+The leanest and most handsome HTTP client in the Nodelands. 
+
 ```js
 var needle = require('needle');
 
@@ -12,7 +14,7 @@ needle.get('http://www.google.com', function(error, response) {
 });
 ```
 
-Needle is the leanest and most handsome HTTP client in the Nodelands. With only two dependencies, it supports: 
+With only two dependencies, it supports: 
 
  - HTTP/HTTPS requests, with the usual verbs you would expect.
  - All of Node's native TLS options, such as 'rejectUnauthorized' (see below).
@@ -27,6 +29,11 @@ Needle is the leanest and most handsome HTTP client in the Nodelands. With only 
 And yes, Mr. Wayne, it does come with the latest streams2 support.
 
 This makes Needle an ideal alternative for performing quick HTTP requests in Node, either for API interaction, downloading or uploading streams of data, and so on. If you need OAuth, AWS support or anything fancier, you should check out mikeal's request module. 
+
+Important
+---------
+
+The version bump from 0.6 to 0.7 includes a few notable changes to the streaming interface. If you were using Needle in 'steams mode', please take a look at the [changelog](/tomas/needle/tree/master/CHANGELOG.md) to see what's going on. If you were using regular callbacks, no problemo amigo -- you can update to 0.7+ and everything will be smooth as silk.
 
 Install
 -------
