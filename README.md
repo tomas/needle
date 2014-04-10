@@ -348,6 +348,14 @@ needle.post('http://my.other.app.com', data, { multipart: true }, function(err, 
 });
 ```
 
+### Stream upload, PUT or POST
+
+``` js
+needle.put('https://api.app.com/v2', fs.createReadStream('myfile.txt'), function(err, resp, body) {
+  // stream content is uploaded verbatim
+});
+```
+
 ### Multipart POST, passing data buffer
 
 ```js

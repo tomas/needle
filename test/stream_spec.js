@@ -2,6 +2,7 @@ var should = require('should'),
     needle = require('./../'),
     http   = require('http'),
     stream = require('stream'),
+    fs     = require('fs'),
     port   = 11111,
     server;
 
@@ -77,5 +78,41 @@ describe('stream', function() {
       })
 
     })
+  })
+
+  describe('when the server sends back what was posted to it', function () {
+    var file = 'asdf.txt';
+
+    before(function(done){
+      server = http.createServer(function(req, res) {
+        res.setHeader('Content-Type', 'application/octet')
+        req.pipe(res);
+      }).listen(port);
+
+      fs.writeFile(file, 'contents of stream', done);
+    });
+
+    after(function(done){
+      server.close();
+      fs.unlink(file, done);
+    })
+
+    it('can PUT a stream', function (done) {
+      var stream = needle.put('localhost:' + port, fs.createReadStream(file), { stream: true });
+
+      var chunks = [];
+      stream.on('readable', function () {
+        while (chunk = this.read()) {
+          Buffer.isBuffer(chunk).should.be.true;
+          chunks.push(chunk);
+        }
+      })
+
+      stream.on('end', function () {
+        var body = Buffer.concat(chunks).toString();
+          body.should.equal('contents of stream')
+          done();
+      });
+    });
   })
 })
