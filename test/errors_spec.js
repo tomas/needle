@@ -105,16 +105,16 @@ describe('errors', function(){
         should.not.exist(ex);
       })
 
-      it('emits end event with error', function(done) {
-        var called = false,
+      it('emits end event once, with error', function(done) {
+        var called = 0,
             stream = needle.get(url);
 
         stream.on('end', function(err) {
-          called = true;
+          called++;
         })
 
         setTimeout(function() {
-          called.should.be.true;
+          called.should.equal(1);
           done();
         }, 50)
       })
@@ -207,16 +207,16 @@ describe('errors', function(){
 
     describe('without callback', function() {
 
-      it('emits end event with error', function(done) {
-        var called = false,
+      it('emits end event once, with error', function(done) {
+        var called = 0,
             stream = send_request();
 
         stream.on('end', function(err) {
-          called = true;
+          called++;
         })
 
         setTimeout(function() {
-          called.should.be.true;
+          called.should.equal(1);
           done();
         }, 250)
       })
