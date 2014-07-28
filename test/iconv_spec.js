@@ -18,13 +18,16 @@ describe('character encoding', function(){
 
       var results = tasks.map(function (task) {
         return task.then(function (obj) {
+          console.log(obj[0].body);
           return obj[0].body;
         });
       });
 
       var charsets = results.map(function (task) {
         return task.then(function (body) {
-          return chardet.detect(body).encoding;
+          var e = chardet.detect(body).encoding;
+          console.log(e);
+          return e;
         });
       })
 
