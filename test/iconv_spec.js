@@ -1,13 +1,13 @@
-var should = require('should'),
-    needle = require('./../'),
-    Q      = require('q'),
+var should  = require('should'),
+    needle  = require('./../'),
+    Q       = require('q'),
     chardet = require('jschardet');
 
-describe('character encoding', function(){
+describe('character encoding', function() {
 
-  describe('when server send non-UTF8 data', function(){
+  describe('when server send non-UTF8 data', function() {
 
-    it('client should convert this to UTF-8', function(done){
+    it('client should convert this to UTF-8', function(done) {
 
       // Our Needle wrapper that requests a chinese website.
       var task    = Q.nbind(needle.get, needle, 'http://www.chinesetop100.com/');
@@ -16,27 +16,28 @@ describe('character encoding', function(){
       var tasks   = [Q.fcall(task, {decode: true}),
                      Q.fcall(task, {decode: false})];
 
-      var results = tasks.map(function (task) {
-        return task.then(function (obj) {
+      var results = tasks.map(function(task) {
+        return task.then(function(obj) {
           return obj[0].body;
         });
       });
 
-      var charsets = results.map(function (task) {
-        return task.then(function (body) {
-          return chardet.detect(body).encoding;
-        });
-      })
-
       // Execute all requests concurrently
-      Q.all(charsets).done(function (results) {
-        // We wanted to decode our first stream..
-        results[0].should.have.equal('utf-8')
+      Q.all(results).done(function(bodies) {
 
-        // But not our second stream..
-        results[1].should.not.equal(results[0]);
+        var charsets = [
+          chardet.detect(bodies[0]).encoding,
+          chardet.detect(bodies[1]).encoding,
+        ]
 
-        // :TODO: is there any other way we can validate this?
+        // We wanted to decode our first stream.
+        charsets[0].should.equal('ascii');
+        bodies[0].indexOf('全球中文网站前二十强').should.not.equal(-1);
+
+        // But not our second stream.
+        charsets[1].should.equal('gb2312');
+        bodies[1].indexOf('全球中文网站前二十强').should.equal(-1);
+
         done();
       });
     })
