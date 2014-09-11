@@ -277,47 +277,6 @@ needle.get('api.github.com/users/tomas', options, function(err, resp, body) {
 });
 ```
 
-### GET a very large document in a stream (Needle 0.7+ only)
-
-```js
-var stream = needle.get('http://www.as35662.net/100.log');
-
-stream.on('readable', function () {
-  var chunk;
-  while (chunk = this.read()) {
-    console.log('got data: ', chunk);
-  }
-});
-```
-
-### GET JSON object in a stream (Needle 0.7+ only)
-
-```js
-var stream = needle.get('http://jsonplaceholder.typicode.com/db', {parse: true});
-
-stream.on('readable', function () {
-  var chunk;
-  
-  // our stream will only emit a single JSON root node.
-  while (jsonRoot = this.read()) {
-    console.log('got data: ', jsonRoot);
-  }
-});
-```
-
-### GET JSONStream flexible parser with search query (Needle 0.7+ only)
-
-```js
-var stream = needle.get('http://jsonplaceholder.typicode.com/db', {parse: true})
-   // The 'data' element of this stream will be the string representation
-   // of the titles of all posts.
-   .pipe(new JSONStream.parse('posts.*.title'));
-
-stream.on('data', function (obj) {
-  console.log('got post title: %s', obj);
-});
-```
-
 ### GET XML object
 
 ```js
@@ -340,6 +299,48 @@ needle.get('http://upload.server.com/tux.png', { output: '/tmp/tux.png' }, funct
 needle.get('http://search.npmjs.org', { proxy: 'http://localhost:1234' }, function(err, resp, body) {
   // request passed through proxy
 });
+```
+
+### GET a very large document in a stream (from 0.7+)
+
+```js
+var stream = needle.get('http://www.as35662.net/100.log');
+
+stream.on('readable', function() {
+  var chunk;
+  while (chunk = this.read()) {
+    console.log('got data: ', chunk);
+  }
+});
+```
+
+### GET JSON object in a stream (from 0.7+)
+
+```js
+var stream = needle.get('http://jsonplaceholder.typicode.com/db', { parse: true });
+
+stream.on('readable', function() {
+  var node;
+  
+  // our stream will only emit a single JSON root node.
+  while (node = this.read()) {
+    console.log('got data: ', node);
+  }
+});
+```
+
+### GET JSONStream flexible parser with search query (from 0.7+)
+
+```js
+
+ // The 'data' element of this stream will be the string representation
+ // of the titles of all posts.
+
+needle.get('http://jsonplaceholder.typicode.com/db', { parse: true })
+      .pipe(new JSONStream.parse('posts.*.title'));
+      .on('data', function (obj) {
+        console.log('got post title: %s', obj);
+      });
 ```
 
 ### File upload using multipart, passing file path
@@ -373,7 +374,7 @@ var data = {
     buffer       : buffer,
     filename     : 'mypackage.zip',
     content_type : 'application/octet-stream'
-  },
+  }
 }
 
 needle.post('http://somewhere.com/over/the/rainbow', data, { multipart: true }, function(err, resp, body) {
