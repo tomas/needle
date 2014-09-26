@@ -14,6 +14,21 @@ needle.get('http://www.google.com', function(error, response) {
 });
 ```
 
+Callbacks not floating yout boat? Needle got your back.
+
+```js
+var data = { 
+  file: '/home/johnlennon/walrus.png', 
+  content_type: 'image/png' 
+};
+
+needle
+  .post('https://my.server.com/foo', data, { multipart: true })
+  .on('end', function(error, response) {
+    console.log(error || response.body);
+  })
+```
+
 With only two dependencies, it supports: 
 
  - HTTP/HTTPS requests, with the usual verbs you would expect.
@@ -47,7 +62,7 @@ Usage
 
 ```js
 // using callback
-needle.get('http://ifconfig.me/all.json', function(error, response) {
+needle.get('ifconfig.me/all.json', function(error, response) {
   if (!error)
     console.log(response.body.ip_addr); // JSON decoding magic. :)
 });
