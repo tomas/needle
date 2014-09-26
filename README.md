@@ -24,12 +24,13 @@ var data = {
 
 needle
   .post('https://my.server.com/foo', data, { multipart: true })
-  .on('end', function(error, response) {
-    console.log(error || response.body);
+  .on('readable', function() { /* eat your chunks */ })
+  .on('end', function() {
+    console.log('Ready-o, friend-o.');
   })
 ```
 
-With only two dependencies, it supports: 
+With only two dependencies, Needle supports: 
 
  - HTTP/HTTPS requests, with the usual verbs you would expect.
  - All of Node's native TLS options, such as 'rejectUnauthorized' (see below).
