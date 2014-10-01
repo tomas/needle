@@ -14,7 +14,7 @@ needle.get('http://www.google.com', function(error, response) {
 });
 ```
 
-Callbacks not floating yout boat? Needle got your back.
+Callbacks not floating your boat? Needle got your back.
 
 ```js
 var data = { 
