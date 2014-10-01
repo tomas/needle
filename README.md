@@ -30,7 +30,7 @@ needle
   })
 ```
 
-With only two dependencies, Needle supports: 
+With only one single dependency, Needle supports: 
 
  - HTTP/HTTPS requests, with the usual verbs you would expect.
  - All of Node's native TLS options, such as 'rejectUnauthorized' (see below).
