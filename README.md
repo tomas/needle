@@ -203,7 +203,8 @@ Request options
 ---------------
 
  - `timeout`   : Returns error if no response received in X milisecs. Defaults to `10000` (10 secs). `0` means no timeout.
- - `follow`    : Number of redirects to follow. `false` means don't follow any (default), `true` means 10. 
+ - `follow`    : Number of redirects to follow. `false` means don't follow any (default), `true` means 10.
+ - `follow_method` : Preserve original HTTP method on followed requests. Defaults to `false` (rewrite as `GET`).
  - `multipart` : Enables multipart/form-data encoding. Defaults to `false`. Use it when uploading files.
  - `proxy`     : Forwards request through HTTP(s) proxy. Eg. `proxy: 'http://proxy.server.com:3128'`
  - `agent`     : Uses an http.Agent of your choice, instead of the global, default one.
@@ -266,6 +267,14 @@ Examples Galore
 needle.get('https://api.server.com', { username: 'you', password: 'secret' },
   function(err, resp) {
     // used HTTP auth
+});
+```
+
+Or use [RFC-1738](http://tools.ietf.org/html/rfc1738#section-3.1) basic auth URL syntax:
+
+```js
+needle.get('https://username:password@api.server.com', function(err, resp) {
+    // used HTTP auth from URL
 });
 ```
 
