@@ -1,8 +1,3 @@
-# Fork Changes
- * Added configuration `follow_method` to toggle weather to follow with the original HTTP method or use GET
- * Changed follow request to use `follow_method` configuration to preserve method or use rewrite as GET
-
-
 Needle
 ======
 
@@ -208,7 +203,8 @@ Request options
 ---------------
 
  - `timeout`   : Returns error if no response received in X milisecs. Defaults to `10000` (10 secs). `0` means no timeout.
- - `follow`    : Number of redirects to follow. `false` means don't follow any (default), `true` means 10. 
+ - `follow`    : Number of redirects to follow. `false` means don't follow any (default), `true` means 10.
+ - `follow_method` : Preserve original HTTP method on followed requests. Defaults to `false` (rewrite as `GET`).
  - `multipart` : Enables multipart/form-data encoding. Defaults to `false`. Use it when uploading files.
  - `proxy`     : Forwards request through HTTP(s) proxy. Eg. `proxy: 'http://proxy.server.com:3128'`
  - `agent`     : Uses an http.Agent of your choice, instead of the global, default one.
