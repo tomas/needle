@@ -147,8 +147,7 @@ describe('Basic Auth', function() {
   })
 
   describe('when username/password are included in URL', function() {
-
-    var opts = { username: 'foobar', password: 'jakub', parse: true };
+    var opts = { parse: true };
 
     it('sends Authorization header', function(done) {
       needle.get('foobar:jakub@localhost:' + port, opts, function(err, resp) {
