@@ -121,6 +121,31 @@ describe('Basic Auth', function() {
 
   })
 
+  describe('when username AND password are non empty strings', function() {
+
+    var opts = { username: 'foobar', password: 'jakub', parse: true };
+
+    it('sends Authorization header', function(done) {
+      needle.get('localhost:' + port, opts, function(err, resp) {
+        var sent_headers = resp.body.headers;
+        Object.keys(sent_headers).should.containEql('authorization');
+        done();
+      })
+    })
+
+    it('Basic Auth only includes both user and password', function(done) {
+      needle.get('localhost:' + port, opts, function(err, resp) {
+        var sent_headers = resp.body.headers;
+        var auth = get_auth(sent_headers['authorization']);
+        auth[0].should.equal('foobar');
+        auth[1].should.equal('jakub');
+        auth.should.have.lengthOf(2);
+        done();
+      })
+    })
+
+  })
+
   describe('when username/password are included in URL', function() {
 
     var opts = { username: 'foobar', password: 'jakub', parse: true };
