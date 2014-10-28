@@ -1,3 +1,8 @@
+# Fork Changes
+ * Added configuration `follow_method` to toggle weather to follow with the original HTTP method or use GET
+ * Changed follow request to use `follow_method` configuration to preserve method or use rewrite as GET
+
+
 Needle
 ======
 
