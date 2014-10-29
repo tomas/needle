@@ -22,7 +22,8 @@ describe('errors', function(){
     it('throws', function(){
       var ex = get_catch(); // null
       should.exist(ex);
-      ex.message.should.include('Cannot call method');
+      ex.should.be.an.instanceOf(TypeError);
+      ex.message.should.equal('url must be a string');
     })
 
   })
