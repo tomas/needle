@@ -5,9 +5,51 @@ var should  = require('should'),
 
 describe('character encoding', function() {
 
-  describe('when server send non-UTF8 data', function() {
+  var url;
 
-    it('client should convert this to UTF-8', function(done) {
+  describe('test A', function() {
+
+    this.timeout(5000);
+
+    before(function() {
+      url = 'http://www.huanqiukexue.com/html/newgc/2014/1215/25011.html';
+    })
+
+    describe('with decode = false', function() {
+
+      it('does not decode', function(done) {
+
+        needle.get(url, { decode: false }, function(err, resp) {
+          resp.body.should.be.a.string;
+          chardet.detect(resp.body).encoding.should.eql('windows-1252');
+          resp.body.indexOf('柳博米尔斯基').should.eql(-1);
+          done();
+        })
+
+      })
+
+    })
+
+    describe('with decode = true', function() {
+
+      it('decodes', function(done) {
+
+        needle.get(url, { decode: true }, function(err, resp) {
+          resp.body.should.be.a.string;
+          chardet.detect(resp.body).encoding.should.eql('ascii');
+          resp.body.indexOf('柳博米尔斯基').should.not.eql(-1);
+          done();
+        })
+        
+      })
+
+    })
+
+  })
+
+  describe('test B', function() {
+
+    it('encodes to UTF-8', function(done) {
 
       // Our Needle wrapper that requests a chinese website.
       var task    = Q.nbind(needle.get, needle, 'http://www.chinesetop100.com/');
