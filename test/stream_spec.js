@@ -75,7 +75,7 @@ describe('stream', function() {
         stream.on('response', function (resp) {
           resp.should.be.an.instanceOf(http.IncomingMessage);
           done();
-        })
+        });
       })
 
       it('should emit error event and the argument is an Error instance.', function(done) {
@@ -84,16 +84,25 @@ describe('stream', function() {
         stream.on('error', function (err) {
           err.should.be.an.instanceOf(Error);
           done();
-        })
+        });
       })
 
-      it('should emit timeout event if the response takes too long.', function(done) {
+      it('should emit timeout event if request timeout.', function(done) {
+        var stream     = needle.get('localhost:' + (port + 1), {timeout: 1});
+
+        stream.on('timeout', function (what) {
+          what.should.equal('request');
+          done();
+        });
+      })
+
+      it('should emit timeout event if response timeout.', function(done) {
         var stream     = needle.get('localhost:' + (port + 2), {timeout: 1});
 
-        stream.on('timeout', function (err) {
-          true.should.be.true;
+        stream.on('timeout', function (what) {
+          what.should.equal('response');
           done();
-        })
+        });
       })
 
       it('should emit a raw buffer if we do not want to parse JSON', function(done) {
