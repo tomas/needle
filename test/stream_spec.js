@@ -12,17 +12,23 @@ describe('stream', function() {
 
     before(function(){
       server = http.createServer(function(req, res) {
-        res.setHeader('Content-Type', 'application/json')
-        res.end('{"foo":"bar"}')
+        res.setHeader('Content-Type', 'application/json');
+        res.end('{"foo":"bar"}');
       }).listen(port);
       serverTimeout = http.createServer(function(req, res) {
         setTimeout(function() { res.end(); }, 3);
       }).listen(port + 1);
+      serverTimeoutOnResponse = http.createServer(function(req, res) {
+        res.setHeader('Content-Type', 'application/json');
+        res.write('a');
+        setTimeout(function() { res.end('bcde'); }, 3);
+      }).listen(port + 2);
     });
 
     after(function(){
       server.close();
       serverTimeout.close();
+      serverTimeoutOnResponse.close();
     })
 
     describe('and the client uses streams', function(){
@@ -77,6 +83,15 @@ describe('stream', function() {
 
         stream.on('error', function (err) {
           err.should.be.an.instanceOf(Error);
+          done();
+        })
+      })
+
+      it('should emit timeout event if the response takes too long.', function(done) {
+        var stream     = needle.get('localhost:' + (port + 2), {timeout: 1});
+
+        stream.on('timeout', function (err) {
+          true.should.be.true;
           done();
         })
       })
