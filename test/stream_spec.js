@@ -15,10 +15,14 @@ describe('stream', function() {
         res.setHeader('Content-Type', 'application/json')
         res.end('{"foo":"bar"}')
       }).listen(port);
+      serverTimeout = http.createServer(function(req, res) {
+        setTimeout(function() { res.end(); }, 3);
+      }).listen(port + 1);
     });
 
     after(function(){
       server.close();
+      serverTimeout.close();
     })
 
     describe('and the client uses streams', function(){
@@ -41,7 +45,7 @@ describe('stream', function() {
         stream.resume();
       })
 
-      it('should should emit a single data item which is our JSON object', function(done) {
+      it('should emit a single data item which is our JSON object', function(done) {
         var stream     = needle.get('localhost:' + port)
 
         var chunks = [];
@@ -59,7 +63,25 @@ describe('stream', function() {
         });
       })
 
-      it('should should emit a raw buffer if we do not want to parse JSON', function(done) {
+      it('should emit response event and the argument is an http.IncomingMessage instance.', function(done) {
+        var stream     = needle.get('localhost:' + port)
+
+        stream.on('response', function (resp) {
+          resp.should.be.an.instanceOf(http.IncomingMessage);
+          done();
+        })
+      })
+
+      it('should emit error event and the argument is an Error instance.', function(done) {
+        var stream     = needle.get('localhost:' + (port + 1), {timeout: 1});
+
+        stream.on('error', function (err) {
+          err.should.be.an.instanceOf(Error);
+          done();
+        })
+      })
+
+      it('should emit a raw buffer if we do not want to parse JSON', function(done) {
         var stream     = needle.get('localhost:' + port, {parse: false})
 
         var chunks = [];
