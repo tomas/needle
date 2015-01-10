@@ -16,12 +16,11 @@ describe('stream', function() {
         res.end('{"foo":"bar"}');
       }).listen(port);
       serverTimeout = http.createServer(function(req, res) {
-        setTimeout(function() { res.end(); }, 3);
+        setTimeout(function() { res.end(); }, 300);
       }).listen(port + 1);
       serverTimeoutOnResponse = http.createServer(function(req, res) {
-        res.setHeader('Content-Type', 'application/json');
         res.write('a');
-        setTimeout(function() { res.end('bcde'); }, 3);
+        setTimeout(function() { res.end('bcde'); }, 300);
       }).listen(port + 2);
     });
 
@@ -79,7 +78,7 @@ describe('stream', function() {
       })
 
       it('should emit error event and the argument is an Error instance.', function(done) {
-        var stream     = needle.get('localhost:' + (port + 1), {timeout: 1});
+        var stream     = needle.get('localhost:' + (port + 1), {timeout: 100});
 
         stream.on('error', function (err) {
           err.should.be.an.instanceOf(Error);
@@ -88,16 +87,18 @@ describe('stream', function() {
       })
 
       it('should emit timeout event if request timeout.', function(done) {
-        var stream     = needle.get('localhost:' + (port + 1), {timeout: 1});
+        var stream     = needle.get('localhost:' + (port + 1), {timeout: 100});
 
         stream.on('timeout', function (what) {
           what.should.equal('request');
           done();
         });
+        stream.on('error', function (err) {
+        });
       })
 
       it('should emit timeout event if response timeout.', function(done) {
-        var stream     = needle.get('localhost:' + (port + 2), {timeout: 1});
+        var stream     = needle.get('localhost:' + (port + 2), {timeout: 100});
 
         stream.on('timeout', function (what) {
           what.should.equal('response');
