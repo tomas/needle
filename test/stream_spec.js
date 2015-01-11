@@ -77,23 +77,15 @@ describe('stream', function() {
         });
       })
 
-      it('should emit error event and the argument is an Error instance.', function(done) {
-        var stream     = needle.get('localhost:' + (port + 1), {timeout: 100});
-
-        stream.on('error', function (err) {
-          err.should.be.an.instanceOf(Error);
-          done();
-        });
-      })
-
       it('should emit timeout event if request timeout.', function(done) {
         var stream     = needle.get('localhost:' + (port + 1), {timeout: 100});
 
         stream.on('timeout', function (what) {
           what.should.equal('request');
-          done();
         });
-        stream.on('error', function (err) {
+        stream.on('end', function (err) {
+          err.should.be.an.instanceOf(Error);
+          done();
         });
       })
 
@@ -102,6 +94,18 @@ describe('stream', function() {
 
         stream.on('timeout', function (what) {
           what.should.equal('response');
+          done();
+        });
+      })
+
+      it('should emit end event with partial response data if response timeout.', function(done) {
+        var stream     = needle.get('localhost:' + (port + 2), {timeout: 100});
+
+        stream.on('end', function (err, resp, partial) {
+          err.should.be.an.instanceOf(Error);
+          err.message.should.equal('Response timeout');
+          resp.should.be.an.object;
+          partial.toString().should.equal('a');
           done();
         });
       })
