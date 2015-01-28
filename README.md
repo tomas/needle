@@ -269,6 +269,14 @@ needle.get('https://api.server.com', { username: 'you', password: 'secret' },
 });
 ```
 
+Or use [RFC-1738](http://tools.ietf.org/html/rfc1738#section-3.1) basic auth URL syntax:
+
+```js
+needle.get('https://username:password@api.server.com', function(err, resp) {
+    // used HTTP auth from URL
+});
+```
+
 ### Digest Auth
 
 ```js
