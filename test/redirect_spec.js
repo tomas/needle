@@ -4,7 +4,7 @@ var helpers = require('./helpers'),
     needle  = require('./../');
 
 var ports = {
-  http : 8888,
+  http  : 8888,
   https : 9999
 }
 
@@ -54,7 +54,7 @@ describe('redirects', function() {
     });
   })
 
-  var prots = {'http': 'http'};
+  var prots = {'http': 'https'};
   Object.keys(prots).forEach(function(protocol) {
 
     current_protocol = protocol;
@@ -98,7 +98,6 @@ describe('redirects', function() {
         spies.https.callCount.should.eql(1); // the one from https.request (redirect)
         done();
       })
-
     }
 
     // set a spy on [protocol].request 
@@ -117,6 +116,72 @@ describe('redirects', function() {
     after(function() {
       spies.http.restore();
       spies.https.restore();
+    })
+
+    describe('when overriding defaults to whatever', function() {
+
+      var defaults = {
+        max              : 10,
+        set_cookies      : false,
+        keep_method      : false,
+        if_same_host     : false,
+        if_same_protocol : false
+      }
+
+      before(function() {
+        needle.defaults({ follow: true });
+        // needle.defaults({ follow: { test: 'foo' } });
+        opts = {};
+      })
+
+      after(function() {
+        // reset values to previous
+        needle.defaults({ follow: false });
+        // needle.defaults({ follow: defaults });
+      })
+
+      describe('and redirected to the same path on same host and protocol', function() {
+        before(function() {
+          location = url;
+        })
+        it('does not follow redirect', not_followed);
+      })
+
+      describe('and redirected to the same path on same host and different protocol', function() {
+        before(function() {
+          location = url.replace(protocol, other_protocol).replace(ports[protocol], ports[other_protocol]);
+        })
+        it('does not follow redirect', not_followed);
+      })
+
+      describe('and redirected to a different path on same host, same protocol', function() {
+        before(function() {
+          location = url.replace('/hello', '/goodbye');
+        })
+        it('does not follow redirect', not_followed);
+      })
+
+      describe('and redirected to a different path on same host, different protocol', function() {
+        before(function() {
+          location = url.replace('/hello', '/goodbye').replace(protocol, other_protocol).replace(ports[protocol], ports[other_protocol]);
+        })
+        it('does not follow redirect', not_followed);
+      })
+
+      describe('and redirected to same path on another host, same protocol', function() {
+        before(function() {
+          location = url.replace('localhost', hostname);
+        })
+        it('does not follow redirect', not_followed);
+      })
+
+      describe('and redirected to same path on another host, different protocol', function() {
+        before(function() {
+          location = url.replace('localhost', hostname).replace(protocol, other_protocol).replace(ports[protocol], ports[other_protocol]);
+        })
+        it('does not follow redirect', not_followed);
+      })
+
     })
 
     // false and null have the same result
