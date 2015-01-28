@@ -23,7 +23,7 @@ describe('errors', function(){
       var ex = get_catch(); // null
       should.exist(ex);
       ex.should.be.an.instanceOf(TypeError);
-      ex.message.should.equal('url must be a string');
+      ex.message.should.containEql('URL must be a string');
     })
 
   })
