@@ -200,7 +200,7 @@ describe('parsing', function(){
       it('should return object', function(done){
         needle.get('localhost:' + port, function(err, response, body){
           should.ifError(err);
-          body.should.equal('false');
+          body.should.equal(false);
           done();
         })
       })
@@ -214,7 +214,7 @@ describe('parsing', function(){
         it('should return object', function(done){
           needle.get('localhost:' + port, { parse: true }, function(err, response, body){
             should.not.exist(err);
-            body.should.equal('false')
+            body.should.equal(false)
             done();
           })
         })
@@ -291,5 +291,4 @@ describe('parsing', function(){
 
   });
 
-  
 })
