@@ -118,26 +118,16 @@ describe('redirects', function() {
       spies.https.restore();
     })
 
-    describe('when overriding defaults to whatever', function() {
-
-      var defaults = {
-        max              : 10,
-        set_cookies      : false,
-        keep_method      : false,
-        if_same_host     : false,
-        if_same_protocol : false
-      }
+    describe('when overriding defaults', function() {
 
       before(function() {
-        needle.defaults({ follow: true });
-        // needle.defaults({ follow: { test: 'foo' } });
+        needle.defaults({ follow_max: 10 });
         opts = {};
       })
 
       after(function() {
         // reset values to previous
-        needle.defaults({ follow: false });
-        // needle.defaults({ follow: defaults });
+        needle.defaults({ follow_max: 0 });
       })
 
       describe('and redirected to the same path on same host and protocol', function() {
