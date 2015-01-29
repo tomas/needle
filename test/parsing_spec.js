@@ -180,5 +180,115 @@ describe('parsing', function(){
 
   })
 
+  describe('when response is JSON \'false\'', function(){
+
+    var json_string = 'false';
+
+    before(function(done){
+      server = http.createServer(function(req, res) {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(json_string);
+      }).listen(port, done);
+    });
+
+    after(function(done){
+      server.close(done);
+    })
+
+    describe('and parse option is not passed', function() {
+
+      it('should return object', function(done){
+        needle.get('localhost:' + port, function(err, response, body){
+          should.ifError(err);
+          body.should.equal(false);
+          done();
+        })
+      })
+
+    })
+
+    describe('and parse option is true', function() {
+
+      describe('and JSON is valid', function() {
+
+        it('should return object', function(done){
+          needle.get('localhost:' + port, { parse: true }, function(err, response, body){
+            should.not.exist(err);
+            body.should.equal(false)
+            done();
+          })
+        })
+
+      });
+
+      describe('and response is empty', function() {
+
+        var old_json_string;
+
+        before(function() {
+          old_json_string = json_string;
+          json_string = "";
+        });
+
+        after(function() {
+          json_string = old_json_string;
+        });
+
+        it('should return an empty string', function(done) {
+          needle.get('localhost:' + port, { parse: true }, function(err, resp) {
+            should.not.exist(err);
+            resp.body.should.equal('');
+            done();
+          })
+        })
+
+      })
+
+      describe('and JSON is invalid', function() {
+
+        var old_json_string;
+
+        before(function() {
+          old_json_string = json_string;
+          json_string = "this is not going to work";
+        });
+
+        after(function() {
+          json_string = old_json_string;
+        });
+
+        it('does not throw', function(done) {
+          (function(){
+            needle.get('localhost:' + port, { parse: true }, done);
+          }).should.not.throw();
+        });
+
+        it('does NOT return object', function(done) {
+          needle.get('localhost:' + port, { parse: true }, function(err, response, body) {
+            should.not.exist(err);
+            body.should.be.a.String;
+            body.toString().should.eql('this is not going to work');
+            done();
+          })
+        })
+
+      });
+
+    })
+
+    describe('and parse option is false', function() {
+
+      it('does NOT return object', function(done){
+        needle.get('localhost:' + port, { parse: false }, function(err, response, body) {
+          should.not.exist(err);
+          body.should.be.an.instanceof(Buffer)
+          body.toString().should.eql('false');
+          done();
+        })
+      })
+
+    })
+
+  });
 
 })
