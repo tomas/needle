@@ -141,35 +141,36 @@ describe('redirects', function() {
         before(function() {
           location = url.replace(protocol, other_protocol).replace(ports[protocol], ports[other_protocol]);
         })
-        it('does not follow redirect', not_followed);
+
+        it('follows redirect', followed_other_protocol);
       })
 
       describe('and redirected to a different path on same host, same protocol', function() {
         before(function() {
           location = url.replace('/hello', '/goodbye');
         })
-        it('does not follow redirect', not_followed);
+        it('follows redirect', followed_same_protocol);
       })
 
       describe('and redirected to a different path on same host, different protocol', function() {
         before(function() {
           location = url.replace('/hello', '/goodbye').replace(protocol, other_protocol).replace(ports[protocol], ports[other_protocol]);
         })
-        it('does not follow redirect', not_followed);
+        it('follows redirect', followed_other_protocol);
       })
 
       describe('and redirected to same path on another host, same protocol', function() {
         before(function() {
           location = url.replace('localhost', hostname);
         })
-        it('does not follow redirect', not_followed);
+        it('follows redirect', followed_same_protocol);
       })
 
       describe('and redirected to same path on another host, different protocol', function() {
         before(function() {
           location = url.replace('localhost', hostname).replace(protocol, other_protocol).replace(ports[protocol], ports[other_protocol]);
         })
-        it('does not follow redirect', not_followed);
+        it('follows redirect', followed_other_protocol);
       })
 
     })
@@ -247,75 +248,54 @@ describe('redirects', function() {
           location = url.replace(protocol, other_protocol).replace(ports[protocol], ports[other_protocol]).replace(ports[protocol], ports[other_protocol]);
         })
 
-        it('follows redirect', followed_other_protocol);
-
-        // we only need to test this once
-        it('sends a GET request with no data', function(done) {
-          send_request(opts, function(err, resp) {
-            // if via http, the receiving protocol.request should be https
-            // if via https, the receiving protocol.request should be http
-            spies[other_protocol].args[0][0].method.should.eql('GET');
-            // spy.args[0][3].should.eql(null);
-            done();
-          })
-        })
-
+        it('does not follow redirect', not_followed);
       })
 
       describe('and redirected to a different path on same host, same protocol', function() {
         before(function() { 
           location = url.replace('/hello', '/goodbye') 
         })
-        it('follows redirect', followed_same_protocol);
+        it('does not follow redirect', not_followed);
       })
 
       describe('and redirected to a different path on same host, different protocol', function() {
         before(function() { 
           location = url.replace('/hello', '/goodbye').replace(protocol, other_protocol).replace(ports[protocol], ports[other_protocol]);
         })
-        it('follows redirect', followed_other_protocol);
+        it('does not follow redirect', not_followed);
       })
 
       describe('and redirected to same path on another host, same protocol', function() {
         before(function() {
           location = url.replace('localhost', hostname);
         })
-        it('follows redirect', followed_same_protocol);
+        it('does not follow redirect', not_followed);
       })
 
       describe('and redirected to same path on another domain, different protocol', function() {
         before(function() {
           location = url.replace('localhost', hostname).replace(protocol, other_protocol).replace(ports[protocol], ports[other_protocol]);
         });
-        it('follows redirect', followed_other_protocol);
+        it('does not follow redirect', not_followed);
       })
 
     })
 
-    describe('when follow is an object', function() {
+    describe('when follow is > 0', function() {
 
       before(function() {
-        opts = { follow: {} };
+        needle.defaults({ follow: 10 });
       })
 
-/*
-      describe('and max is null', function() {
-
+      after(function() {
+        needle.defaults({ follow: 0 });
       })
 
-      describe('and max is a number', function() {
 
-      })
-
-      describe('and max is a boolean', function() {
-        
-      })
-*/
-
-      describe('and keep_method is false', function() {
+      describe('when keep_method is false', function() {
 
         before(function() {
-          opts.follow = { keep_method: false }
+          opts = { follow_keep_method: false };
         })
         
         // defaults to follow host and protocol
@@ -342,7 +322,7 @@ describe('redirects', function() {
       describe('and keep_method is true', function() {
 
         before(function() {
-          opts.follow = { keep_method: true }
+          opts = { follow_keep_method: true };
         })
 
         // defaults to follow host and protocol
@@ -369,7 +349,7 @@ describe('redirects', function() {
       describe('and if_same_host is false', function() {
 
         before(function() {
-          opts.follow = { if_same_host: false }
+          opts = { follow_if_same_host: false };
         })
 
         // by default it will follow other protocols
@@ -385,7 +365,7 @@ describe('redirects', function() {
       describe('and if_same_host is true', function() {
 
         before(function() {
-          opts.follow = { if_same_host: true }
+          opts = { follow_if_same_host: true };
         })
 
         // by default it will follow other protocols
@@ -402,7 +382,7 @@ describe('redirects', function() {
       describe('and if_same_protocol is false', function() {
 
         before(function() {
-          opts.follow = { if_same_protocol: false }
+          opts = { follow_if_same_protocol: false };
         })
 
         // by default it will follow other hosts
@@ -418,7 +398,7 @@ describe('redirects', function() {
       describe('and if_same_protocol is true', function() {
 
         before(function() {
-          opts.follow = { if_same_protocol: true }
+          opts = { follow_if_same_protocol: true };
         })
 
         // by default it will follow other hosts
