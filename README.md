@@ -118,7 +118,7 @@ All of Needle's request methods return a Readable stream, and both `options` and
 
 ```js
 var options = {
-  timeout: 5000 // if we don't get a response in 5 seconds, boom.
+  open_timeout: 5000 // if we don't get a response in 5 seconds, boom.
 }
 
 needle.head('https://my.backend.server.com', function(err, resp) {
@@ -261,10 +261,13 @@ Overriding Defaults
 Yes sir, we have it. Needle includes a `defaults()` method, that lets you override some of the defaults for all future requests. Like this:
 
 ```js
-needle.defaults({ timeout: 60000, user_agent: 'MyApp/1.2.3' });
+needle.defaults({ 
+  open_timeout: 60000, 
+  user_agent: 'MyApp/1.2.3', 
+  parse_response: false });
 ```
 
-This will override Needle's default user agent and 10-second timeout, so you don't need to pass those options in every other request.
+This will override Needle's default user agent and 10-second timeout, and disable response parsing, so you don't need to pass those options in every other request.
 
 Examples Galore
 ---------------
