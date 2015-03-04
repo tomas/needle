@@ -12,13 +12,22 @@ describe('stream', function() {
 
     before(function(){
       server = http.createServer(function(req, res) {
-        res.setHeader('Content-Type', 'application/json')
-        res.end('{"foo":"bar"}')
+        res.setHeader('Content-Type', 'application/json');
+        res.end('{"foo":"bar"}');
       }).listen(port);
+      serverTimeout = http.createServer(function(req, res) {
+        setTimeout(function() { res.end(); }, 300);
+      }).listen(port + 1);
+      serverTimeoutOnResponse = http.createServer(function(req, res) {
+        res.write('a');
+        setTimeout(function() { res.end('bcde'); }, 300);
+      }).listen(port + 2);
     });
 
     after(function(){
       server.close();
+      serverTimeout.close();
+      serverTimeoutOnResponse.close();
     })
 
     describe('and the client uses streams', function(){
@@ -41,7 +50,7 @@ describe('stream', function() {
         stream.resume();
       })
 
-      it('should should emit a single data item which is our JSON object', function(done) {
+      it('should emit a single data item which is our JSON object', function(done) {
         var stream     = needle.get('localhost:' + port)
 
         var chunks = [];
@@ -59,7 +68,49 @@ describe('stream', function() {
         });
       })
 
-      it('should should emit a raw buffer if we do not want to parse JSON', function(done) {
+      it('should emit response event and the argument is an http.IncomingMessage instance.', function(done) {
+        var stream     = needle.get('localhost:' + port)
+
+        stream.on('response', function (resp) {
+          resp.should.be.an.instanceOf(http.IncomingMessage);
+          done();
+        });
+      })
+
+      it('should emit timeout event if request timeout.', function(done) {
+        var stream     = needle.get('localhost:' + (port + 1), {timeout: 100});
+
+        stream.on('timeout', function (what) {
+          what.should.equal('request');
+        });
+        stream.on('end', function (err) {
+          err.should.be.an.instanceOf(Error);
+          done();
+        });
+      })
+
+      it('should emit timeout event if response timeout.', function(done) {
+        var stream     = needle.get('localhost:' + (port + 2), {timeout: 100});
+
+        stream.on('timeout', function (what) {
+          what.should.equal('response');
+          done();
+        });
+      })
+
+      it('should emit end event with partial response data if response timeout.', function(done) {
+        var stream     = needle.get('localhost:' + (port + 2), {timeout: 100});
+
+        stream.on('end', function (err, resp, partial) {
+          err.should.be.an.instanceOf(Error);
+          err.message.should.equal('Response timeout');
+          resp.should.be.an.object;
+          partial.toString().should.equal('a');
+          done();
+        });
+      })
+
+      it('should emit a raw buffer if we do not want to parse JSON', function(done) {
         var stream     = needle.get('localhost:' + port, {parse: false})
 
         var chunks = [];
