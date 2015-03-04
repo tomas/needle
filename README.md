@@ -32,15 +32,15 @@ needle
 
 With only one single dependency, Needle supports: 
 
- - HTTP/HTTPS requests, with the usual verbs you would expect.
- - All of Node's native TLS options, such as 'rejectUnauthorized' (see below).
+ - HTTP/HTTPS requests, with the usual verbs you would expect
+ - All of Node's native TLS options, such as 'rejectUnauthorized' (see below)
  - Basic & Digest authentication
  - Multipart form-data (e.g. file uploads)
- - HTTP Proxy forwarding, optionally with authentication.
+ - HTTP Proxy forwarding, optionally with authentication
  - Streaming gzip or deflate decompression
  - Automatic XML & JSON parsing
- - 301/302 redirect following, if enabled, and
- - Streaming non-UTF-8 charset decoding, via `iconv-lite`.
+ - 301/302/303 redirect following, with fine-grained tuning, and
+ - Streaming non-UTF-8 charset decoding, via `iconv-lite`
 
 And yes, Mr. Wayne, it does come with the latest streams2 support.
 
@@ -202,21 +202,21 @@ More examples after this short break.
 Request options
 ---------------
 
- - `timeout`   : Returns error if no response received in X milisecs. Defaults to `10000` (10 secs). `0` means no timeout.
- - `follow`    : Number of redirects to follow. `false` means don't follow any (default), `true` means 10. 
- - `multipart` : Enables multipart/form-data encoding. Defaults to `false`. Use it when uploading files.
- - `proxy`     : Forwards request through HTTP(s) proxy. Eg. `proxy: 'http://proxy.server.com:3128'`
- - `agent`     : Uses an http.Agent of your choice, instead of the global, default one.
- - `headers`   : Object containing custom HTTP headers for request. Overrides defaults described below.
- - `auth`      : Determines what to do with provided username/password. Options are `auto`, `digest` or `basic` (default). `auto` will detect the type of authentication depending on the response headers.
- - `json`      : When `true`, sets content type to `application/json` and sends request body as JSON string, instead of a query string. 
+ - `open_timeout`: Returns error if connection takes longer than X milisecs to establish. Defaults to `10000` (10 secs). `0` means no timeout. Aliased as `timeout`.
+ - `follow_max`  : Number of redirects to follow. Defaults to `0`. Aliased to `follow`. See below for more redirect options.
+ - `multipart`   : Enables multipart/form-data encoding. Defaults to `false`. Use it when uploading files.
+ - `proxy`       : Forwards request through HTTP(s) proxy. Eg. `proxy: 'http://user:pass@proxy.server.com:3128'`.
+ - `agent`       : Uses an http.Agent of your choice, instead of the global, default one. 
+ - `headers`     : Object containing custom HTTP headers for request. Overrides defaults described below.
+ - `auth`        : Determines what to do with provided username/password. Options are `auto`, `digest` or `basic` (default). `auto` will detect the type of authentication depending on the response headers.
+ - `json`        : When `true`, sets content type to `application/json` and sends request body as JSON string, instead of a query string. 
 
 Response options
 ----------------
 
- - `decode`    : Whether to decode the text responses to UTF-8, if Content-Type header shows a different charset. Defaults to `true`.
- - `parse`     : Whether to parse XML or JSON response bodies automagically. Defaults to `true`.
- - `output`    : Dump response output to file. This occurs after parsing and charset decoding is done.
+ - `decode_response` : Whether to decode the text responses to UTF-8, if Content-Type header shows a different charset. Defaults to `true`. Aliased as `decode`.
+ - `parse_response`  : Whether to parse XML or JSON response bodies automagically. Defaults to `true`. Aliased as `parse`.
+ - `output`          : Dump response output to file. This occurs after parsing and charset decoding is done.
 
 Note: To stay light on dependencies, Needle doesn't include the `xml2js` module used for XML parsing. To enable it, simply do `npm install xml2js`.
 
@@ -225,6 +225,7 @@ HTTP Header options
 
 These are basically shortcuts to the `headers` option described above.
 
+ - `cookies`   : Sets a {key: 'val'} object as a 'Cookie' header.
  - `compressed`: If `true`, sets 'Accept-Encoding' header to 'gzip,deflate', and inflates content if zipped. Defaults to `false`.
  - `username`  : For HTTP basic auth.
  - `password`  : For HTTP basic auth. Requires username to be passed, but is optional.
@@ -237,14 +238,24 @@ Node.js TLS Options
 
 These options are passed directly to `https.request` if present. Taken from the [original documentation](http://nodejs.org/docs/latest/api/https.html):
 
- - `pfx`: Certificate, Private key and CA certificates to use for SSL.
- - `key`: Private key to use for SSL.
- - `passphrase`: A string of passphrase for the private key or pfx.
- - `cert`: Public x509 certificate to use.
- - `ca`: An authority certificate or array of authority certificates to check the remote host against.
- - `ciphers`: A string describing the ciphers to use or exclude.
- - `rejectUnauthorized`: If true, the server certificate is verified against the list of supplied CAs. An 'error' event is emitted if verification fails. Verification happens at the connection level, before the HTTP request is sent.
- - `secureProtocol`: The SSL method to use, e.g. SSLv3_method to force SSL version 3.
+ - `pfx`                : Certificate, Private key and CA certificates to use for SSL.
+ - `key`                : Private key to use for SSL.
+ - `passphrase`         : A string of passphrase for the private key or pfx.
+ - `cert`               : Public x509 certificate to use.
+ - `ca`                 : An authority certificate or array of authority certificates to check the remote host against.
+ - `ciphers`            : A string describing the ciphers to use or exclude.
+ - `rejectUnauthorized` : If true, the server certificate is verified against the list of supplied CAs. An 'error' event is emitted if verification fails. Verification happens at the connection level, before the HTTP request is sent.
+ - `secureProtocol`     : The SSL method to use, e.g. SSLv3_method to force SSL version 3.
+
+Redirect options
+----------------
+
+These options only apply if the `follow_max` (or `follow`) option is higher than 0.
+
+ - `follow_set_cookies`      : Sends the cookies received in the `set-cookie` header as part of the following request. `false` by default.
+ - `follow_keep_method`      : If enabled, resends the request using the original verb instead of being rewritten to `get` with no data. `false` by default.
+ - `follow_if_same_host`     : When true, Needle will only follow redirects that point to the same host as the original request. `false` by default.
+ - `follow_if_same_protocol` : When true, Needle will only follow redirects that point to the same protocol as the original request. `false` by default.
 
 Overriding Defaults
 -------------------
@@ -291,7 +302,7 @@ needle.get('other.server.com', { username: 'you', password: 'secret', auth: 'dig
 ```js
 var options = {
   compressed : true, 
-  follow     : true,
+  follow     : 10,
   accept     : 'application/vnd.github.full+json'
 }
 
