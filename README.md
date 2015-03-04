@@ -95,13 +95,11 @@ Or in anti-callback mode, using a few other options:
 
 ```js
 var options = {
-  compressed         : true,
-  follow             : true,
-  rejectUnauthorized : true
+  compressed         : true, // sets 'Accept-Encoding' to 'gzip,deflate'
+  follow_max         : 5,    // follow up to five redirects
+  rejectUnauthorized : true  // verify SSL certificate
 }
 
-// in this case, we'll ask Needle to follow redirects (disabled by default), 
-// but also to verify their SSL certificates when connecting.
 var stream = needle.get('https://backend.server.com/everything.html', options);
 
 stream.on('readable', function() {
@@ -202,8 +200,8 @@ More examples after this short break.
 Request options
 ---------------
 
- - `open_timeout`: Returns error if connection takes longer than X milisecs to establish. Defaults to `10000` (10 secs). `0` means no timeout. Aliased as `timeout`.
- - `follow_max`  : Number of redirects to follow. Defaults to `0`. Aliased to `follow`. See below for more redirect options.
+ - `open_timeout`: (Or `timeout`) Returns error if connection takes longer than X milisecs to establish. Defaults to `10000` (10 secs). `0` means no timeout.
+ - `follow_max`  : (Or `follow`) Number of redirects to follow. Defaults to `0`. See below for more redirect options.
  - `multipart`   : Enables multipart/form-data encoding. Defaults to `false`. Use it when uploading files.
  - `proxy`       : Forwards request through HTTP(s) proxy. Eg. `proxy: 'http://user:pass@proxy.server.com:3128'`.
  - `agent`       : Uses an http.Agent of your choice, instead of the global, default one. 
@@ -214,8 +212,8 @@ Request options
 Response options
 ----------------
 
- - `decode_response` : Whether to decode the text responses to UTF-8, if Content-Type header shows a different charset. Defaults to `true`. Aliased as `decode`.
- - `parse_response`  : Whether to parse XML or JSON response bodies automagically. Defaults to `true`. Aliased as `parse`.
+ - `decode_response` : (Or `decode`) Whether to decode the text responses to UTF-8, if Content-Type header shows a different charset. Defaults to `true`. 
+ - `parse_response`  : (Or `parse`) Whether to parse XML or JSON response bodies automagically. Defaults to `true`. 
  - `output`          : Dump response output to file. This occurs after parsing and charset decoding is done.
 
 Note: To stay light on dependencies, Needle doesn't include the `xml2js` module used for XML parsing. To enable it, simply do `npm install xml2js`.
