@@ -6,19 +6,6 @@ var should = require('should'),
 
 describe('parsing', function(){
 
-  var get_catch = function(url, opts, cb) {
-    var done = function(e) {
-      cb(e);
-    }
-    try {
-      needle.get(url, opts, function() {
-        done();
-      });
-    } catch(e) {
-      done(e);
-    }
-  }
-
   describe('when response is an JSON string', function(){
 
     var json_string = '{"foo":"bar"}';

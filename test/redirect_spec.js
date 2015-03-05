@@ -185,46 +185,19 @@ describe('redirects', function() {
           opts = { follow: value };
         })
 
+
+
         describe('and redirected to the same path on same host and protocol', function() {
           before(function() {
             location = url;
           })
-          it('does not follow redirect', not_followed);
-        })
 
-        describe('and redirected to the same path on same host and different protocol', function() {
-          before(function() {
-            location = url.replace(protocol, other_protocol).replace(ports[protocol], ports[other_protocol]);
+          it('throws an error', function() {
+            (function() {
+              send_request(opts, function() { });
+            }).should.throw;
           })
-          it('does not follow redirect', not_followed);
-        })
 
-        describe('and redirected to a different path on same host, same protocol', function() {
-          before(function() {
-            location = url.replace('/hello', '/goodbye');
-          })
-          it('does not follow redirect', not_followed);
-        })
-
-        describe('and redirected to a different path on same host, different protocol', function() {
-          before(function() {
-            location = url.replace('/hello', '/goodbye').replace(protocol, other_protocol).replace(ports[protocol], ports[other_protocol]);
-          })
-          it('does not follow redirect', not_followed);
-        })
-
-        describe('and redirected to same path on another host, same protocol', function() {
-          before(function() {
-            location = url.replace('localhost', hostname);
-          })
-          it('does not follow redirect', not_followed);
-        })
-
-        describe('and redirected to same path on another host, different protocol', function() {
-          before(function() {
-            location = url.replace('localhost', hostname).replace(protocol, other_protocol).replace(ports[protocol], ports[other_protocol]);
-          })
-          it('does not follow redirect', not_followed);
         })
 
       })
@@ -239,44 +212,13 @@ describe('redirects', function() {
 
       describe('and redirected to the same path on same host and protocol', function() {
         before(function() { location = url })
-        it('does not follow redirect', not_followed);
-      })
 
-      describe('and redirected to the same path on same host and different protocol', function() {
-
-        before(function() {
-          location = url.replace(protocol, other_protocol).replace(ports[protocol], ports[other_protocol]).replace(ports[protocol], ports[other_protocol]);
+        it('throws an error', function() {
+          (function() {
+            send_request(opts, function() { });
+          }).should.throw;
         })
 
-        it('does not follow redirect', not_followed);
-      })
-
-      describe('and redirected to a different path on same host, same protocol', function() {
-        before(function() {
-          location = url.replace('/hello', '/goodbye')
-        })
-        it('does not follow redirect', not_followed);
-      })
-
-      describe('and redirected to a different path on same host, different protocol', function() {
-        before(function() {
-          location = url.replace('/hello', '/goodbye').replace(protocol, other_protocol).replace(ports[protocol], ports[other_protocol]);
-        })
-        it('does not follow redirect', not_followed);
-      })
-
-      describe('and redirected to same path on another host, same protocol', function() {
-        before(function() {
-          location = url.replace('localhost', hostname);
-        })
-        it('does not follow redirect', not_followed);
-      })
-
-      describe('and redirected to same path on another domain, different protocol', function() {
-        before(function() {
-          location = url.replace('localhost', hostname).replace(protocol, other_protocol).replace(ports[protocol], ports[other_protocol]);
-        });
-        it('does not follow redirect', not_followed);
       })
 
     })
