@@ -32,7 +32,7 @@ describe('redirects', function() {
   var current_protocol;
   var hostname = require('os').hostname();
 
-  // open two servers, one that responds to a redirect 
+  // open two servers, one that responds to a redirect
   before(function(done) {
 
     var conf = {
@@ -76,7 +76,7 @@ describe('redirects', function() {
           spies.http.callCount.should.eql(1); // only original request
           spies.https.callCount.should.eql(0);
         } else {
-          spies.http.callCount.should.eql(0); 
+          spies.http.callCount.should.eql(0);
           spies.https.callCount.should.eql(1); // only original request
         }
         done();
@@ -86,7 +86,7 @@ describe('redirects', function() {
     function followed_same_protocol(done) {
       send_request(opts, function(err, resp) {
         // the original request plus the redirect one
-        spies[current_protocol].callCount.should.eql(2); 
+        spies[current_protocol].callCount.should.eql(2);
         done();
       })
 
@@ -100,13 +100,13 @@ describe('redirects', function() {
       })
     }
 
-    // set a spy on [protocol].request 
+    // set a spy on [protocol].request
     // so we can see how many times a request was made
     before(function() {
       spies.http  = sinon.spy(protocols.http, 'request');
       spies.https = sinon.spy(protocols.https, 'request');
     })
-    
+
     // and make sure it is restored after each test
     afterEach(function() {
       spies.http.reset();
@@ -252,14 +252,14 @@ describe('redirects', function() {
       })
 
       describe('and redirected to a different path on same host, same protocol', function() {
-        before(function() { 
-          location = url.replace('/hello', '/goodbye') 
+        before(function() {
+          location = url.replace('/hello', '/goodbye')
         })
         it('does not follow redirect', not_followed);
       })
 
       describe('and redirected to a different path on same host, different protocol', function() {
-        before(function() { 
+        before(function() {
           location = url.replace('/hello', '/goodbye').replace(protocol, other_protocol).replace(ports[protocol], ports[other_protocol]);
         })
         it('does not follow redirect', not_followed);
@@ -291,13 +291,12 @@ describe('redirects', function() {
         needle.defaults({ follow: 0 });
       })
 
-
       describe('when keep_method is false', function() {
 
         before(function() {
           opts = { follow_keep_method: false };
         })
-        
+
         // defaults to follow host and protocol
         describe('and redirected to the same path on same host and different protocol', function() {
 
@@ -311,6 +310,33 @@ describe('redirects', function() {
             send_request(opts, function(err, resp) {
               spies.http.args[0][0].method.should.eql('GET');
               // spy.args[0][3].should.eql(null);
+              done();
+            })
+          })
+
+        })
+
+      })
+
+      describe('and set_referer is true', function() {
+
+        before(function() {
+          opts = { follow_set_referer: true };
+        })
+
+        // defaults to follow host and protocol
+        describe('and redirected to the same path on same host and different protocol', function() {
+
+          before(function() {
+            location = url.replace(protocol, other_protocol);
+          })
+
+          it('follows redirect', followed_other_protocol);
+
+          it('sets Referer header when following redirect', function(done) {
+            send_request(opts, function(err, resp) {
+              spies.http.args[0][0].headers['Referer'].should.eql("http://localhost:8888/hello");
+              // spies.http.args[0][3].should.eql({ foo: 'bar'});
               done();
             })
           })
@@ -376,7 +402,7 @@ describe('redirects', function() {
 
           it('does not follow redirect', not_followed);
         })
-        
+
       })
 
       describe('and if_same_protocol is false', function() {
@@ -408,7 +434,7 @@ describe('redirects', function() {
           })
           it('does not follow redirect', not_followed);
         })
-        
+
       })
 
     })
