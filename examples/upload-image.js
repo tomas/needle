@@ -10,7 +10,7 @@ function upload(obj, cb) {
 
   var opts = {
     timeout:  10000,
-    follow:    true,
+    follow:    3,
     multipart: true
   };
 
