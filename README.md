@@ -46,11 +46,6 @@ And yes, Mr. Wayne, it does come with the latest streams2 support.
 
 This makes Needle an ideal alternative for performing quick HTTP requests in Node, either for API interaction, downloading or uploading streams of data, and so on. If you need OAuth, AWS support or anything fancier, you should check out mikeal's request module.
 
-Important
----------
-
-The version bump from 0.6 to 0.7 includes a few notable changes to the streaming interface. If you were using Needle in 'steams mode', please take a look at the [changelog](https://github.com/tomas/needle/blob/master/CHANGELOG.md) to see what's going on. If you were using regular callbacks, no problemo amigo -- you can update to 0.7+ and everything will be smooth as silk.
-
 Install
 -------
 
@@ -200,8 +195,10 @@ More examples after this short break.
 Request options
 ---------------
 
- - `open_timeout`: (Or `timeout`) Returns error if connection takes longer than X milisecs to establish. Defaults to `10000` (10 secs). `0` means no timeout.
- - `follow_max`  : (Or `follow`) Number of redirects to follow. Defaults to `0`. See below for more redirect options.
+For information about options that've changed, there's always [the changelog](https://github.com/tomas/needle/releases).
+
+ - `open_timeout`: (or `timeout`) Returns error if connection takes longer than X milisecs to establish. Defaults to `10000` (10 secs). `0` means no timeout.
+ - `follow_max`  : (or `follow`) Number of redirects to follow. Defaults to `0`. See below for more redirect options.
  - `multipart`   : Enables multipart/form-data encoding. Defaults to `false`. Use it when uploading files.
  - `proxy`       : Forwards request through HTTP(s) proxy. Eg. `proxy: 'http://user:pass@proxy.server.com:3128'`.
  - `agent`       : Uses an http.Agent of your choice, instead of the global, default one.
@@ -212,8 +209,8 @@ Request options
 Response options
 ----------------
 
- - `decode_response` : (Or `decode`) Whether to decode the text responses to UTF-8, if Content-Type header shows a different charset. Defaults to `true`.
- - `parse_response`  : (Or `parse`) Whether to parse XML or JSON response bodies automagically. Defaults to `true`.
+ - `decode_response` : (or `decode`) Whether to decode the text responses to UTF-8, if Content-Type header shows a different charset. Defaults to `true`.
+ - `parse_response`  : (or `parse`) Whether to parse XML or JSON response bodies automagically. Defaults to `true`.
  - `output`          : Dump response output to file. This occurs after parsing and charset decoding is done.
 
 Note: To stay light on dependencies, Needle doesn't include the `xml2js` module used for XML parsing. To enable it, simply do `npm install xml2js`.
