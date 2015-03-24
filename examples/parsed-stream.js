@@ -18,7 +18,6 @@ resp.on('readable', function(obj) {
   }
 });
 
-resp.on('end', function(data) {
+resp.on('end', function() {
   console.log('Done.');
 });
-
