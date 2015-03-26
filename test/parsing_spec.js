@@ -37,10 +37,18 @@ describe('parsing', function(){
 
       describe('and JSON is valid', function() {
 
-        it('should return object', function(done){
+        it('should return object', function(done) {
           needle.get('localhost:' + port, { parse: true }, function(err, response, body){
             should.not.exist(err);
             body.should.have.property('foo', 'bar')
+            done();
+          })
+        })
+
+        it('should have a .parser = json property', function(done) {
+          needle.get('localhost:' + port, { parse: true }, function(err, resp) {
+            should.not.exist(err);
+            resp.parser.should.eql('json');
             done();
           })
         })
@@ -113,59 +121,18 @@ describe('parsing', function(){
         })
       })
 
+      it('should NOT have a .parser = json property', function(done) {
+        needle.get('localhost:' + port, { parse: false }, function(err, resp) {
+          should.not.exist(err);
+          should.not.exist(resp.parser);
+          done();
+        })
+      })
+
     })
 
   });
 
-  describe('when response is an XML string', function(){
-
-    before(function(done){
-      server = http.createServer(function(req, res) {
-        res.writeHeader(200, {'Content-Type': 'application/xml'})
-        res.end("<post><body>hello there</body></post>")
-      }).listen(port, done);
-    });
-
-    after(function(done){
-      server.close(done);
-    })
-
-    describe('and xml2js library is present', function(){
-
-      require.bind(null, 'xml2js').should.not.throw();
-
-      describe('and parse_response is true', function(){
-
-        it('should return valid object', function(done){
-          needle.get('localhost:' + port, function(err, response, body){
-            should.not.exist(err);
-            body.post.should.have.property('body', 'hello there');
-            done();
-          })
-        })
-
-      })
-
-      describe('and parse response is not true', function(){
-
-        it('should return xml string', function(){
-
-        })
-
-      })
-
-    })
-
-    describe('and xml2js is not found', function(){
-
-      it('should return xml string', function(){
-
-      })
-
-    })
-
-
-  })
 
   describe('when response is JSON \'false\'', function(){
 
@@ -277,5 +244,63 @@ describe('parsing', function(){
     })
 
   });
+
+  describe('when response is an XML string', function(){
+
+    before(function(done){
+      server = http.createServer(function(req, res) {
+        res.writeHeader(200, {'Content-Type': 'application/xml'})
+        res.end("<post><body>hello there</body></post>")
+      }).listen(port, done);
+    });
+
+    after(function(done){
+      server.close(done);
+    })
+
+    describe('and xml2js library is present', function(){
+
+      require.bind(null, 'xml2js').should.not.throw();
+
+      describe('and parse_response is true', function(){
+
+        it('should return valid object', function(done){
+          needle.get('localhost:' + port, function(err, response, body){
+            should.not.exist(err);
+            body.post.should.have.property('body', 'hello there');
+            done();
+          })
+        })
+
+        it('should have a .parser = json property', function(done) {
+          needle.get('localhost:' + port, function(err, resp) {
+            should.not.exist(err);
+            resp.parser.should.eql('xml');
+            done();
+          })
+        })
+
+      })
+
+      describe('and parse response is not true', function(){
+
+        it('should return xml string', function(){
+
+        })
+
+      })
+
+    })
+
+    describe('and xml2js is not found', function(){
+
+      it('should return xml string', function(){
+
+      })
+
+    })
+
+
+  })
 
 })

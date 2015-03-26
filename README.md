@@ -113,7 +113,7 @@ All of Needle's request methods return a Readable stream, and both `options` and
 
 ```js
 var options = {
-  open_timeout: 5000 // if we don't get a response in 5 seconds, boom.
+  open_timeout: 5000 // if we don't get our response headers in 5 seconds, boom.
 }
 
 needle.head('https://my.backend.server.com', function(err, resp) {
@@ -198,6 +198,7 @@ Request options
 For information about options that've changed, there's always [the changelog](https://github.com/tomas/needle/releases).
 
  - `open_timeout`: (or `timeout`) Returns error if connection takes longer than X milisecs to establish. Defaults to `10000` (10 secs). `0` means no timeout.
+ - `read_timeout`: Returns error if data transfer takes longer than X milisecs, after connection is established. Defaults to `0` (no timeout).
  - `follow_max`  : (or `follow`) Number of redirects to follow. Defaults to `0`. See below for more redirect options.
  - `multipart`   : Enables multipart/form-data encoding. Defaults to `false`. Use it when uploading files.
  - `proxy`       : Forwards request through HTTP(s) proxy. Eg. `proxy: 'http://user:pass@proxy.server.com:3128'`.
