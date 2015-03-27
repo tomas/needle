@@ -44,13 +44,14 @@
     "iconv-lite": "^0.4.4"
   },
   "devDependencies": {
-    "mocha": "",
-    "sinon": "",
-    "should": "",
-    "xml2js": "",
     "JSONStream": "",
+    "jschardet": "",
+    "mocha": "",
+    "nock": "^1.2.1",
     "q": "",
-    "jschardet": ""
+    "should": "",
+    "sinon": "",
+    "xml2js": ""
   },
   "scripts": {
     "test": "mocha test"
