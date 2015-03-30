@@ -10,21 +10,25 @@ nock.disableNetConnect();
 var WEIRD_COOKIE_NAME = 'wc',
   BASE64_COOKIE_NAME = 'bc',
   FORBIDDEN_COOKIE_NAME = 'fc',
+  NUMBER_COOKIE_NAME = 'nc',
   WEIRD_COOKIE_VALUE = '!\'*+#()&-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[' +
   ']^_`abcdefghijklmnopqrstuvwxyz{|}~',
   BASE64_COOKIE_VALUE = 'Y29va2llCg==',
   FORBIDDEN_COOKIE_VALUE = ' ;"\\,',
-  WEIRD_COOKIE = 'weird=!\'*+#()&-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~',
-  BASE64_COOKIE = 'base=Y29va2llCg==',
-  FORBIDDEN_COOKIE = 'forbidden=%20%3B%22%5C%2C',
-  COOKIE_HEADER = WEIRD_COOKIE + '; ' + BASE64_COOKIE + '; ' + FORBIDDEN_COOKIE;
+  NUMBER_COOKIE_VALUE = 12354342,
+  WEIRD_COOKIE = 'wc=!\'*+#()&-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~',
+  BASE64_COOKIE = 'bc=Y29va2llCg==',
+  FORBIDDEN_COOKIE = 'fc=%20%3B%22%5C%2C',
+  NUMBER_COOKIE = 'nc=12354342',
+  COOKIE_HEADER = WEIRD_COOKIE + '; ' + BASE64_COOKIE + '; ' +
+  FORBIDDEN_COOKIE + '; ' + NUMBER_COOKIE;
 
 function decode(str) {
   return decodeURIComponent(str);
 }
 
 function encode(str) {
-  str = str.replace(/[\x00-\x1F\x7F]/g, encodeURIComponent);
+  str = str.toString().replace(/[\x00-\x1F\x7F]/g, encodeURIComponent);
   return str.replace(/[\s\"\,;\\%]/g, encodeURIComponent);
 }
 
@@ -41,7 +45,8 @@ describe('cookies', function() {
         'Set-Cookie': [
           WEIRD_COOKIE_NAME + '=' + encode(WEIRD_COOKIE_VALUE) + ';',
           BASE64_COOKIE_NAME + '=' + encode(BASE64_COOKIE_VALUE) + ';',
-          FORBIDDEN_COOKIE_NAME + '=' + encode(FORBIDDEN_COOKIE_VALUE) + ';'
+          FORBIDDEN_COOKIE_NAME + '=' + encode(FORBIDDEN_COOKIE_VALUE) + ';',
+          NUMBER_COOKIE_NAME + '=' + encode(NUMBER_COOKIE_VALUE) + ';'
         ],
         'content-type': 'text/html'
       }
@@ -85,6 +90,7 @@ describe('cookies', function() {
           .and.have.property(WEIRD_COOKIE_NAME);
         response.cookies.should.have.property(BASE64_COOKIE_NAME);
         response.cookies.should.have.property(FORBIDDEN_COOKIE_NAME);
+        response.cookies.should.have.property(NUMBER_COOKIE_NAME);
         done();
       });
     });
@@ -94,6 +100,7 @@ describe('cookies', function() {
         response.cookies.wc.should.be.eql(WEIRD_COOKIE_VALUE);
         response.cookies.bc.should.be.eql(BASE64_COOKIE_VALUE);
         response.cookies.fc.should.be.eql(FORBIDDEN_COOKIE_VALUE);
+        response.cookies.nc.should.be.eql(NUMBER_COOKIE_VALUE.toString());
         done();
       });
     });
@@ -115,6 +122,7 @@ describe('cookies', function() {
       opts.cookies[WEIRD_COOKIE_NAME] = WEIRD_COOKIE_VALUE;
       opts.cookies[BASE64_COOKIE_NAME] = BASE64_COOKIE_VALUE;
       opts.cookies[FORBIDDEN_COOKIE_NAME] = FORBIDDEN_COOKIE_VALUE;
+      opts.cookies[NUMBER_COOKIE_NAME] = NUMBER_COOKIE_VALUE;
     });
 
     it('must be a valid cookie string', function(done) {
@@ -129,6 +137,9 @@ describe('cookies', function() {
           .forEach(function(pair) {
             COOKIE_PAIR.test(pair).should.be.exactly(true);
           });
+
+        cookieString.should.be.exactly(COOKIE_HEADER);
+
         done();
       });
     });
