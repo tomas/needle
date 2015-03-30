@@ -438,6 +438,16 @@ needle.post('http://test.com/', data, { timeout: 5000, multipart: true }, functi
 
 For even more examples, check out the examples directory in the repo.
 
+### Testing
+
+To run tests, you need to generate a self-signed SSL certificate in the `test` directory. After cloning the repository, run the following commands:
+
+    $ mkdir -p test/keys
+    $ openssl genrsa -out test/keys/ssl.key 2048
+    $ openssl req -new -key test/keys/ssl.key -x509 -days 999 -out test/keys/ssl.cert
+
+Then you should be able to run `npm test` once you have the dependencies in place.
+
 Credits
 -------
 
@@ -446,4 +456,4 @@ Written by Tomás Pollak, with the help of contributors.
 Copyright
 ---------
 
-(c) 2014 Fork Ltd. Licensed under the MIT license.
+(c) Fork Ltd. Licensed under the MIT license.
