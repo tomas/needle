@@ -107,31 +107,31 @@ describe('errors', function(){
       })
 
       it('emits end event once, with error', function(done) {
-        var called = 0,
+        var callcount = 0,
             stream = needle.get(url);
 
         stream.on('end', function(err) {
-          called++;
+          callcount++;
         })
 
         setTimeout(function() {
-          called.should.equal(1);
+          callcount.should.equal(1);
           done();
-        }, 50)
+        }, 200)
       })
 
-      it('error should be ENOTFOUND or EADDRINFO', function(done){
-        var error,
+      it('error should be ENOTFOUND or EADDRINFO', function(done) {
+        var errorific,
             stream = needle.get(url);
 
         stream.on('end', function(err) {
-          error = err;
+          errorific = err;
         })
 
         setTimeout(function() {
-          error.code.should.match(/ENOTFOUND|EADDRINFO/)
+          errorific.code.should.match(/ENOTFOUND|EADDRINFO/)
           done();
-        }, 50)
+        }, 200)
       })
 
       it('does not emit a readable event', function(done){

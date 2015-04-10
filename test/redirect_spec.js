@@ -61,7 +61,8 @@ describe('redirects', function() {
     var other_protocol = protocol == 'http' ? 'https' : 'http';
 
     var opts, // each test will modify this
-        url = protocol + '://localhost:' + ports[protocol] + '/hello';
+        host = '127.0.0.1',
+        url  = protocol + '://' + host + ':' + ports[protocol] + '/hello';
 
     function send_request(opts, cb) {
       opts.rejectUnauthorized = false;
@@ -161,14 +162,14 @@ describe('redirects', function() {
 
       describe('and redirected to same path on another host, same protocol', function() {
         before(function() {
-          location = url.replace('localhost', hostname);
+          location = url.replace(host, hostname);
         })
         it('follows redirect', followed_same_protocol);
       })
 
       describe('and redirected to same path on another host, different protocol', function() {
         before(function() {
-          location = url.replace('localhost', hostname).replace(protocol, other_protocol).replace(ports[protocol], ports[other_protocol]);
+          location = url.replace(host, hostname).replace(protocol, other_protocol).replace(ports[protocol], ports[other_protocol]);
         })
         it('follows redirect', followed_other_protocol);
       })
@@ -277,7 +278,7 @@ describe('redirects', function() {
 
           it('sets Referer header when following redirect', function(done) {
             send_request(opts, function(err, resp) {
-              spies.http.args[0][0].headers['Referer'].should.eql("http://localhost:8888/hello");
+              spies.http.args[0][0].headers['Referer'].should.eql("http://" + host + ":8888/hello");
               // spies.http.args[0][3].should.eql({ foo: 'bar'});
               done();
             })
@@ -323,7 +324,7 @@ describe('redirects', function() {
         // by default it will follow other protocols
         describe('and redirected to same path on another domain, same protocol', function() {
           before(function() {
-            location = url.replace('localhost', hostname);
+            location = url.replace(host, hostname);
           })
           it('follows redirect', followed_same_protocol);
         })
@@ -339,7 +340,7 @@ describe('redirects', function() {
         // by default it will follow other protocols
         describe('and redirected to same path on another domain, same protocol', function() {
           before(function() {
-            location = url.replace('localhost', hostname);
+            location = url.replace(host, hostname);
           })
 
           it('does not follow redirect', not_followed);
@@ -356,7 +357,7 @@ describe('redirects', function() {
         // by default it will follow other hosts
         describe('and redirected to same path on another domain, different protocol', function() {
           before(function() {
-            location = url.replace('localhost', hostname).replace(protocol, other_protocol).replace(ports[protocol], ports[other_protocol]);
+            location = url.replace(host, hostname).replace(protocol, other_protocol).replace(ports[protocol], ports[other_protocol]);
           })
           it('follows redirect', followed_other_protocol);
         })
@@ -372,7 +373,7 @@ describe('redirects', function() {
         // by default it will follow other hosts
         describe('and redirected to same path on another domain, different protocol', function() {
           before(function() {
-            location = url.replace('localhost', hostname).replace(protocol, other_protocol).replace(ports[protocol], ports[other_protocol]);
+            location = url.replace(host, hostname).replace(protocol, other_protocol).replace(ports[protocol], ports[other_protocol]);
           })
           it('does not follow redirect', not_followed);
         })

@@ -6,10 +6,9 @@ var should  = require('should'),
 describe('character encoding', function() {
 
   var url;
+  this.timeout(5000);
 
   describe('test A', function() {
-
-    this.timeout(5000);
 
     before(function() {
       url = 'http://www.huanqiukexue.com/html/newgc/2014/1215/25011.html';
@@ -40,7 +39,7 @@ describe('character encoding', function() {
           resp.body.indexOf('柳博米尔斯基').should.not.eql(-1);
           done();
         })
-        
+
       })
 
     })
