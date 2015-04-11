@@ -1,11 +1,8 @@
 var needle = require('../'),
   sinon = require('sinon'),
+  http = require('http'),
   should = require('should'),
-  nock = require('nock'),
-  assert = require('assert'),
-  cookies = require('../lib/cookies');
-
-nock.disableNetConnect();
+  assert = require('assert');
 
 var WEIRD_COOKIE_NAME = 'wc',
   BASE64_COOKIE_NAME = 'bc',
@@ -21,7 +18,9 @@ var WEIRD_COOKIE_NAME = 'wc',
   FORBIDDEN_COOKIE = 'fc=%20%3B%22%5C%2C',
   NUMBER_COOKIE = 'nc=12354342',
   COOKIE_HEADER = WEIRD_COOKIE + '; ' + BASE64_COOKIE + '; ' +
-  FORBIDDEN_COOKIE + '; ' + NUMBER_COOKIE;
+  FORBIDDEN_COOKIE + '; ' + NUMBER_COOKIE,
+  TEST_HOST = 'localhost';
+NO_COOKIES_TEST_PORT = 11112, ALL_COOKIES_TEST_PORT = 11113;
 
 function decode(str) {
   return decodeURIComponent(str);
@@ -33,76 +32,91 @@ function encode(str) {
 }
 
 describe('cookies', function() {
+
   var headers, server, opts;
 
-  beforeEach(function() {
-
-    headers = [
-      {
-        'content-type': 'text/html'
-      },
-      {
-        'Set-Cookie': [
-          WEIRD_COOKIE_NAME + '=' + encode(WEIRD_COOKIE_VALUE) + ';',
-          BASE64_COOKIE_NAME + '=' + encode(BASE64_COOKIE_VALUE) + ';',
-          FORBIDDEN_COOKIE_NAME + '=' + encode(FORBIDDEN_COOKIE_VALUE) + ';',
-          NUMBER_COOKIE_NAME + '=' + encode(NUMBER_COOKIE_VALUE) + ';'
-        ],
-        'content-type': 'text/html'
-      }
+  before(function() {
+    setCookieHeader = [
+      WEIRD_COOKIE_NAME + '=' + encode(WEIRD_COOKIE_VALUE) + ';',
+      BASE64_COOKIE_NAME + '=' + encode(BASE64_COOKIE_VALUE) + ';',
+      FORBIDDEN_COOKIE_NAME + '=' + encode(FORBIDDEN_COOKIE_VALUE) + ';',
+      NUMBER_COOKIE_NAME + '=' + encode(NUMBER_COOKIE_VALUE) + ';'
     ];
   });
 
-  beforeEach(function() {
-    nock('http://nocookies.test').get('/').reply(200, '', headers[0]);
-    nock('http://allcookies.test').get('/').reply(200, '', headers[1]);
+  before(function(done) {
+    serverAllCookies = http.createServer(function(req, res) {
+      res.setHeader('Content-Type', 'text/html');
+      res.setHeader('Set-Cookie', setCookieHeader);
+      res.end('200');
+    }).listen(ALL_COOKIES_TEST_PORT, TEST_HOST, done);
+  });
+
+  after(function(done) {
+    serverAllCookies.close(done);
   });
 
   describe('with default options', function() {
     it('no cookie header is set on request', function(done) {
-      needle.get('http://nocookies.test', function(err, response) {
-        assert(!response.req._headers.cookie);
-        done();
-      });
+      needle.get(
+        TEST_HOST + ':' + ALL_COOKIES_TEST_PORT, function(err, response) {
+          assert(!response.req._headers.cookie);
+          done();
+        });
     });
   });
 
   describe('if response does not contain cookies', function() {
+    before(function(done) {
+      serverNoCookies = http.createServer(function(req, res) {
+        res.setHeader('Content-Type', 'text/html');
+        res.end('200');
+      }).listen(NO_COOKIES_TEST_PORT, TEST_HOST, done);
+    });
+
     it('response.cookies is undefined', function(done) {
-      needle.get('http://nocookies.test', function(error, response) {
-        assert(!response.cookies);
-        done();
-      });
+      needle.get(
+        TEST_HOST + ':' + NO_COOKIES_TEST_PORT, function(error, response) {
+          assert(!response.cookies);
+          done();
+        });
+    });
+
+    after(function(done) {
+      serverNoCookies.close(done);
     });
   });
 
   describe('if response contains cookies', function() {
     it('puts them on resp.cookies', function(done) {
-      needle.get('http://allcookies.test', function(error, response) {
-        response.should.have.property('cookies');
-        done();
-      });
+      needle.get(
+        TEST_HOST + ':' + ALL_COOKIES_TEST_PORT, function(error, response) {
+          response.should.have.property('cookies');
+          done();
+        });
     });
 
     it('parses them as a object', function(done) {
-      needle.get('http://allcookies.test', function(error, response) {
-        response.cookies.should.be.an.instanceOf(Object)
-          .and.have.property(WEIRD_COOKIE_NAME);
-        response.cookies.should.have.property(BASE64_COOKIE_NAME);
-        response.cookies.should.have.property(FORBIDDEN_COOKIE_NAME);
-        response.cookies.should.have.property(NUMBER_COOKIE_NAME);
-        done();
-      });
+      needle.get(
+        TEST_HOST + ':' + ALL_COOKIES_TEST_PORT, function(error, response) {
+          response.cookies.should.be.an.instanceOf(Object)
+            .and.have.property(WEIRD_COOKIE_NAME);
+          response.cookies.should.have.property(BASE64_COOKIE_NAME);
+          response.cookies.should.have.property(FORBIDDEN_COOKIE_NAME);
+          response.cookies.should.have.property(NUMBER_COOKIE_NAME);
+          done();
+        });
     });
 
     it('must decode it', function(done) {
-      needle.get('http://allcookies.test', function(error, response) {
-        response.cookies.wc.should.be.eql(WEIRD_COOKIE_VALUE);
-        response.cookies.bc.should.be.eql(BASE64_COOKIE_VALUE);
-        response.cookies.fc.should.be.eql(FORBIDDEN_COOKIE_VALUE);
-        response.cookies.nc.should.be.eql(NUMBER_COOKIE_VALUE.toString());
-        done();
-      });
+      needle.get(
+        TEST_HOST + ':' + ALL_COOKIES_TEST_PORT, function(error, response) {
+          response.cookies.wc.should.be.eql(WEIRD_COOKIE_VALUE);
+          response.cookies.bc.should.be.eql(BASE64_COOKIE_VALUE);
+          response.cookies.fc.should.be.eql(FORBIDDEN_COOKIE_VALUE);
+          response.cookies.nc.should.be.eql(NUMBER_COOKIE_VALUE.toString());
+          done();
+        });
     });
 
     describe('and response is a redirect', function() {
@@ -128,15 +142,14 @@ describe('cookies', function() {
     it('must be a valid cookie string', function(done) {
       var COOKIE_PAIR = /^([^=\s]+)\s*=\s*("?)\s*(.*)\s*\2\s*$/;
 
-      needle.get('http://allcookies.test', opts, function(error, response) {
+      needle.get(TEST_HOST + ':' + ALL_COOKIES_TEST_PORT, opts, function(error, response) {
         var cookieString = response.req._headers.cookie;
 
         cookieString.should.be.type('string');
 
-        cookieString.split(/\s*;\s*/)
-          .forEach(function(pair) {
-            COOKIE_PAIR.test(pair).should.be.exactly(true);
-          });
+        cookieString.split(/\s*;\s*/).forEach(function(pair) {
+          COOKIE_PAIR.test(pair).should.be.exactly(true);
+        });
 
         cookieString.should.be.exactly(COOKIE_HEADER);
 
@@ -149,15 +162,14 @@ describe('cookies', function() {
         KEY_INDEX = 1,
         VALUE_INEX = 3;
 
-      needle.get('http://allcookies.test', opts, function(error, response) {
+      needle.get(TEST_HOST + ':' + ALL_COOKIES_TEST_PORT, opts, function(error, response) {
         var cookieObj = {},
           cookieString = response.req._headers.cookie;
 
-        cookieString.split(/\s*;\s*/)
-          .forEach(function(str) {
-            var pair = COOKIE_PAIR.exec(str);
-            cookieObj[pair[KEY_INDEX]] = pair[VALUE_INEX];
-          });
+        cookieString.split(/\s*;\s*/).forEach(function(str) {
+          var pair = COOKIE_PAIR.exec(str);
+          cookieObj[pair[KEY_INDEX]] = pair[VALUE_INEX];
+        });
 
         cookieObj[WEIRD_COOKIE_NAME].should.be.exactly(WEIRD_COOKIE_VALUE);
         cookieObj[BASE64_COOKIE_NAME].should.be.exactly(BASE64_COOKIE_VALUE);
@@ -170,15 +182,14 @@ describe('cookies', function() {
         KEY_INDEX = 1,
         VALUE_INEX = 3;
 
-      needle.get('http://allcookies.test', opts, function(error, response) {
+      needle.get(TEST_HOST + ':' + ALL_COOKIES_TEST_PORT, opts, function(error, response) {
         var cookieObj = {},
           cookieString = response.req._headers.cookie;
 
-        cookieString.split(/\s*;\s*/)
-          .forEach(function(str) {
-            var pair = COOKIE_PAIR.exec(str);
-            cookieObj[pair[KEY_INDEX]] = pair[VALUE_INEX];
-          });
+        cookieString.split(/\s*;\s*/).forEach(function(str) {
+          var pair = COOKIE_PAIR.exec(str);
+          cookieObj[pair[KEY_INDEX]] = pair[VALUE_INEX];
+        });
 
         cookieObj[FORBIDDEN_COOKIE_NAME].should.not.be.eql(
           FORBIDDEN_COOKIE_VALUE);
