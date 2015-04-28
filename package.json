@@ -41,7 +41,8 @@
   },
   "dependencies": {
     "debug": "^2.1.2",
-    "iconv-lite": "^0.4.4"
+    "iconv-lite": "^0.4.4",
+    "tunnel-agent": "^0.4.0"
   },
   "devDependencies": {
     "mocha": "",
