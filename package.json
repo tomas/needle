@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "debug": "^2.1.2",
+    "digest-header": "0.0.1",
     "iconv-lite": "^0.4.4"
   },
   "devDependencies": {
