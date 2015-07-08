@@ -131,8 +131,28 @@ describe('parsing', function(){
 
     })
 
-  });
+    describe('and parse option is "xml"', function() {
 
+      it('does NOT return object', function(done){
+        needle.get('localhost:' + port, { parse: 'xml' }, function(err, response, body) {
+          should.not.exist(err);
+          body.should.be.an.instanceof(Buffer)
+          body.toString().should.eql('{"foo":"bar"}');
+          done();
+        })
+      })
+
+      it('should NOT have a .parser = json property', function(done) {
+        needle.get('localhost:' + port, { parse: 'xml' }, function(err, resp) {
+          should.not.exist(err);
+          should.not.exist(resp.parser);
+          done();
+        })
+      })
+
+    })
+
+  });
 
   describe('when response is JSON \'false\'', function(){
 
@@ -242,6 +262,20 @@ describe('parsing', function(){
       })
 
     })
+
+    describe('and parse option is "xml"', function() {
+
+      it('does NOT return object', function(done){
+        needle.get('localhost:' + port, { parse: 'xml' }, function(err, response, body) {
+          should.not.exist(err);
+          body.should.be.an.instanceof(Buffer)
+          body.toString().should.eql('false');
+          done();
+        })
+      })
+
+    })
+
 
   });
 
