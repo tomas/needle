@@ -17,53 +17,6 @@ var get_catch = function(url, opts) {
 
 describe('errors', function(){
 
-  describe('null URL', function(){
-
-    it('throws', function(){
-      var ex = get_catch(); // null
-      should.exist(ex);
-      ex.should.be.an.instanceOf(TypeError);
-      ex.message.should.containEql('URL must be a string');
-    })
-
-  })
-
-/*
-
-  describe('invalid protocol', function(){
-
-    var url = 'foo://www.google.com/what'
-
-    it('throws', function(){
-      var ex = get_catch(url);
-      should.exist(ex);
-    })
-
-  })
-
-  describe('invalid host', function(){
-
-    var url = 'http://s1\\\2.com/'
-
-    it('throws', function(){
-      var ex = get_catch(url);
-      should.exist(ex);
-    })
-
-  })
-
-  describe('invalid path', function(){
-
-    var url = 'http://www.google.com\\\/x\\\    /x2.com/'
-
-    it('throws', function(){
-      var ex = get_catch(url);
-      should.exist(ex);
-    })
-
-  })
-
-*/
 
   describe('when host does not exist', function(){
 
