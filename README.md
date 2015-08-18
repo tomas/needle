@@ -160,6 +160,10 @@ needle.put('https://api.app.com/v2', nested, function(err, resp) {
 });
 ```
 
+### needle.patch(url, data, [options,] callback)
+
+Same behaviour as PUT.
+
 ### needle.delete(url, data, [options,] callback)
 
 ```js

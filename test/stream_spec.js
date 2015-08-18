@@ -114,5 +114,23 @@ describe('stream', function() {
           done();
       });
     });
+
+    it('can PATCH a stream', function (done) {
+      var stream = needle.patch('localhost:' + port, fs.createReadStream(file), { stream: true });
+
+      var chunks = [];
+      stream.on('readable', function () {
+        while (chunk = this.read()) {
+          Buffer.isBuffer(chunk).should.be.true;
+          chunks.push(chunk);
+        }
+      })
+
+      stream.on('end', function () {
+        var body = Buffer.concat(chunks).toString();
+          body.should.equal('contents of stream')
+          done();
+      });
+    });
   })
 })
