@@ -24,7 +24,7 @@ describe('stream', function() {
     describe('and the client uses streams', function(){
 
       it('should create a proper streams2 stream', function(done) {
-        var stream     = needle.get('localhost:' + port)
+        var stream = needle.get('localhost:' + port)
 
         stream._readableState.flowing.should.be.false;
 
