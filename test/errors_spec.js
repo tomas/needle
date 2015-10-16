@@ -17,7 +17,6 @@ var get_catch = function(url, opts) {
 
 describe('errors', function(){
 
-
   describe('when host does not exist', function(){
 
     var url = 'http://unexistinghost/foo';
@@ -48,6 +47,20 @@ describe('errors', function(){
           should.not.exist(resp);
           done();
         })
+      })
+
+      it('does not emit an error event', function(done) {
+        var emitted = false;
+        var req = needle.get(url, function(err, resp) { })
+
+        req.on('error', function() {
+          emitted = true;
+        })
+
+        setTimeout(function() {
+          emitted.should.eql(false);
+          done();
+        }, 100);
       })
 
     })
@@ -99,6 +112,20 @@ describe('errors', function(){
           called.should.be.false;
           done();
         }, 50)
+      })
+
+      it('does not emit an error event', function(done) {
+        var emitted = false,
+            req = needle.get(url);
+
+        req.on('error', function() {
+          emitted = true;
+        })
+
+        setTimeout(function() {
+          emitted.should.eql(false);
+          done();
+        }, 100);
       })
 
     })
@@ -155,6 +182,23 @@ describe('errors', function(){
           should.not.exist(resp);
           done();
         })
+      })
+
+      it('does not emit an error event', function(done) {
+        var emitted = false;
+
+        var req = send_request(function(err, resp) {
+          should.not.exist(resp);
+        })
+
+        req.on('error', function() {
+          emitted = true;
+        })
+
+        setTimeout(function() {
+          emitted.should.eql(false);
+          done();
+        }, 100);
       })
 
     })
@@ -214,6 +258,20 @@ describe('errors', function(){
           called.should.be.false;
           done();
         }, 250)
+      })
+
+      it('does not emit an error event', function(done) {
+        var emitted = false;
+        var req = send_request();
+
+        req.on('error', function() {
+          emitted = true;
+        })
+
+        setTimeout(function() {
+          emitted.should.eql(false);
+          done();
+        }, 100);
       })
 
     })
