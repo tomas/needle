@@ -206,7 +206,7 @@ For information about options that've changed, there's always [the changelog](ht
  - `follow_max`  : (or `follow`) Number of redirects to follow. Defaults to `0`. See below for more redirect options.
  - `multipart`   : Enables multipart/form-data encoding. Defaults to `false`. Use it when uploading files.
  - `proxy`       : Forwards request through HTTP(s) proxy. Eg. `proxy: 'http://user:pass@proxy.server.com:3128'`.
- - `agent`       : Uses an http.Agent of your choice, instead of the global, default one.
+ - `agent`       : Uses an http.Agent of your choice, instead of the global, default one. *If a `proxy` is in use, the global default agent will be automatically replaced with a [tunnel-agent](https://github.com/mikeal/tunnel-agent), or a custom agent if `agent` is supplied.*
  - `headers`     : Object containing custom HTTP headers for request. Overrides defaults described below.
  - `auth`        : Determines what to do with provided username/password. Options are `auto`, `digest` or `basic` (default). `auto` will detect the type of authentication depending on the response headers.
  - `json`        : When `true`, sets content type to `application/json` and sends request body as JSON string, instead of a query string.
