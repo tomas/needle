@@ -41,11 +41,15 @@ helpers.server = function(opts, cb) {
     res.end(opts.response || mirror_response(req));
   }
 
-  var handler = function(req, res){
+  var handler = function(req, res) {
 
     req.setEncoding('utf8'); // get as string
     req.body = '';
     req.on('data', function(str) { req.body += str })
+    req.socket.on('error', function(e) { 
+      // res.writeHead(500, {'Content-Type': 'text/plain'});
+      // res.end('Error: ' + e.message);
+    })
 
     setTimeout(function(){
       finish(req, res);
