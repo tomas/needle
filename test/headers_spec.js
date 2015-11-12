@@ -10,8 +10,10 @@ describe('request headers', function() {
       original_defaultMaxSockets;
 
   before(function(done) {
+    setTimeout(function() {
     existing_sockets = get_active_sockets().length;
     server = helpers.server({ port: 1234 }, done);
+    }, 100);
   })
 
   after(function(done) {
