@@ -26,7 +26,9 @@ describe('stream', function() {
       it('should create a proper streams2 stream', function(done) {
         var stream = needle.get('localhost:' + port)
 
-        stream._readableState.flowing.should.be.false;
+        // newer node versions set this to null instead of false
+        var bool = !!stream._readableState.flowing; 
+        should.equal(false, bool);
 
         var readableCalled = false;
         stream.on('readable', function () {
@@ -42,7 +44,7 @@ describe('stream', function() {
       })
 
       it('should should emit a single data item which is our JSON object', function(done) {
-        var stream     = needle.get('localhost:' + port)
+        var stream = needle.get('localhost:' + port)
 
         var chunks = [];
         stream.on('readable', function () {

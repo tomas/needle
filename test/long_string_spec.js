@@ -3,7 +3,7 @@ var needle = require('../'),
 
 describe('when posting a very long string', function() {
 
-  this.timeout(10000);
+  this.timeout(20000);
 
   function get_string(length) {
     var str = '';

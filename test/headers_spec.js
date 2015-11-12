@@ -6,9 +6,11 @@ describe('request headers', function() {
 
   var needle,
       server, 
+      existing_sockets,
       original_defaultMaxSockets;
 
   before(function(done) {
+    existing_sockets = get_active_sockets().length;
     server = helpers.server({ port: 1234 }, done);
   })
 
@@ -56,7 +58,7 @@ describe('request headers', function() {
 
       it('no open sockets remain after request', function(done) {
         send_request({}, function(err, resp) {
-          get_active_sockets().length.should.eql(0);
+          get_active_sockets().length.should.eql(existing_sockets);
           done();
         });
       })
@@ -74,7 +76,7 @@ describe('request headers', function() {
 
       it('no open sockets remain after request', function(done) {
         send_request({ connection: 'close' }, function(err, resp) {
-          get_active_sockets().length.should.eql(0);
+          get_active_sockets().length.should.eql(existing_sockets);
           done();
         });
       })
@@ -99,7 +101,7 @@ describe('request headers', function() {
 
       it('one open socket remain after request', function(done) {
         send_request({ connection: 'keep-alive' }, function(err, resp) {
-          get_active_sockets().length.should.eql(1);
+          get_active_sockets().length.should.eql(existing_sockets + 1);
           done();
         });
       })
@@ -155,7 +157,7 @@ describe('request headers', function() {
 
       it('no open sockets remain after request', function(done) {
         send_request({ connection: 'close' }, function(err, resp) {
-          get_active_sockets().length.should.eql(0);
+          get_active_sockets().length.should.eql(existing_sockets);
           done();
         });
       })
@@ -180,7 +182,7 @@ describe('request headers', function() {
 
       it('one open socket remain after request', function(done) {
         send_request({ connection: 'keep-alive' }, function(err, resp) {
-          get_active_sockets().length.should.eql(1);
+          get_active_sockets().length.should.eql(existing_sockets + 1);
           done();
         });
       })

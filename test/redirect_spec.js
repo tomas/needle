@@ -95,7 +95,12 @@ describe('redirects', function() {
 
     function followed_other_protocol(done) {
       send_request(opts, function(err, resp) {
-        spies.http.callCount.should.eql(1); // the one from http.request
+        // on new node versions, https.request calls http.request internally,
+        // so we need to amount for that additional call.
+
+        var http_calls = protocols.http.Agent.defaultMaxSockets == Infinity ? 2 : 1;
+
+        spies.http.callCount.should.eql(http_calls); // the one(s) from http.request
         spies.https.callCount.should.eql(1); // the one from https.request (redirect)
         done();
       })
