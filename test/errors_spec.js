@@ -17,54 +17,6 @@ var get_catch = function(url, opts) {
 
 describe('errors', function(){
 
-  describe('null URL', function(){
-
-    it('throws', function(){
-      var ex = get_catch(); // null
-      should.exist(ex);
-      ex.should.be.an.instanceOf(TypeError);
-      ex.message.should.containEql('URL must be a string');
-    })
-
-  })
-
-/*
-
-  describe('invalid protocol', function(){
-
-    var url = 'foo://www.google.com/what'
-
-    it('throws', function(){
-      var ex = get_catch(url);
-      should.exist(ex);
-    })
-
-  })
-
-  describe('invalid host', function(){
-
-    var url = 'http://s1\\\2.com/'
-
-    it('throws', function(){
-      var ex = get_catch(url);
-      should.exist(ex);
-    })
-
-  })
-
-  describe('invalid path', function(){
-
-    var url = 'http://www.google.com\\\/x\\\    /x2.com/'
-
-    it('throws', function(){
-      var ex = get_catch(url);
-      should.exist(ex);
-    })
-
-  })
-
-*/
-
   describe('when host does not exist', function(){
 
     var url = 'http://unexistinghost/foo';
@@ -95,6 +47,20 @@ describe('errors', function(){
           should.not.exist(resp);
           done();
         })
+      })
+
+      it('does not emit an error event', function(done) {
+        var emitted = false;
+        var req = needle.get(url, function(err, resp) { })
+
+        req.on('error', function() {
+          emitted = true;
+        })
+
+        setTimeout(function() {
+          emitted.should.eql(false);
+          done();
+        }, 100);
       })
 
     })
@@ -146,6 +112,20 @@ describe('errors', function(){
           called.should.be.false;
           done();
         }, 50)
+      })
+
+      it('does not emit an error event', function(done) {
+        var emitted = false,
+            req = needle.get(url);
+
+        req.on('error', function() {
+          emitted = true;
+        })
+
+        setTimeout(function() {
+          emitted.should.eql(false);
+          done();
+        }, 100);
       })
 
     })
@@ -202,6 +182,23 @@ describe('errors', function(){
           should.not.exist(resp);
           done();
         })
+      })
+
+      it('does not emit an error event', function(done) {
+        var emitted = false;
+
+        var req = send_request(function(err, resp) {
+          should.not.exist(resp);
+        })
+
+        req.on('error', function() {
+          emitted = true;
+        })
+
+        setTimeout(function() {
+          emitted.should.eql(false);
+          done();
+        }, 100);
       })
 
     })
@@ -261,6 +258,20 @@ describe('errors', function(){
           called.should.be.false;
           done();
         }, 250)
+      })
+
+      it('does not emit an error event', function(done) {
+        var emitted = false;
+        var req = send_request();
+
+        req.on('error', function() {
+          emitted = true;
+        })
+
+        setTimeout(function() {
+          emitted.should.eql(false);
+          done();
+        }, 100);
       })
 
     })

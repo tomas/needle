@@ -24,9 +24,11 @@ describe('stream', function() {
     describe('and the client uses streams', function(){
 
       it('should create a proper streams2 stream', function(done) {
-        var stream     = needle.get('localhost:' + port)
+        var stream = needle.get('localhost:' + port)
 
-        stream._readableState.flowing.should.be.false;
+        // newer node versions set this to null instead of false
+        var bool = !!stream._readableState.flowing; 
+        should.equal(false, bool);
 
         var readableCalled = false;
         stream.on('readable', function () {
@@ -42,7 +44,7 @@ describe('stream', function() {
       })
 
       it('should should emit a single data item which is our JSON object', function(done) {
-        var stream     = needle.get('localhost:' + port)
+        var stream = needle.get('localhost:' + port)
 
         var chunks = [];
         stream.on('readable', function () {
@@ -99,6 +101,24 @@ describe('stream', function() {
 
     it('can PUT a stream', function (done) {
       var stream = needle.put('localhost:' + port, fs.createReadStream(file), { stream: true });
+
+      var chunks = [];
+      stream.on('readable', function () {
+        while (chunk = this.read()) {
+          Buffer.isBuffer(chunk).should.be.true;
+          chunks.push(chunk);
+        }
+      })
+
+      stream.on('end', function () {
+        var body = Buffer.concat(chunks).toString();
+          body.should.equal('contents of stream')
+          done();
+      });
+    });
+
+    it('can PATCH a stream', function (done) {
+      var stream = needle.patch('localhost:' + port, fs.createReadStream(file), { stream: true });
 
       var chunks = [];
       stream.on('readable', function () {
