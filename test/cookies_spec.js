@@ -137,7 +137,7 @@ describe('cookies', function() {
     });
   });
 
-  describe('if resquest contains cookie header', function() {
+  describe('if request contains cookie header', function() {
     var opts = {
       cookies: {}
     };
