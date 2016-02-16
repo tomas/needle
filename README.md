@@ -230,7 +230,7 @@ These are basically shortcuts to the `headers` option described above.
  - `username`  : For HTTP basic auth.
  - `password`  : For HTTP basic auth. Requires username to be passed, but is optional.
  - `accept`    : Sets 'Accept' HTTP header. Defaults to `*/*`.
- - `connection`: Sets 'Connection' HTTP header. Defaults to `close` on Node older than 0.10.11, otherwise the header is not sent. 
+ - `connection`: Sets 'Connection' HTTP header. Not set by default, unless on Node older than 0.11.4 in which case it defaults to `close`. More info below.
  - `user_agent`: Sets the 'User-Agent' HTTP header. Defaults to `Needle/{version} (Node.js {node_version})`.
 
 Node.js TLS Options
@@ -271,6 +271,13 @@ needle.defaults({
 ```
 
 This will override Needle's default user agent and 10-second timeout, and disable response parsing, so you don't need to pass those options in every other request.
+
+Regarding the 'Connection' header 
+---------------------------------
+
+Unless you're running an old version of Node, by default Needle won't set the Connection header, which yields Node into its default behaviour of keeping the connection alive with the target server. This speeds up greatly making new requests to the same server.
+
+On older versions of Node.js, however, this has the unwanted behaviour of preventing the runtime from exiting, so to overcome this Needle does set the Connection header to close. So if you want full speed, as you'd get on newer versions of Node by default, you can simply set the Connection header to 'Keep-Alive'. Please note, though, that an event loop handler will prevent the runtime from exiting so you'll need to manually call `process.exit()`.
 
 Examples Galore
 ---------------
