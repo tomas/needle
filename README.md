@@ -230,7 +230,7 @@ These are basically shortcuts to the `headers` option described above.
  - `username`  : For HTTP basic auth.
  - `password`  : For HTTP basic auth. Requires username to be passed, but is optional.
  - `accept`    : Sets 'Accept' HTTP header. Defaults to `*/*`.
- - `connection`: Sets 'Connection' HTTP header. Not set by default, unless on Node older than 0.11.4 in which case it defaults to `close`. More info below.
+ - `connection`: Sets 'Connection' HTTP header. Not set by default, unless running Node < 0.11.4 in which case it defaults to `close`. More info about this below.
  - `user_agent`: Sets the 'User-Agent' HTTP header. Defaults to `Needle/{version} (Node.js {node_version})`.
 
 Node.js TLS Options
@@ -275,9 +275,11 @@ This will override Needle's default user agent and 10-second timeout, and disabl
 Regarding the 'Connection' header 
 ---------------------------------
 
-Unless you're running an old version of Node, by default Needle won't set the Connection header, which yields Node into its default behaviour of keeping the connection alive with the target server. This speeds up greatly making new requests to the same server.
+Unless you're running an old version of Node (< 0.11.4), by default Needle won't set the Connection header on requests, yielding Node's default behaviour of keeping the connection alive with the target server. This speeds up inmensely the process of sending several requests to the same host.
 
-On older versions of Node.js, however, this has the unwanted behaviour of preventing the runtime from exiting, so to overcome this Needle does set the Connection header to close. So if you want full speed, as you'd get on newer versions of Node by default, you can simply set the Connection header to 'Keep-Alive'. Please note, though, that an event loop handler will prevent the runtime from exiting so you'll need to manually call `process.exit()`.
+On older versions, however, this has the unwanted behaviour of preventing the runtime from exiting, either because of a bug or 'feature' that was changed on 0.11.4. To overcome this Needle does set the 'Connection' header to 'close' on those versions, however this also means that making new requests to the same host doesn't benefit from Keep-Alive.
+
+So if you're stuck on 0.10 or even lower and want full speed, you can simply set the Connection header to 'Keep-Alive' by using `{ connection: 'Keep-Alive' }`. Please note, though, that an event loop handler will prevent the runtime from exiting so you'll need to manually call `process.exit()` or the universe will collapse.
 
 Examples Galore
 ---------------
