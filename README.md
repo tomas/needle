@@ -230,7 +230,7 @@ These are basically shortcuts to the `headers` option described above.
  - `username`  : For HTTP basic auth.
  - `password`  : For HTTP basic auth. Requires username to be passed, but is optional.
  - `accept`    : Sets 'Accept' HTTP header. Defaults to `*/*`.
- - `connection`: Sets 'Connection' HTTP header. Defaults to `close`.
+ - `connection`: Sets 'Connection' HTTP header. Defaults to `close` on Node older than 0.10.11, otherwise the header is not sent. 
  - `user_agent`: Sets the 'User-Agent' HTTP header. Defaults to `Needle/{version} (Node.js {node_version})`.
 
 Node.js TLS Options
