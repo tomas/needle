@@ -57,6 +57,33 @@ describe('socket pool usage', function () {
           }
         });
       }
-    })
+    });
+
+    it('should be called when a socket is closed down', function (done) {
+
+      // This test case uses its own httpAgent to make sure we do not mess up any other
+      // socket objects kept in keep-alive state by other tests.
+      var httpAgent = new http.Agent({
+          keepAlive: true,
+          maxSockets: 1
+      });
+
+      needle.get('localhost:' + port, {agent: httpAgent}, function (err, resp) {
+        if (err) {
+          // we expect error as we just closed down the underlying socket.
+          done();
+        } else {
+          done(new Error("Request was expected to fail since the socket was closed"));
+        }
+      });
+
+      setTimeout(function () {
+        for(hostTarget in httpAgent.sockets) {
+          httpAgent.sockets[hostTarget].forEach(function (socket) {
+            socket.emit('end');
+          });
+        }
+      }, 0);
+    });
   });
 });
