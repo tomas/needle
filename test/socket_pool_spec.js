@@ -17,8 +17,10 @@ describe('socket pool usage', function () {
 
     before(function(){
       server = http.createServer(function(req, res) {
-        res.setHeader('Content-Type', 'application/json')
-        res.end('{"foo":"bar"}')
+        res.setHeader('Content-Type', 'application/json');
+        setTimeout(function () {
+          res.end('{"foo":"bar"}');
+        }, 50);
       }).listen(port);
     });
 
