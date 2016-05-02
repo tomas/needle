@@ -34,7 +34,12 @@ describe('compression', function(){
         }
 
         res.setHeader('Content-Type', 'application/json')
-        raw.end(jsonData)
+        if(req.headers['with-bad']) {
+          res.end(null);
+        } else {
+          raw.end(jsonData)
+        }
+
       }).listen(port);
     });
 
@@ -70,6 +75,13 @@ describe('compression', function(){
           should.ifError(err);
           body.should.have.property('foo', 'bar');
           response.bytes.should.not.equal(jsonData.length);
+          done();
+        })
+      })
+
+      it('should rethrow errors from decompressors', function(done){
+        needle.get('localhost:' + port, {headers: {'Accept-Encoding': 'deflate', 'With-Bad': 'true'}}, function(err, response, body){
+          should.exist(err);
           done();
         })
       })
