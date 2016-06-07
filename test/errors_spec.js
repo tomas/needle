@@ -95,6 +95,7 @@ describe('errors', function(){
         })
 
         setTimeout(function() {
+          should.exist(errorific);
           errorific.code.should.match(/ENOTFOUND|EADDRINFO/)
           done();
         }, 200)

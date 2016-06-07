@@ -8,6 +8,10 @@ var needle  = require('..'),
 var multiparts = ['----------------------NODENEEDLEHTTPCLIENT'];
 multiparts.push(['Content-Disposition: form-data; name=\"foo\"'])
 multiparts.push(['\r\nbar\r\n----------------------NODENEEDLEHTTPCLIENT--'])
+// multiparts.push(['Content-Disposition: form-data; name=\"test\"'])
+// multiparts.push(['\r\næµè¯\r\n----------------------NODENEEDLEHTTPCLIENT--'])
+// multiparts.push(['\r\n' + new Buffer('测试').toString() + '\r\n----------------------NODENEEDLEHTTPCLIENT--'])
+
 
 describe('post data (e.g. request body)', function() {
 
@@ -106,21 +110,21 @@ describe('post data (e.g. request body)', function() {
         it('sends request', function(done) {
           spystub_request();
 
-          get({ foo: 'bar' }, { multipart: true }, function(err, resp) {
+          get({ foo: 'bar', test: '测试' }, { multipart: true }, function(err, resp) {
             check_request('get');
             done();
           })
         })
 
         it('sets Content-Type header', function(done) {
-          post({ foo: 'bar' }, { multipart: true }, function(err, resp) {
+          post({ foo: 'bar', test: '测试' }, { multipart: true }, function(err, resp) {
             resp.body.headers['content-type'].should.equal('multipart/form-data; boundary=--------------------NODENEEDLEHTTPCLIENT');
             done();
           })
         })
 
         it('doesnt change default Accept header', function(done) {
-          post({ foo: 'bar' }, { multipart: true }, function(err, resp) {
+          post({ foo: 'bar', test: '测试' }, { multipart: true }, function(err, resp) {
             resp.body.headers['accept'].should.equal('*/*');
             done();
           })
@@ -139,6 +143,19 @@ describe('post data (e.g. request body)', function() {
           })
         })
 
+        it('writes japanese chars correctly as binary', function(done) {
+          spystub_request();
+
+          get({ foo: 'bar', test: '测试' }, { multipart: true }, function(err, resp) {
+            spy.called.should.be.true;
+
+            spy.args[0][0].should.be.a.Buffer;
+            new Buffer(spy.args[0][0]).toString('hex').should.eql('2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d4e4f44454e4545444c4548545450434c49454e540d0a436f6e74656e742d446973706f736974696f6e3a20666f726d2d646174613b206e616d653d22666f6f220d0a0d0a6261720d0a2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d4e4f44454e4545444c4548545450434c49454e540d0a436f6e74656e742d446973706f736974696f6e3a20666f726d2d646174613b206e616d653d2274657374220d0a0d0ac3a6c2b5c28bc3a8c2afc2950d0a2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d4e4f44454e4545444c4548545450434c49454e542d2d')
+            done();
+          })
+        })
+
+
       })
 
       describe('post request', function() {
@@ -146,7 +163,7 @@ describe('post data (e.g. request body)', function() {
         it('sends request', function(done) {
           spystub_request();
 
-          post({ foo: 'bar' }, { multipart: true }, function(err, resp) {
+          post({ foo: 'bar', test: '测试' }, { multipart: true }, function(err, resp) {
             check_request('post');
             done();
           })
@@ -160,6 +177,17 @@ describe('post data (e.g. request body)', function() {
             spy.args[0][0].should.be.a.Buffer;
             spy.args[0][0].toString().should.equal(multiparts.join('\r\n'));
             resp.body.body.should.eql(multiparts.join('\r\n'));
+            done();
+          })
+        })
+
+        it('writes japanese chars correctly as binary', function(done) {
+          spystub_request();
+
+          post({ foo: 'bar', test: '测试' }, { multipart: true }, function(err, resp) {
+            spy.called.should.be.true;
+            spy.args[0][0].should.be.a.Buffer;
+            new Buffer(spy.args[0][0]).toString('hex').should.eql('2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d4e4f44454e4545444c4548545450434c49454e540d0a436f6e74656e742d446973706f736974696f6e3a20666f726d2d646174613b206e616d653d22666f6f220d0a0d0a6261720d0a2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d4e4f44454e4545444c4548545450434c49454e540d0a436f6e74656e742d446973706f736974696f6e3a20666f726d2d646174613b206e616d653d2274657374220d0a0d0ac3a6c2b5c28bc3a8c2afc2950d0a2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d4e4f44454e4545444c4548545450434c49454e542d2d')
             done();
           })
         })
@@ -452,15 +480,15 @@ describe('post data (e.g. request body)', function() {
           it('sends request, adding data as querystring', function(done) {
             spystub_request();
 
-            get({ foo: 'bar' }, { json: false }, function(err, resp) {
+            get({ foo: 'bar', test: '测试' }, { json: false }, function(err, resp) {
               check_request('get');
-              stub.args[0][0]['path'].should.equal('/?foo=bar')
+              stub.args[0][0]['path'].should.equal('/?foo=bar&test=%E6%B5%8B%E8%AF%95')
               done();
             })
           })
 
           it('doesnt set Content-Type header', function(done) {
-            get({ foo: 'bar' }, { json: false }, function(err, resp) {
+            get({ foo: 'bar', test: '测试' }, { json: false }, function(err, resp) {
               // resp.body contains 'header' and 'body', mirroring what we sent
               should.not.exist(resp.body.headers['content-type']);
               done();
@@ -468,7 +496,7 @@ describe('post data (e.g. request body)', function() {
           })
 
           it('doesnt change default Accept header', function(done) {
-            get({ foo: 'bar' }, { json: false }, function(err, resp) {
+            get({ foo: 'bar', test: '测试' }, { json: false }, function(err, resp) {
               // resp.body contains 'header' and 'body', mirroring what we sent
               resp.body.headers['accept'].should.equal('*/*');
               done();
@@ -476,7 +504,7 @@ describe('post data (e.g. request body)', function() {
           })
 
           it('doesnt write anything', function(done) {
-            get({ foo: 'bar' }, { json: false }, function(err, resp) {
+            get({ foo: 'bar', test: '测试' }, { json: false }, function(err, resp) {
               spy.called.should.be.false;
               resp.body.body.should.eql('');
               done();
@@ -490,7 +518,7 @@ describe('post data (e.g. request body)', function() {
           it('sends request, without setting a querystring', function(done) {
             spystub_request();
 
-            get({ foo: 'bar' }, { json: true }, function(err, resp) {
+            get({ foo: 'bar', test: '测试' }, { json: true }, function(err, resp) {
               check_request('get');
               stub.args[0][0]['path'].should.equal('/')
               done();
@@ -498,23 +526,23 @@ describe('post data (e.g. request body)', function() {
           })
 
           it('sets Content-Type header', function(done) {
-            get({ foo: 'bar' }, { json: true }, function(err, resp) {
+            get({ foo: 'bar', test: '测试' }, { json: true }, function(err, resp) {
               resp.body.headers['content-type'].should.equal('application/json; charset=utf-8');
               done();
             })
           })
 
           it('set Accept header to application/json', function(done) {
-            get({ foo: 'bar' }, { json: true }, function(err, resp) {
+            get({ foo: 'bar', test: '测试' }, { json: true }, function(err, resp) {
               resp.body.headers['accept'].should.equal('application/json');
               done();
             })
           })
 
           it('writes JSON.stringify version of object', function(done) {
-            get({ foo: 'bar' }, { json: true }, function(err, resp) {
+            get({ foo: 'bar', test: '测试' }, { json: true }, function(err, resp) {
               spy.called.should.be.true;
-              var json = JSON.stringify({ foo: 'bar'})
+              var json = JSON.stringify({ foo: 'bar', test: '测试' })
               spy.args[0][0].toString().should.eql(json)
               resp.body.body.should.eql(json);
               done();
@@ -532,21 +560,21 @@ describe('post data (e.g. request body)', function() {
           it('sends request', function(done) {
             spystub_request();
 
-            post({ foo: 'bar' }, { json: false }, function(err, resp) {
+            post({ foo: 'bar', test: '测试' }, { json: false }, function(err, resp) {
               check_request('post');
               done();
             })
           })
 
           it('sets Content-Type header to www-form-urlencoded', function(done) {
-            post({ foo: 'bar' }, { json: false }, function(err, resp) {
+            post({ foo: 'bar', test: '测试' }, { json: false }, function(err, resp) {
               resp.body.headers['content-type'].should.equal('application/x-www-form-urlencoded');
               done();
             })
           })
 
           it('doesnt change default Accept header', function(done) {
-            post({ foo: 'bar' }, { json: false }, function(err, resp) {
+            post({ foo: 'bar', test: '测试' }, { json: false }, function(err, resp) {
               // resp.body contains 'header' and 'body', mirroring what we sent
               resp.body.headers['accept'].should.equal('*/*');
               done();
@@ -554,11 +582,11 @@ describe('post data (e.g. request body)', function() {
           })
 
           it('writes as buffer', function(done) {
-            post({ foo: 'bar' }, { json: false }, function(err, resp) {
+            post({ foo: 'bar', test: '测试' }, { json: false }, function(err, resp) {
               spy.called.should.be.true;
               spy.args[0][0].should.be.a.Buffer;
-              spy.args[0][0].toString().should.equal('foo=bar');
-              resp.body.body.should.eql('foo=bar');
+              spy.args[0][0].toString().should.equal('foo=bar&test=%E6%B5%8B%E8%AF%95');
+              resp.body.body.should.eql('foo=bar&test=%E6%B5%8B%E8%AF%95');
               done();
             })
           })
@@ -570,30 +598,30 @@ describe('post data (e.g. request body)', function() {
           it('sends request', function(done) {
             spystub_request();
 
-            post({ foo: 'bar' }, { json: true }, function(err, resp) {
+            post({ foo: 'bar', test: '测试' }, { json: true }, function(err, resp) {
               check_request('post');
               done();
             })
           })
 
           it('sets Content-Type header', function(done) {
-            post({ foo: 'bar' }, { json: true }, function(err, resp) {
+            post({ foo: 'bar', test: '测试' }, { json: true }, function(err, resp) {
               resp.body.headers['content-type'].should.equal('application/json; charset=utf-8');
               done();
             })
           })
 
           it('set Accept header to application/json', function(done) {
-            post({ foo: 'bar' }, { json: true }, function(err, resp) {
+            post({ foo: 'bar', test: '测试' }, { json: true }, function(err, resp) {
               resp.body.headers['accept'].should.equal('application/json');
               done();
             })
           })
 
           it('writes JSON.stringified object', function(done) {
-            post({ foo: 'bar' }, { json: true }, function(err, resp) {
+            post({ foo: 'bar', test: '测试' }, { json: true }, function(err, resp) {
               spy.called.should.be.true;
-              var json = JSON.stringify({ foo: 'bar'})
+              var json = JSON.stringify({ foo: 'bar', test: '测试' })
               spy.args[0][0].toString().should.eql(json)
               resp.body.body.should.eql(json);
               done();
