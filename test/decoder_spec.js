@@ -11,7 +11,7 @@ describe('character encoding', function() {
   describe('test A', function() {
 
     before(function() {
-      url = 'http://www.huanqiukexue.com/html/newgc/2014/1215/25011.html';
+      url = 'http://www.nina.jp/server/slackware/webapp/tomcat_charset.html';
     })
 
     describe('with decode = false', function() {
@@ -21,7 +21,7 @@ describe('character encoding', function() {
         needle.get(url, { decode: false }, function(err, resp) {
           resp.body.should.be.a.string;
           chardet.detect(resp.body).encoding.should.eql('windows-1252');
-          resp.body.indexOf('柳博米尔斯基').should.eql(-1);
+          resp.body.indexOf('EUCを使う').should.eql(-1);
           done();
         })
 
@@ -36,7 +36,7 @@ describe('character encoding', function() {
         needle.get(url, { decode: true }, function(err, resp) {
           resp.body.should.be.a.string;
           chardet.detect(resp.body).encoding.should.eql('ascii');
-          resp.body.indexOf('柳博米尔斯基').should.not.eql(-1);
+          resp.body.indexOf('EUCを使う').should.not.eql(-1);
           done();
         })
 
