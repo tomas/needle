@@ -49,7 +49,7 @@ describe('proxy option', function() {
   //////////////////////
   // auth helpers
 
-  var get_auth = function(header) {
+  function get_auth(header) {
     var token  = header.split(/\s+/).pop();
     return token && new Buffer(token, 'base64').toString().split(':');
   }
@@ -73,11 +73,11 @@ describe('proxy option', function() {
   }
 
   function proxy_auth_set(user, pass, done) {
-    return header_set('Proxy-Authorization', user, pass, done);
+    return header_set('proxy-authorization', user, pass, done);
   }
 
   function basic_auth_set(user, pass, done) {
-    return header_set('Authorization', user, pass, done);
+    return header_set('authorization', user, pass, done);
   }
 
   after(function() {
