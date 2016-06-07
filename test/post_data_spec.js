@@ -45,7 +45,7 @@ describe('post data (e.g. request body)', function() {
 
   function check_request(method) {
     stub.calledOnce.should.be.true;
-    stub.args[0][0]['headers']['Host'].should.equal('localhost:4321');
+    stub.args[0][0]['headers']['host'].should.equal('localhost:4321');
     stub.args[0][0]['method'].should.equal(method);
   }
 
@@ -95,7 +95,7 @@ describe('post data (e.g. request body)', function() {
         (function() {
           post('foobar', { multipart: true })
         }).should.throw()
-      })      
+      })
 
     })
 

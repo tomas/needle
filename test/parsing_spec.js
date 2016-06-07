@@ -23,12 +23,38 @@ describe('parsing', function(){
 
     describe('and parse option is not passed', function() {
 
-      it('should return object', function(done){
-        needle.get('localhost:' + port, function(err, response, body){
-          should.ifError(err);
-          body.should.have.property('foo', 'bar');
-          done();
+      describe('with default parse_response', function() {
+        
+        before(function() {
+          needle.defaults().parse_response.should.eql('all')
         })
+
+        it('should return object', function(done){
+          needle.get('localhost:' + port, function(err, response, body){
+            should.ifError(err);
+            body.should.have.property('foo', 'bar');
+            done();
+          })
+        })
+        
+      })
+
+      describe('and default parse_response is set to false', function() {
+
+        it('does NOT return object when disabled using .defaults', function(done){
+          needle.defaults({ parse_response: false })
+  
+          needle.get('localhost:' + port, function(err, response, body) {
+            should.not.exist(err);
+            body.should.be.an.instanceof(Buffer)
+            body.toString().should.eql('{"foo":"bar"}');
+            
+            needle.defaults({ parse_response: 'all' });
+            done();
+          })
+        })
+
+        
       })
 
     })

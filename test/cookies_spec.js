@@ -175,9 +175,19 @@ describe('cookies', function() {
         });
       });
     });
+
+    describe('with parse_cookies = false', function() {
+      it('does not parse them', function(done) {
+        needle.get(
+          TEST_HOST + ':' + ALL_COOKIES_TEST_PORT, { parse_cookies: false }, function(error, response) {
+            assert(!response.cookies);
+            done();
+          });
+      });
+    });
   });
 
-  describe('if resquest contains cookie header', function() {
+  describe('if request contains cookie header', function() {
     var opts = {
       cookies: {}
     };

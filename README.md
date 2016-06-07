@@ -217,6 +217,7 @@ Response options
  - `decode_response` : (or `decode`) Whether to decode the text responses to UTF-8, if Content-Type header shows a different charset. Defaults to `true`.
  - `parse_response`  : (or `parse`) Whether to parse XML or JSON response bodies automagically. Defaults to `true`. You can also set this to 'xml' or 'json' in which case Needle will *only* parse the response if the content type matches.
  - `output`          : Dump response output to file. This occurs after parsing and charset decoding is done.
+ - `parse_cookies`   : Whether to parse response’s `Set-Cookie` header. Defaults to `true`. If parsed, cookies are set on `resp.cookies`.
 
 Note: To stay light on dependencies, Needle doesn't include the `xml2js` module used for XML parsing. To enable it, simply do `npm install xml2js`.
 
@@ -230,7 +231,7 @@ These are basically shortcuts to the `headers` option described above.
  - `username`  : For HTTP basic auth.
  - `password`  : For HTTP basic auth. Requires username to be passed, but is optional.
  - `accept`    : Sets 'Accept' HTTP header. Defaults to `*/*`.
- - `connection`: Sets 'Connection' HTTP header. Defaults to `close`.
+ - `connection`: Sets 'Connection' HTTP header. Not set by default, unless running Node < 0.11.4 in which case it defaults to `close`. More info about this below.
  - `user_agent`: Sets the 'User-Agent' HTTP header. Defaults to `Needle/{version} (Node.js {node_version})`.
 
 Node.js TLS Options
@@ -272,6 +273,15 @@ needle.defaults({
 ```
 
 This will override Needle's default user agent and 10-second timeout, and disable response parsing, so you don't need to pass those options in every other request.
+
+Regarding the 'Connection' header 
+---------------------------------
+
+Unless you're running an old version of Node (< 0.11.4), by default Needle won't set the Connection header on requests, yielding Node's default behaviour of keeping the connection alive with the target server. This speeds up inmensely the process of sending several requests to the same host.
+
+On older versions, however, this has the unwanted behaviour of preventing the runtime from exiting, either because of a bug or 'feature' that was changed on 0.11.4. To overcome this Needle does set the 'Connection' header to 'close' on those versions, however this also means that making new requests to the same host doesn't benefit from Keep-Alive.
+
+So if you're stuck on 0.10 or even lower and want full speed, you can simply set the Connection header to 'Keep-Alive' by using `{ connection: 'Keep-Alive' }`. Please note, though, that an event loop handler will prevent the runtime from exiting so you'll need to manually call `process.exit()` or the universe will collapse.
 
 Examples Galore
 ---------------
