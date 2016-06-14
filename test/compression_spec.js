@@ -82,6 +82,8 @@ describe('compression', function(){
       it('should rethrow errors from decompressors', function(done){
         needle.get('localhost:' + port, {headers: {'Accept-Encoding': 'deflate', 'With-Bad': 'true'}}, function(err, response, body){
           should.exist(err);
+          err.message.should.equal("unexpected end of file");
+          err.code.should.equal("Z_BUF_ERROR")
           done();
         })
       })
