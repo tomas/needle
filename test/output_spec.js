@@ -22,6 +22,12 @@ describe('with output option', function() {
     stream.on('end', cb);
   }
 
+  // this will only work in UNICES
+  function get_open_file_descriptors() {
+    var list = fs.readdirSync('/proc/self/fd');
+    return list.length;
+  }
+
   var send_request = send_request_cb;
 
   before(function(){
@@ -103,6 +109,17 @@ describe('with output option', function() {
         })
       })
 
+      it('closes the file descriptor', function(done) {
+        var open_descriptors = get_open_file_descriptors();
+        send_request(file + Math.random(), function(err, resp) {
+          setTimeout(function() {
+            var current_descriptors = get_open_file_descriptors();
+            open_descriptors.should.eql(current_descriptors);
+            done()
+          }, 10)
+        })
+      })
+
     })
 
     describe('for a JSON response', function() {
@@ -153,6 +170,17 @@ describe('with output option', function() {
             fs.readFileSync(file).toString().should.eql('{\"foo\":\"bar\"}');
             done();
           }, 20);
+        })
+      })
+
+      it('closes the file descriptor', function(done) {
+        var open_descriptors = get_open_file_descriptors();
+        send_request(file + Math.random(), function(err, resp) {
+          setTimeout(function() {
+            var current_descriptors = get_open_file_descriptors();
+            open_descriptors.should.eql(current_descriptors);
+            done()
+          }, 10)
         })
       })
 
@@ -210,6 +238,17 @@ describe('with output option', function() {
             fs.readFileSync(file).should.eql(pixel);
             done();
           }, 20);
+        })
+      })
+
+      it('closes the file descriptor', function(done) {
+        var open_descriptors = get_open_file_descriptors();
+        send_request(file + Math.random(), function(err, resp) {
+          setTimeout(function() {
+            var current_descriptors = get_open_file_descriptors();
+            open_descriptors.should.eql(current_descriptors);
+            done()
+          }, 10)
         })
       })
 
