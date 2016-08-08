@@ -1,9 +1,9 @@
 var should = require('should'),
     needle = require('./../'),
-    http = require('http'),
-    zlib = require('zlib'),
+    http   = require('http'),
+    zlib   = require('zlib'),
     stream = require('stream'),
-    port = 11111,
+    port   = 11111,
     server;
 
 describe('compression', function(){
@@ -34,8 +34,8 @@ describe('compression', function(){
         }
 
         res.setHeader('Content-Type', 'application/json')
-        if(req.headers['with-bad']) {
-          res.end(null);
+        if (req.headers['with-bad']) {
+          res.end('foo'); // end, no deflate data
         } else {
           raw.end(jsonData)
         }
@@ -80,10 +80,10 @@ describe('compression', function(){
       })
 
       it('should rethrow errors from decompressors', function(done){
-        needle.get('localhost:' + port, {headers: {'Accept-Encoding': 'deflate', 'With-Bad': 'true'}}, function(err, response, body){
+        needle.get('localhost:' + port, {headers: {'Accept-Encoding': 'deflate', 'With-Bad': 'true'}}, function(err, response, body) {
           should.exist(err);
-          err.message.should.equal("unexpected end of file");
-          err.code.should.equal("Z_BUF_ERROR")
+          err.message.should.equal("incorrect header check");
+          err.code.should.equal("Z_DATA_ERROR")
           done();
         })
       })
