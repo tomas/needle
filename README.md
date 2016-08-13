@@ -210,6 +210,7 @@ For information about options that've changed, there's always [the changelog](ht
  - `headers`     : Object containing custom HTTP headers for request. Overrides defaults described below.
  - `auth`        : Determines what to do with provided username/password. Options are `auto`, `digest` or `basic` (default). `auto` will detect the type of authentication depending on the response headers.
  - `json`        : When `true`, sets content type to `application/json` and sends request body as JSON string, instead of a query string.
+ - `encode_uri`  : When `true`, will encode the uri using `encodeURI`. Defaults to `false`.
 
 Response options
 ----------------
@@ -273,7 +274,7 @@ needle.defaults({
 
 This will override Needle's default user agent and 10-second timeout, and disable response parsing, so you don't need to pass those options in every other request.
 
-Regarding the 'Connection' header 
+Regarding the 'Connection' header
 ---------------------------------
 
 Unless you're running an old version of Node (< 0.11.4), by default Needle won't set the Connection header on requests, yielding Node's default behaviour of keeping the connection alive with the target server. This speeds up inmensely the process of sending several requests to the same host.
