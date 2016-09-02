@@ -58,6 +58,7 @@ helpers.server = function(opts, cb) {
   };
 
   var protocol = opts.protocol || 'http';
+  var server;
 
   if (protocol == 'https')
     server = protocols[protocol].createServer(keys, handler);
