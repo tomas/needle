@@ -12,12 +12,12 @@ describe('urls', function() {
     return needle.get(url, cb);
   }
 
-  before(function(){
-    server = helpers.server({ port: 3333 });
+  before(function(done){
+    server = helpers.server({ port: 3333 }, done);
   })
 
-  after(function(){
-    server.close();
+  after(function(done) {
+    server.close(done);
   })
 
   describe('null URL', function(){
@@ -122,6 +122,25 @@ describe('urls', function() {
         done();
       })
     })
+
+  })
+
+  describe('double encoding', function() {
+
+    var path = '/foo?email=' + encodeURIComponent('what-ever@Example.Com');
+
+    before(function() {
+      url = 'localhost:3333' + path
+    });
+
+    it('should not occur', function(done) {
+      send_request(function(err, res) {
+        should.not.exist(err);
+        should(res.req.path).be.exactly(path);
+        done();
+      });
+
+    });
 
   })
 
