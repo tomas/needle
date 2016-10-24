@@ -51,7 +51,29 @@ describe('cookies', function() {
       res.setHeader('Set-Cookie', setCookieHeader);
       res.end('200');
     }).listen(ALL_COOKIES_TEST_PORT, TEST_HOST, done);
-  
+    var redirectFirstCookieHeader = [
+      WEIRD_COOKIE_NAME + '=' + encode(WEIRD_COOKIE_VALUE) + ';',
+      BASE64_COOKIE_NAME + '=' + encode(BASE64_COOKIE_VALUE) + ';'
+    ];
+
+    var redirectSecondCookieHeader = [
+      FORBIDDEN_COOKIE_NAME + '=' + encode(FORBIDDEN_COOKIE_VALUE) + ';',
+      NUMBER_COOKIE_NAME + '=' + encode(NUMBER_COOKIE_VALUE) + ';'
+    ];
+
+    serverRedirectCookiesFirst = http.createServer(function(req, res) {
+      res.statusCode = 302;
+      res.setHeader('Content-Type', 'text/html');
+      res.setHeader('Set-Cookie', redirectFirstCookieHeader);
+      res.setHeader('Location', 'http://' + TEST_HOST + ':' + REDIRECT_COOKIES_TEST_PORT_SECOND);
+      res.end();
+    }).listen(REDIRECT_COOKIES_TEST_PORT_FIRST, TEST_HOST);
+
+    serverRedirectCookiesSecond = http.createServer(function(req, res) {
+      res.setHeader('Content-Type', 'text/html');
+      res.setHeader('Set-Cookie', redirectSecondCookieHeader);
+      res.end('200');
+    }).listen(REDIRECT_COOKIES_TEST_PORT_SECOND, TEST_HOST);
   });
 
   after(function(done) {
@@ -125,53 +147,27 @@ describe('cookies', function() {
       describe('and follow_set_cookies is false', function() {
         it('no cookie header set on redirection request', function() {});
       });
-      describe('and follow_set_cookies is true', function() {});
-      describe('and cookie_jar is true', function() {
-        var cookieJar = {};
+      describe('and follow_set_cookies is true', function() {
         var opts = {
-          cookie_jar: cookieJar,
+          follow_set_cookies: true,
           follow_max: 2
         };
 
-        before(function() {
-          var redirectFirstCookieHeader = [
-            WEIRD_COOKIE_NAME + '=' + encode(WEIRD_COOKIE_VALUE) + ';',
-            BASE64_COOKIE_NAME + '=' + encode(BASE64_COOKIE_VALUE) + ';'
-          ];
-
-          var redirectSecondCookieHeader = [
-            FORBIDDEN_COOKIE_NAME + '=' + encode(FORBIDDEN_COOKIE_VALUE) + ';',
-            NUMBER_COOKIE_NAME + '=' + encode(NUMBER_COOKIE_VALUE) + ';'
-          ];
-
-          serverRedirectCookiesFirst = http.createServer(function(req, res) {
-            res.statusCode = 302;
-            res.setHeader('Content-Type', 'text/html');
-            res.setHeader('Set-Cookie', redirectFirstCookieHeader);
-            res.setHeader('Location', 'http://' + TEST_HOST + ':' + REDIRECT_COOKIES_TEST_PORT_SECOND);
-            res.end();
-          }).listen(REDIRECT_COOKIES_TEST_PORT_FIRST, TEST_HOST);
-
-          serverRedirectCookiesSecond = http.createServer(function(req, res) {
-            res.setHeader('Content-Type', 'text/html');
-            res.setHeader('Set-Cookie', redirectSecondCookieHeader);
-            res.end('200');
-          }).listen(REDIRECT_COOKIES_TEST_PORT_SECOND, TEST_HOST);
-        });
-
         it('should have all the cookies', function(done){
           needle.get(TEST_HOST + ':' + REDIRECT_COOKIES_TEST_PORT_FIRST, opts, function(error, response) {
-            cookieJar.should.have.property(WEIRD_COOKIE_NAME);
-            cookieJar.should.have.property(BASE64_COOKIE_NAME);
-            cookieJar.should.have.property(FORBIDDEN_COOKIE_NAME);
-            cookieJar.should.have.property(NUMBER_COOKIE_NAME);
+            console.log(response.cookies);
+            response.cookies.should.have.property(WEIRD_COOKIE_NAME);
+            response.cookies.should.have.property(BASE64_COOKIE_NAME);
+            response.cookies.should.have.property(FORBIDDEN_COOKIE_NAME);
+            response.cookies.should.have.property(NUMBER_COOKIE_NAME);
             done();
           });
         });
 
-        after(function() {
+        after(function(done) {
           serverRedirectCookiesFirst.close();
           serverRedirectCookiesSecond.close();
+          done();
         });
       });
     });
