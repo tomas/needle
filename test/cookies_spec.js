@@ -1,8 +1,9 @@
-var needle = require('../'),
-  sinon = require('sinon'),
-  http = require('http'),
-  should = require('should'),
-  assert = require('assert');
+var needle  = require('../'),
+    cookies = require('../lib/cookies'),
+    sinon   = require('sinon'),
+    http    = require('http'),
+    should  = require('should'),
+    assert  = require('assert');
 
 var WEIRD_COOKIE_NAME = 'wc',
   BASE64_COOKIE_NAME = 'bc',
@@ -19,21 +20,22 @@ var WEIRD_COOKIE_NAME = 'wc',
   NUMBER_COOKIE = 'nc=12354342',
   COOKIE_HEADER = WEIRD_COOKIE + '; ' + BASE64_COOKIE + '; ' +
   FORBIDDEN_COOKIE + '; ' + NUMBER_COOKIE,
-  TEST_HOST = 'localhost';
-NO_COOKIES_TEST_PORT = 11112, ALL_COOKIES_TEST_PORT = 11113;
-
-function decode(str) {
-  return decodeURIComponent(str);
-}
-
-function encode(str) {
-  str = str.toString().replace(/[\x00-\x1F\x7F]/g, encodeURIComponent);
-  return str.replace(/[\s\"\,;\\%]/g, encodeURIComponent);
-}
+  TEST_HOST = 'localhost',
+  NO_COOKIES_TEST_PORT = 11112,
+  ALL_COOKIES_TEST_PORT = 11113;
 
 describe('cookies', function() {
 
   var headers, server, opts;
+
+  function decode(str) {
+    return decodeURIComponent(str);
+  }
+
+  function encode(str) {
+    str = str.toString().replace(/[\x00-\x1F\x7F]/g, encodeURIComponent);
+    return str.replace(/[\s\"\,;\\%]/g, encodeURIComponent);
+  }
 
   before(function() {
     setCookieHeader = [
@@ -120,10 +122,79 @@ describe('cookies', function() {
     });
 
     describe('and response is a redirect', function() {
-      describe('and follow_set_cookies is false', function() {
-        it('no cookie header set on redirection request', function() {});
+
+      var redirectServer, testPort = 22222;
+
+      var responseCookies = [
+        [ // first req
+          WEIRD_COOKIE_NAME + '=' + encode(WEIRD_COOKIE_VALUE) + ';',
+          BASE64_COOKIE_NAME + '=' + encode(BASE64_COOKIE_VALUE) + ';',
+          'FOO=123;'
+        ], [ // second req
+          FORBIDDEN_COOKIE_NAME + '=' + encode(FORBIDDEN_COOKIE_VALUE) + ';',
+          NUMBER_COOKIE_NAME + '=' + encode(NUMBER_COOKIE_VALUE) + ';'
+        ], [ // third red
+          'FOO=BAR;'
+        ]
+      ]
+
+      before(function() {
+        redirectServer = http.createServer(function(req, res) {
+          var number  = parseInt(req.url.replace('/', ''));
+          var nextUrl = 'http://' + TEST_HOST + ':' + testPort + '/' + (number + 1);
+
+          if (responseCookies[number]) { // got cookies
+            res.statusCode = 302;
+            res.setHeader('Set-Cookie', responseCookies[number]);
+            res.setHeader('Location', nextUrl);
+          } else if (number == 3) {
+            res.statusCode = 302; // redirect but without cookies
+            res.setHeader('Location', nextUrl);
+          }
+
+          res.end('OK');
+        }).listen(22222, TEST_HOST);
       });
-      describe('and follow_set_cookies is true', function() {});
+
+      after(function(done) {
+        redirectServer.close(done);
+      })
+
+      describe('and follow_set_cookies is false', function() {
+
+        var opts = {
+          follow_set_cookies: false,
+          follow_max: 4
+        };
+
+        it('no cookie header set on redirection request', function(done) {
+          var spy = sinon.spy(cookies, 'write');
+
+          needle.get(TEST_HOST + ':' + testPort + '/0', opts, function(err, resp) {
+            spy.callCount.should.eql(0);
+            done();
+          });
+        });
+      });
+
+      describe('and follow_set_cookies is true', function() {
+        var opts = {
+          follow_set_cookies: true,
+          follow_max: 4
+        };
+
+        it('should have all the cookies', function(done) {
+          needle.get(TEST_HOST + ':' + testPort + '/0', opts, function(err, resp) {
+            resp.cookies.should.have.property(WEIRD_COOKIE_NAME);
+            resp.cookies.should.have.property(BASE64_COOKIE_NAME);
+            resp.cookies.should.have.property(FORBIDDEN_COOKIE_NAME);
+            resp.cookies.should.have.property(NUMBER_COOKIE_NAME);
+            resp.cookies.should.have.property('FOO');
+            resp.cookies.FOO.should.eql('BAR'); // should overwrite previous one
+            done();
+          });
+        });
+      });
     });
 
     describe('with parse_cookies = false', function() {
