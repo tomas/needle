@@ -58,9 +58,11 @@ Usage
 
 ```js
 // using callback
-needle.get('ifconfig.me/all.json', function(error, response) {
-  if (!error)
-    console.log(response.body.ip_addr); // JSON decoding magic. :)
+needle.get('ifconfig.me/all.json', function(error, response, body) {
+  if (!error) {
+    // body is an alias for `response.body`
+    console.log(body.ip_addr); // that in this case holds a JSON-decoded object.
+  }
 });
 
 // using streams
