@@ -9,5 +9,10 @@ console.log('Downloading ' + file);
 
 needle.get(url, { output: file, follow: 3 }, function(err, resp, data){
   console.log('File saved: ' + process.cwd() + '/' + file);
-  console.log(resp.bytes + ' bytes transferred.');
+
+  var size = fs.statSync(file).size;
+  if (size == resp.bytes)
+    console.log(resp.bytes + ' bytes written to file.');
+  else
+    throw new Error('File size mismatch: ' + size + ' != ' + resp.bytes);
 });

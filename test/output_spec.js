@@ -112,11 +112,9 @@ describe('with output option', function() {
       it('closes the file descriptor', function(done) {
         var open_descriptors = get_open_file_descriptors();
         send_request(file + Math.random(), function(err, resp) {
-          setTimeout(function() {
-            var current_descriptors = get_open_file_descriptors();
-            open_descriptors.should.eql(current_descriptors);
-            done()
-          }, 10)
+          var current_descriptors = get_open_file_descriptors();
+          open_descriptors.should.eql(current_descriptors);
+          done()
         })
       })
 
@@ -151,19 +149,13 @@ describe('with output option', function() {
 
       it('file size equals response length', function(done) {
         send_request(file, function(err, resp) {
-
-          // we need to wait a bit since writing to config.output
-          // happens independently of needle's callback logic.
-          setTimeout(function() {
-            fs.statSync(file).size.should.equal(resp.bytes);
-            done();
-          }, 20);
+          fs.statSync(file).size.should.equal(resp.bytes);
+          done();
         })
       })
 
       it('response pipeline is honoured (JSON is decoded by default)', function(done) {
         send_request_stream(file, function(err, resp) {
-
           // we need to wait a bit since writing to config.output
           // happens independently of needle's callback logic.
           setTimeout(function() {
@@ -176,11 +168,9 @@ describe('with output option', function() {
       it('closes the file descriptor', function(done) {
         var open_descriptors = get_open_file_descriptors();
         send_request(file + Math.random(), function(err, resp) {
-          setTimeout(function() {
-            var current_descriptors = get_open_file_descriptors();
-            open_descriptors.should.eql(current_descriptors);
-            done()
-          }, 10)
+          var current_descriptors = get_open_file_descriptors();
+          open_descriptors.should.eql(current_descriptors);
+          done()
         })
       })
 
@@ -221,12 +211,8 @@ describe('with output option', function() {
 
       it('file size equals response length', function(done) {
         send_request(file, function(err, resp) {
-          // we need to wait a bit since writing to config.output
-          // happens independently of needle's callback logic.
-          setTimeout(function() {
-            fs.statSync(file).size.should.equal(resp.bytes);
-            done();
-          }, 20);
+          fs.statSync(file).size.should.equal(resp.bytes);
+          done();
         })
       })
 
@@ -244,11 +230,9 @@ describe('with output option', function() {
       it('closes the file descriptor', function(done) {
         var open_descriptors = get_open_file_descriptors();
         send_request(file + Math.random(), function(err, resp) {
-          setTimeout(function() {
-            var current_descriptors = get_open_file_descriptors();
-            open_descriptors.should.eql(current_descriptors);
-            done()
-          }, 10)
+          var current_descriptors = get_open_file_descriptors();
+          open_descriptors.should.eql(current_descriptors);
+          done()
         })
       })
 
