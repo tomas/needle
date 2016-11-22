@@ -67,7 +67,9 @@ needle.get('ifconfig.me/all.json', function(error, response, body) {
 
 // using streams
 var out = fs.createWriteStream('logo.png');
-needle.get('https://google.com/images/logo.png').pipe(out);
+needle.get('https://google.com/images/logo.png').pipe(out).on('finish', function() {
+  console.log('Pipe finished!'); 
+});
 ```
 
 As you can see, you can call Needle with a callback or without it. When passed, the response body will be buffered and written to `response.body`, and the callback will be fired when all of the data has been collected and processed (e.g. decompressed, decoded and/or parsed).
@@ -99,10 +101,16 @@ var options = {
 
 var stream = needle.get('https://backend.server.com/everything.html', options);
 
+// read the chunks from the 'readable' event, so the stream gets consumed.
 stream.on('readable', function() {
   while (data = this.read()) {
     console.log(data.toString());
   }
+})
+
+stream.on('end', function(err) {
+  // if our request had an error, our 'end' event will tell us.
+  if (!err) console.log('Great success!');
 })
 ```
 
