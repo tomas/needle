@@ -189,18 +189,25 @@ needle.delete('https://api.app.com/messages/123', null, options, function(err, r
 
 ### needle.request(method, url, data, [options,] callback)
 
-Generic request. This not only allows for flexibility, but also lets you perform a GET request with data, in which case will be appended to the request as a query string.
+Generic request. This not only allows for flexibility, but also lets you perform a GET request with data, in which case will be appended to the request as a query string, unless you pass a `json: true` option (read below).
 
 ```js
-var data = {
-  q      : 'a very smart query',
-  page   : 2,
-  format : 'json'
+var params = {
+  q    : 'a very smart query',
+  page : 2
 }
 
-needle.request('get', 'forum.com/search', data, function(err, resp) {
+needle.request('get', 'forum.com/search', params, function(err, resp) {
   if (!err && resp.statusCode == 200)
     console.log(resp.body); // here you go, mister.
+});
+```
+
+Now, if you set pass `json: true` among the options, Needle won't set your params as a querystring but instead send a JSON representation of your data through the request's body.
+
+```js
+needle.request('get', 'forum.com/search', params, { json: true }, function(err) {
+  if (resp.statusCode == 200) console.log('It worked!');
 });
 ```
 
