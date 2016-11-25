@@ -290,6 +290,20 @@ needle.defaults({
 
 This will override Needle's default user agent and 10-second timeout, and disable response parsing, so you don't need to pass those options in every other request.
 
+More advanced Proxy support
+---------------------------
+
+Since you can pass a custom HTTPAgent to Needle you can do all sorts of neat stuff. For example, if you want to use the [`tunnel`](https://github.com/koichik/node-tunnel) module for HTTPS proxying, you can do this:
+
+```js
+var tunnel = require('tunnel');
+var myAgent = tunnel.httpOverHttp({ 
+  proxy: { host: 'localhost' }
+};
+
+needle.get('foobar.com', { agent: myAgent ))
+```
+
 Regarding the 'Connection' header 
 ---------------------------------
 
