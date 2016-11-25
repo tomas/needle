@@ -90,6 +90,22 @@ describe('proxy option', function() {
       send_request({ proxy: null }, not_proxied(done))
     })
 
+    describe('but defaults has been set', function() {
+
+      before(function() {
+        needle.defaults({ proxy: 'foobar' });
+      })
+
+      after(function() {
+        needle.defaults({ proxy: null });
+      })
+
+      it('tries to proxy anyway', function(done) {
+        send_request({}, proxied('foobar', 80, done))
+      })
+
+    })
+
   })
 
   describe('when weird string is passed', function() {
