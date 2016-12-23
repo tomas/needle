@@ -109,14 +109,16 @@ describe('with output option', function() {
         })
       })
 
-      it('closes the file descriptor', function(done) {
-        var open_descriptors = get_open_file_descriptors();
-        send_request(file + Math.random(), function(err, resp) {
-          var current_descriptors = get_open_file_descriptors();
-          open_descriptors.should.eql(current_descriptors);
-          done()
+      if (process.platform != 'win32') {
+        it('closes the file descriptor', function(done) {
+          var open_descriptors = get_open_file_descriptors();
+          send_request(file + Math.random(), function(err, resp) {
+            var current_descriptors = get_open_file_descriptors();
+            open_descriptors.should.eql(current_descriptors);
+            done()
+          })
         })
-      })
+      }
 
     })
 
@@ -217,7 +219,7 @@ describe('with output option', function() {
       })
 
       it('file is equal to original buffer', function(done) {
-        send_request_stream(file, function(err, resp) {
+        send_request(file, function(err, resp) {
           // we need to wait a bit since writing to config.output
           // happens independently of needle's callback logic.
           setTimeout(function() {
@@ -227,14 +229,23 @@ describe('with output option', function() {
         })
       })
 
-      it('closes the file descriptor', function(done) {
-        var open_descriptors = get_open_file_descriptors();
-        send_request(file + Math.random(), function(err, resp) {
-          var current_descriptors = get_open_file_descriptors();
-          open_descriptors.should.eql(current_descriptors);
-          done()
+      it('returns the data in resp.body too', function(done) {
+        send_request(file, function(err, resp) {
+          resp.body.should.eql(pixel);
+          done();
         })
       })
+
+      if (process.platform != 'win32') {
+        it('closes the file descriptor', function(done) {
+          var open_descriptors = get_open_file_descriptors();
+          send_request(file + Math.random(), function(err, resp) {
+            var current_descriptors = get_open_file_descriptors();
+            open_descriptors.should.eql(current_descriptors);
+            done()
+          })
+        })
+      }
 
     })
 
