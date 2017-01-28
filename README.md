@@ -206,7 +206,7 @@ needle.request('get', 'forum.com/search', params, function(err, resp) {
 Now, if you set pass `json: true` among the options, Needle won't set your params as a querystring but instead send a JSON representation of your data through the request's body.
 
 ```js
-needle.request('get', 'forum.com/search', params, { json: true }, function(err) {
+needle.request('get', 'forum.com/search', params, { json: true }, function(err, resp) {
   if (resp.statusCode == 200) console.log('It worked!');
 });
 ```
