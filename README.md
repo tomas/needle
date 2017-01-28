@@ -299,9 +299,9 @@ Since you can pass a custom HTTPAgent to Needle you can do all sorts of neat stu
 var tunnel = require('tunnel');
 var myAgent = tunnel.httpOverHttp({ 
   proxy: { host: 'localhost' }
-};
+});
 
-needle.get('foobar.com', { agent: myAgent ))
+needle.get('foobar.com', { agent: myAgent });
 ```
 
 Regarding the 'Connection' header 
