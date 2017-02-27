@@ -5,28 +5,23 @@ var needle  = require('../'),
     should  = require('should'),
     assert  = require('assert');
 
-var WEIRD_COOKIE_NAME = 'wc',
-  BASE64_COOKIE_NAME = 'bc',
-  FORBIDDEN_COOKIE_NAME = 'fc',
-  NUMBER_COOKIE_NAME = 'nc',
-  WEIRD_COOKIE_VALUE = '!\'*+#()&-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[' +
-  ']^_`abcdefghijklmnopqrstuvwxyz{|}~',
-  BASE64_COOKIE_VALUE = 'Y29va2llCg==',
-  FORBIDDEN_COOKIE_VALUE = ' ;"\\,',
-  NUMBER_COOKIE_VALUE = 12354342,
-  WEIRD_COOKIE = 'wc=!\'*+#()&-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~',
-  BASE64_COOKIE = 'bc=Y29va2llCg==',
-  FORBIDDEN_COOKIE = 'fc=%20%3B%22%5C%2C',
-  NUMBER_COOKIE = 'nc=12354342',
-  COOKIE_HEADER = WEIRD_COOKIE + '; ' + BASE64_COOKIE + '; ' +
-  FORBIDDEN_COOKIE + '; ' + NUMBER_COOKIE,
-  TEST_HOST = 'localhost',
-  NO_COOKIES_TEST_PORT = 11112,
-  ALL_COOKIES_TEST_PORT = 11113;
+var WEIRD_COOKIE_NAME      = 'wc',
+    BASE64_COOKIE_NAME     = 'bc',
+    FORBIDDEN_COOKIE_NAME  = 'fc',
+    NUMBER_COOKIE_NAME     = 'nc';
+
+var WEIRD_COOKIE_VALUE     = '!\'*+#()&-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~',
+    BASE64_COOKIE_VALUE    = 'Y29va2llCg==',
+    FORBIDDEN_COOKIE_VALUE = ' ;"\\,',
+    NUMBER_COOKIE_VALUE    = 12354342;
+
+var TEST_HOST = 'localhost',
+    NO_COOKIES_TEST_PORT   = 11112,
+    ALL_COOKIES_TEST_PORT  = 11113;
 
 describe('cookies', function() {
 
-  var headers, server, opts;
+  var setCookieHeader, headers, server, opts;
 
   function decode(str) {
     return decodeURIComponent(str);
@@ -90,6 +85,7 @@ describe('cookies', function() {
   });
 
   describe('if response contains cookies', function() {
+
     it('puts them on resp.cookies', function(done) {
       needle.get(
         TEST_HOST + ':' + ALL_COOKIES_TEST_PORT, function(error, response) {
@@ -120,6 +116,25 @@ describe('cookies', function() {
           done();
         });
     });
+
+    describe('when a cookie value is invalid', function() {
+
+      before(function() {
+        setCookieHeader = [
+          'geo_city=%D1%E0%ED%EA%F2-%CF%E5%F2%E5%F0%E1%F3%F0%E3'
+        ];
+      })
+
+      it('doesnt blow up', function(done) {
+        needle.get(TEST_HOST + ':' + ALL_COOKIES_TEST_PORT, function(error, response) {
+          should.not.exist(error)
+          var whatever = 'efbfbdefbfbdefbfbdefbfbdefbfbd2defbfbdefbfbdefbfbdefbfbdefbfbdefbfbdefbfbdefbfbdefbfbd';
+          new Buffer(response.cookies.geo_city).toString('hex').should.eql(whatever)
+          done();
+        });
+      })
+
+    })
 
     describe('and response is a redirect', function() {
 
@@ -223,17 +238,22 @@ describe('cookies', function() {
     it('must be a valid cookie string', function(done) {
       var COOKIE_PAIR = /^([^=\s]+)\s*=\s*("?)\s*(.*)\s*\2\s*$/;
 
+      var full_header = [
+        WEIRD_COOKIE_NAME     + '=' + WEIRD_COOKIE_VALUE,
+        BASE64_COOKIE_NAME    + '=' + BASE64_COOKIE_VALUE,
+        FORBIDDEN_COOKIE_NAME + '=' + encode(FORBIDDEN_COOKIE_VALUE),
+        NUMBER_COOKIE_NAME    + '=' + NUMBER_COOKIE_VALUE
+      ].join('; ')
+
       needle.get(TEST_HOST + ':' + ALL_COOKIES_TEST_PORT, opts, function(error, response) {
         var cookieString = response.req._headers.cookie;
-
         cookieString.should.be.type('string');
 
         cookieString.split(/\s*;\s*/).forEach(function(pair) {
           COOKIE_PAIR.test(pair).should.be.exactly(true);
         });
 
-        cookieString.should.be.exactly(COOKIE_HEADER);
-
+        cookieString.should.be.exactly(full_header);
         done();
       });
     });
