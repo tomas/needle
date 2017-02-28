@@ -4,6 +4,8 @@ var needle  = require('../'),
     http    = require('http'),
     helpers = require('./helpers');
 
+var port = 3456;
+
 describe('urls', function() {
 
   var server, url;
@@ -13,7 +15,7 @@ describe('urls', function() {
   }
 
   before(function(done){
-    server = helpers.server({ port: 3333 }, done);
+    server = helpers.server({ port: port }, done);
   })
 
   after(function(done) {
@@ -29,7 +31,6 @@ describe('urls', function() {
     })
 
   })
-
 
   describe('invalid protocol', function(){
 
@@ -83,7 +84,7 @@ describe('urls', function() {
   describe('valid protocol and path', function() {
 
     before(function() {
-      url = 'http://localhost:3333/foo';
+      url = 'http://localhost:' + port + '/foo';
     })
 
     it('works', function(done) {
@@ -98,7 +99,7 @@ describe('urls', function() {
   describe('no protocol but with slashes and valid path', function() {
 
     before(function() {
-      url = '//localhost:3333/foo';
+      url = '//localhost:' + port + '/foo';
     })
 
     it('works', function(done) {
@@ -113,7 +114,7 @@ describe('urls', function() {
   describe('no protocol nor slashes and valid path', function() {
 
     before(function() {
-      url = 'localhost:3333/foo';
+      url = 'localhost:' + port + '/foo';
     })
 
     it('works', function(done) {
@@ -130,7 +131,7 @@ describe('urls', function() {
     var path = '/foo?email=' + encodeURIComponent('what-ever@Example.Com');
 
     before(function() {
-      url = 'localhost:3333' + path
+      url = 'localhost:' + port + path
     });
 
     it('should not occur', function(done) {

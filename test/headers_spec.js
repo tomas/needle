@@ -2,17 +2,19 @@ var http    = require('http'),
     helpers = require('./helpers'),
     should  = require('should');
 
+var port = 5432;
+
 describe('request headers', function() {
 
   var needle,
-      server, 
+      server,
       existing_sockets,
       original_defaultMaxSockets;
 
   before(function(done) {
     setTimeout(function() {
-    existing_sockets = get_active_sockets().length;
-    server = helpers.server({ port: 1234 }, done);
+      existing_sockets = get_active_sockets().length;
+      server = helpers.server({ port: port }, done);
     }, 100);
   })
 
@@ -21,14 +23,14 @@ describe('request headers', function() {
   })
 
   function send_request(opts, cb) {
-    needle.get('http://localhost:' + 1234, opts, cb);
+    needle.get('http://localhost:' + port, opts, cb);
   }
 
   function get_active_sockets() {
     var handles = process._getActiveHandles();
 
     // only return the ones that have a .end() function (like a socket)
-    return handles.filter(function(el) { 
+    return handles.filter(function(el) {
       if (el.constructor.name.toString() == 'Socket') {
         return el.destroyed !== true;
       }
@@ -55,7 +57,7 @@ describe('request headers', function() {
         send_request({}, function(err, resp) {
           resp.body.headers['connection'].should.eql('close');
           done();
-        }) 
+        })
       })
 
       it('no open sockets remain after request', function(done) {
@@ -73,7 +75,7 @@ describe('request headers', function() {
         send_request({ connection: 'close' }, function(err, resp) {
           resp.body.headers['connection'].should.eql('close');
           done();
-        }) 
+        })
       })
 
       it('no open sockets remain after request', function(done) {
@@ -91,14 +93,14 @@ describe('request headers', function() {
         send_request({ headers: { connection: 'keep-alive' }}, function(err, resp) {
           resp.body.headers['connection'].should.eql('keep-alive');
           done();
-        }) 
+        })
       })
 
       it('sends a Connection: keep-alive header (using options.connection)', function(done) {
         send_request({ connection: 'keep-alive' }, function(err, resp) {
           resp.body.headers['connection'].should.eql('keep-alive');
           done();
-        }) 
+        })
       })
 
       it('one open socket remain after request', function(done) {
@@ -128,7 +130,7 @@ describe('request headers', function() {
 
     describe('default options', function() {
 
-      // TODO: 
+      // TODO:
       // this is weird. by default, new node versions set a 'close' header
       // while older versions set a keep-alive header
 
@@ -136,7 +138,7 @@ describe('request headers', function() {
         send_request({}, function(err, resp) {
           // should.not.exist(resp.body.headers['connection']);
           // done();
-        }) 
+        })
       })
 
       it.skip('one open sockets remain after request', function(done) {
@@ -154,7 +156,7 @@ describe('request headers', function() {
         send_request({ connection: 'close' }, function(err, resp) {
           resp.body.headers['connection'].should.eql('close');
           done();
-        }) 
+        })
       })
 
       it('no open sockets remain after request', function(done) {
@@ -172,14 +174,14 @@ describe('request headers', function() {
         send_request({ headers: { connection: 'keep-alive' }}, function(err, resp) {
           resp.body.headers['connection'].should.eql('keep-alive');
           done();
-        }) 
+        })
       })
 
       it('sends a Connection: keep-alive header (using options.connection)', function(done) {
         send_request({ connection: 'keep-alive' }, function(err, resp) {
           resp.body.headers['connection'].should.eql('keep-alive');
           done();
-        }) 
+        })
       })
 
       it('one open socket remain after request', function(done) {

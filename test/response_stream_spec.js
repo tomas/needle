@@ -6,7 +6,7 @@ var should = require('should'),
     port   = 11111,
     server;
 
-describe('stream', function() {
+describe('response streams', function() {
 
   describe('when the server sends back json', function(){
 
@@ -27,7 +27,7 @@ describe('stream', function() {
         var stream = needle.get('localhost:' + port)
 
         // newer node versions set this to null instead of false
-        var bool = !!stream._readableState.flowing; 
+        var bool = !!stream._readableState.flowing;
         should.equal(false, bool);
 
         var readableCalled = false;
@@ -43,7 +43,7 @@ describe('stream', function() {
         stream.resume();
       })
 
-      it('should should emit a single data item which is our JSON object', function(done) {
+      it('emits a single data item which is our JSON object', function(done) {
         var stream = needle.get('localhost:' + port)
 
         var chunks = [];
@@ -61,7 +61,7 @@ describe('stream', function() {
         });
       })
 
-      it('should should emit a raw buffer if we do not want to parse JSON', function(done) {
+      it('emits a raw buffer if we do not want to parse JSON', function(done) {
         var stream     = needle.get('localhost:' + port, {parse: false})
 
         var chunks = [];

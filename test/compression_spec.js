@@ -3,7 +3,7 @@ var should = require('should'),
     http   = require('http'),
     zlib   = require('zlib'),
     stream = require('stream'),
-    port   = 11111,
+    port   = 11123,
     server;
 
 describe('compression', function(){
@@ -40,11 +40,13 @@ describe('compression', function(){
           raw.end(jsonData)
         }
 
-      }).listen(port);
+      })
+
+      server.listen(port);
     });
 
-    after(function(){
-      server.close();
+    after(function(done){
+      server.close(done);
     })
 
     describe('and client requests no compression', function() {

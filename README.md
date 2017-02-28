@@ -68,7 +68,7 @@ needle.get('ifconfig.me/all.json', function(error, response, body) {
 // using streams
 var out = fs.createWriteStream('logo.png');
 needle.get('https://google.com/images/logo.png').pipe(out).on('finish', function() {
-  console.log('Pipe finished!'); 
+  console.log('Pipe finished!');
 });
 ```
 
@@ -227,6 +227,7 @@ For information about options that've changed, there's always [the changelog](ht
 - `headers`     : Object containing custom HTTP headers for request. Overrides defaults described below.
  - `auth`        : Determines what to do with provided username/password. Options are `auto`, `digest` or `basic` (default). `auto` will detect the type of authentication depending on the response headers.
  - `json`        : When `true`, sets content type to `application/json` and sends request body as JSON string, instead of a query string.
+ - `stream_length`: When sending streams, this lets you manually set the Content-Length header --if the stream's bytecount is known beforehand--, preventing ECONNRESET (socket hang up) errors on some servers that misbehave when receiving payloads of unknown size. Set it to `0` and Needle will get and set the stream's length for you, or leave empty for the default behaviour, which is no Content-Length header for stream payloads.
 
 Response options
 ----------------
@@ -234,7 +235,7 @@ Response options
  - `decode_response` : (or `decode`) Whether to decode the text responses to UTF-8, if Content-Type header shows a different charset. Defaults to `true`.
  - `parse_response`  : (or `parse`) Whether to parse XML or JSON response bodies automagically. Defaults to `true`. You can also set this to 'xml' or 'json' in which case Needle will *only* parse the response if the content type matches.
  - `output`          : Dump response output to file. This occurs after parsing and charset decoding is done.
- - `parse_cookies`   : Whether to parse response’s `Set-Cookie` header. Defaults to `true`. If parsed, cookies are set on `resp.cookies`.
+ - `parse_cookies`   : Whether to parse response’s `Set-Cookie` header. Defaults to `true`. If parsed, response cookies will be available at `resp.cookies`.
 
 Note: To stay light on dependencies, Needle doesn't include the `xml2js` module used for XML parsing. To enable it, simply do `npm install xml2js`.
 
@@ -297,14 +298,14 @@ Since you can pass a custom HTTPAgent to Needle you can do all sorts of neat stu
 
 ```js
 var tunnel = require('tunnel');
-var myAgent = tunnel.httpOverHttp({ 
+var myAgent = tunnel.httpOverHttp({
   proxy: { host: 'localhost' }
 });
 
 needle.get('foobar.com', { agent: myAgent });
 ```
 
-Regarding the 'Connection' header 
+Regarding the 'Connection' header
 ---------------------------------
 
 Unless you're running an old version of Node (< 0.11.4), by default Needle won't set the Connection header on requests, yielding Node's default behaviour of keeping the connection alive with the target server. This speeds up inmensely the process of sending several requests to the same host.
