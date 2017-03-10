@@ -220,11 +220,11 @@ All of the above methods return a Readable stream that emits the following event
 
  - `response <http.IncomingMessage>`
  
-Emitted when the underlying http.ClientRequest emits a response event. This is after the connection is established an the header received, but before any of it is processed (e.g. authorization required or redirect to be followed). No data has been consumed at this point.
+Emitted when the underlying [http.ClientRequest](https://nodejs.org/api/http.html#http_class_http_clientrequest) emits a response event. This is after the connection is established and the header received, but before any of it is processed (e.g. authorization required or redirect to be followed). No data has been consumed at this point.
 
 ### Event: `'redirect'`
 
-Indicates that the a redirect is being followed. This means that the response code was a redirect (301, 302, 303, 307) and the given [redirect options](#redirect-options) allowed following the URL received in the `Location` header.
+Indicates that the a redirect is being followed. This means that the response code was a redirect (`301`, `302`, `303`, `307`) and the given [redirect options](#redirect-options) allowed following the URL received in the `Location` header.
 
 ### Event: `'header'`
 
@@ -232,8 +232,6 @@ Indicates that the a redirect is being followed. This means that the response co
  - `headers <Object>`
  
 Triggered after the header has been processed, and just before the data is to be consumed. This implies that no redirect was followed and/or authentication header was received. In other words, we got a "valid" response. 
-
-Indicates that the a redirect is being followed. This means that the response code was a redirect (301, 302, 303, 307) and the given [redirect options](#redirect-options) allowed following the URL received in the `Location` header.
 
 ### Event: `'end'`
 
@@ -259,7 +257,7 @@ Emitted when an error ocurrs. This should only happen once in the lifecycle of a
 
  - `type <String>`
 
-Emitted when an timeout error ocurrs. Type can be either 'open_timeout' or 'read_timeout'. This will called right before aborting the request, which will also trigger an `err` event, a described above, with an ECONNRESET (Socket hang up) exception.
+Emitted when an timeout error occurs. Type can be either 'open_timeout' or 'read_timeout'. This will called right before aborting the request, which will also trigger an `err` event, a described above, with an `ECONNRESET` (Socket hang up) exception.
 
 Request options
 ---------------
