@@ -1,6 +1,6 @@
 {
   "name": "needle",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "The leanest and most handsome HTTP client in the Nodelands.",
   "keywords": [
     "http",
