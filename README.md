@@ -119,7 +119,7 @@ API
 
 All of Needle's request methods return a Readable stream, and both `options` and `callback` are optional. If passed, the callback will return three arguments: `error`, `response` and `body`, which is basically an alias for `response.body`.
 
-### needle.head(url, [options,] callback)
+### needle.head(url[, options][, callback])
 
 ```js
 var options = {
@@ -134,7 +134,7 @@ needle.head('https://my.backend.server.com', function(err, resp) {
 })
 ```
 
-### needle.get(url, [options,] callback)
+### needle.get(url[, options][, callback])
 
 ```js
 needle.get('google.com/search?q=syd+barrett', function(err, resp) {
@@ -142,7 +142,7 @@ needle.get('google.com/search?q=syd+barrett', function(err, resp) {
 });
 ```
 
-### needle.post(url, data, [options,] callback)
+### needle.post(url, data[, options][, callback])
 
 ```js
 var options = {
@@ -154,7 +154,7 @@ needle.post('https://my.app.com/endpoint', 'foo=bar', options, function(err, res
 });
 ```
 
-### needle.put(url, data, [options,] callback)
+### needle.put(url, data[, options][, callback])
 
 ```js
 var nested = {
@@ -170,11 +170,11 @@ needle.put('https://api.app.com/v2', nested, function(err, resp) {
 });
 ```
 
-### needle.patch(url, data, [options,] callback)
+### needle.patch(url, data[, options][, callback])
 
 Same behaviour as PUT.
 
-### needle.delete(url, data, [options,] callback)
+### needle.delete(url, data[, options][, callback])
 
 ```js
 var options = {
