@@ -187,7 +187,7 @@ needle.delete('https://api.app.com/messages/123', null, options, function(err, r
 });
 ```
 
-### needle.request(method, url, data, [options,] callback)
+### needle.request(method, url, data[, options][, callback])
 
 Generic request. This not only allows for flexibility, but also lets you perform a GET request with data, in which case will be appended to the request as a query string, unless you pass a `json: true` option (read below).
 
