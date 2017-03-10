@@ -218,15 +218,15 @@ Request options
 
 For information about options that've changed, there's always [the changelog](https://github.com/tomas/needle/releases).
 
- - `open_timeout`: (or `timeout`) Returns error if connection takes longer than X milisecs to establish. Defaults to `10000` (10 secs). `0` means no timeout.
+ - `agent`       : Uses an [http.Agent](https://nodejs.org/api/http.html#http_class_http_agent) of your choice, instead of the global, default one. Useful for tweaking the behaviour at the connection level, such as when doing tunneling (see below for an example).
+ - `json`        : When `true`, sets content type to `application/json` and sends request body as JSON string, instead of a query string.
+  - `open_timeout`: (or `timeout`) Returns error if connection takes longer than X milisecs to establish. Defaults to `10000` (10 secs). `0` means no timeout.
  - `read_timeout`: Returns error if data transfer takes longer than X milisecs, after connection is established. Defaults to `0` (no timeout).
  - `follow_max`  : (or `follow`) Number of redirects to follow. Defaults to `0`. See below for more redirect options.
  - `multipart`   : Enables multipart/form-data encoding. Defaults to `false`. Use it when uploading files.
- - `agent`       : Uses an http.Agent of your choice, instead of the global, default one.
  - `proxy`       : Forwards request through HTTP(s) proxy. Eg. `proxy: 'http://user:pass@proxy.server.com:3128'`. For more advanced proxying/tunneling use a custom `agent`, as described below.
  - `headers`     : Object containing custom HTTP headers for request. Overrides defaults described below.
  - `auth`        : Determines what to do with provided username/password. Options are `auto`, `digest` or `basic` (default). `auto` will detect the type of authentication depending on the response headers.
- - `json`        : When `true`, sets content type to `application/json` and sends request body as JSON string, instead of a query string.
  - `stream_length`: When sending streams, this lets you manually set the Content-Length header --if the stream's bytecount is known beforehand--, preventing ECONNRESET (socket hang up) errors on some servers that misbehave when receiving payloads of unknown size. Set it to `0` and Needle will get and set the stream's length for you, or leave unset for the default behaviour, which is no Content-Length header for stream payloads.
 
 Response options
