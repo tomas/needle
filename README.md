@@ -224,7 +224,7 @@ For information about options that've changed, there's always [the changelog](ht
  - `multipart`   : Enables multipart/form-data encoding. Defaults to `false`. Use it when uploading files.
  - `agent`       : Uses an http.Agent of your choice, instead of the global, default one.
  - `proxy`       : Forwards request through HTTP(s) proxy. Eg. `proxy: 'http://user:pass@proxy.server.com:3128'`. For more advanced proxying/tunneling use a custom `agent`, as described below.
-- `headers`     : Object containing custom HTTP headers for request. Overrides defaults described below.
+ - `headers`     : Object containing custom HTTP headers for request. Overrides defaults described below.
  - `auth`        : Determines what to do with provided username/password. Options are `auto`, `digest` or `basic` (default). `auto` will detect the type of authentication depending on the response headers.
  - `json`        : When `true`, sets content type to `application/json` and sends request body as JSON string, instead of a query string.
  - `stream_length`: When sending streams, this lets you manually set the Content-Length header --if the stream's bytecount is known beforehand--, preventing ECONNRESET (socket hang up) errors on some servers that misbehave when receiving payloads of unknown size. Set it to `0` and Needle will get and set the stream's length for you, or leave empty for the default behaviour, which is no Content-Length header for stream payloads.
