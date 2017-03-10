@@ -203,7 +203,7 @@ needle.request('get', 'forum.com/search', params, function(err, resp) {
 });
 ```
 
-Now, if you set pass `json: true` among the options, Needle won't set your params as a querystring but instead send a JSON representation of your data through the request's body.
+Now, if you set pass `json: true` among the options, Needle won't set your params as a querystring but instead send a JSON representation of your data through the request's body, as well as set the `Content-Type` and `Accept` headers to `application/json`.
 
 ```js
 needle.request('get', 'forum.com/search', params, { json: true }, function(err, resp) {
@@ -211,7 +211,55 @@ needle.request('get', 'forum.com/search', params, { json: true }, function(err, 
 });
 ```
 
-More examples after this short break.
+Events
+------
+
+All of the above methods return a Readable stream that emits the following events:
+
+### Event: `'response'`
+
+ - `response <http.IncomingMessage>`
+ 
+Emitted when the underlying http.ClientRequest emits a response event. This is after the connection is established an the header received, but before any of it is processed (e.g. authorization required or redirect to be followed). No data has been consumed at this point.
+
+### Event: `'redirect'`
+
+Indicates that the a redirect is being followed. This means that the response code was a redirect (301, 302, 303, 307) and the given [redirect options](#redirect-options) allowed following the URL received in the `Location` header.
+
+### Event: `'header'`
+
+ - `statusCode <Integer>`
+ - `headers <Object>`
+ 
+Triggered after the header has been processed, and just before the data is to be consumed. This implies that no redirect was followed and/or authentication header was received. In other words, we got a "valid" response. 
+
+Indicates that the a redirect is being followed. This means that the response code was a redirect (301, 302, 303, 307) and the given [redirect options](#redirect-options) allowed following the URL received in the `Location` header.
+
+### Event: `'end'`
+
+ - `exception <Error>` (optional)
+
+Emitted when the response process has completed, either because all data has been consumed or an error ocurred somewhere in the middle. That's why the event callback's first argument may be an Error object. In other words:
+
+```js
+var resp = needle.get('something.worthy/of/being/streamed/by/needle');
+resp.pipe(somewhereElse);
+resp.on('end', function(err) {
+  if (err) console.log('An error ocurred: ' + err.message);
+})
+```
+
+### Event: `'err'`
+
+ - `exception <Error>` (optional)
+
+Emitted when an error ocurrs. This should only happen once in the lifecycle of a Needle request.
+
+### Event: `'timeout'`
+
+ - `type <String>`
+
+Emitted when an timeout error ocurrs. Type can be either 'open_timeout' or 'read_timeout'. This will called right before aborting the request, which will also trigger an `err` event, a described above, with an ECONNRESET (Socket hang up) exception.
 
 Request options
 ---------------
