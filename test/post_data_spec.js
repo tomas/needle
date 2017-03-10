@@ -593,6 +593,46 @@ describe('post data (e.g. request body)', function() {
 
         })
 
+        describe('with json: false and content_type = "application/json"', function() {
+
+          var opts = { json: false, content_type: 'application/json' };
+
+          it('sends request', function(done) {
+            spystub_request();
+
+            post({ foo: 'bar', test: '测试' }, opts, function(err, resp) {
+              check_request('post');
+              done();
+            })
+          })
+
+          it('sets Content-Type header to application/json', function(done) {
+            post({ foo: 'bar', test: '测试' }, opts, function(err, resp) {
+              resp.body.headers['content-type'].should.equal('application/json');
+              done();
+            })
+          })
+
+          it('doesnt change default Accept header', function(done) {
+            post({ foo: 'bar', test: '测试' }, opts, function(err, resp) {
+              // resp.body contains 'header' and 'body', mirroring what we sent
+              resp.body.headers['accept'].should.equal('*/*');
+              done();
+            })
+          })
+
+          it('writes as buffer', function(done) {
+            post({ foo: 'bar', test: '测试' }, opts, function(err, resp) {
+              spy.called.should.be.true;
+              spy.args[0][0].should.be.a.Buffer;
+              spy.args[0][0].toString().should.equal('foo=bar&test=%E6%B5%8B%E8%AF%95');
+              resp.body.body.should.eql('foo=bar&test=%E6%B5%8B%E8%AF%95');
+              done();
+            })
+          })
+
+        })
+
         describe('with json: undefined but content-type = application/json', function() {
 
           var opts = { headers: { 'content-type': 'application/json' } };
@@ -658,6 +698,46 @@ describe('post data (e.g. request body)', function() {
 
           it('writes JSON.stringified object', function(done) {
             post({ foo: 'bar', test: '测试' }, { json: true }, function(err, resp) {
+              spy.called.should.be.true;
+              var json = JSON.stringify({ foo: 'bar', test: '测试' })
+              spy.args[0][0].toString().should.eql(json)
+              resp.body.body.should.eql(json);
+              done();
+            })
+          })
+
+        })
+
+
+        describe('with json: true and content_type: */* (passed, not default)', function() {
+
+          var opts = { json: true, accept: '*/*' };
+
+          it('sends request', function(done) {
+            spystub_request();
+
+            post({ foo: 'bar', test: '测试' }, opts, function(err, resp) {
+              check_request('post');
+              done();
+            })
+          })
+
+          it('sets Content-Type header to application/json', function(done) {
+            post({ foo: 'bar', test: '测试' }, opts, function(err, resp) {
+              resp.body.headers['content-type'].should.equal('application/json; charset=utf-8');
+              done();
+            })
+          })
+
+          it('respects Accept header set by user', function(done) {
+            post({ foo: 'bar', test: '测试' }, opts, function(err, resp) {
+              resp.body.headers['accept'].should.equal('*/*');
+              done();
+            })
+          })
+
+          it('writes JSON.stringified object', function(done) {
+            post({ foo: 'bar', test: '测试' }, opts, function(err, resp) {
               spy.called.should.be.true;
               var json = JSON.stringify({ foo: 'bar', test: '测试' })
               spy.args[0][0].toString().should.eql(json)

@@ -227,7 +227,7 @@ For information about options that've changed, there's always [the changelog](ht
  - `headers`     : Object containing custom HTTP headers for request. Overrides defaults described below.
  - `auth`        : Determines what to do with provided username/password. Options are `auto`, `digest` or `basic` (default). `auto` will detect the type of authentication depending on the response headers.
  - `json`        : When `true`, sets content type to `application/json` and sends request body as JSON string, instead of a query string.
- - `stream_length`: When sending streams, this lets you manually set the Content-Length header --if the stream's bytecount is known beforehand--, preventing ECONNRESET (socket hang up) errors on some servers that misbehave when receiving payloads of unknown size. Set it to `0` and Needle will get and set the stream's length for you, or leave empty for the default behaviour, which is no Content-Length header for stream payloads.
+ - `stream_length`: When sending streams, this lets you manually set the Content-Length header --if the stream's bytecount is known beforehand--, preventing ECONNRESET (socket hang up) errors on some servers that misbehave when receiving payloads of unknown size. Set it to `0` and Needle will get and set the stream's length for you, or leave unset for the default behaviour, which is no Content-Length header for stream payloads.
 
 Response options
 ----------------
@@ -244,13 +244,14 @@ HTTP Header options
 
 These are basically shortcuts to the `headers` option described above.
 
- - `cookies`   : Sets a {key: 'val'} object as a 'Cookie' header.
+ - `cookies`   : Builds and sets a Cookie header from a `{ key: 'value' }` object.
  - `compressed`: If `true`, sets 'Accept-Encoding' header to 'gzip,deflate', and inflates content if zipped. Defaults to `false`.
  - `username`  : For HTTP basic auth.
  - `password`  : For HTTP basic auth. Requires username to be passed, but is optional.
  - `accept`    : Sets 'Accept' HTTP header. Defaults to `*/*`.
  - `connection`: Sets 'Connection' HTTP header. Not set by default, unless running Node < 0.11.4 in which case it defaults to `close`. More info about this below.
  - `user_agent`: Sets the 'User-Agent' HTTP header. Defaults to `Needle/{version} (Node.js {node_version})`.
+ - `content_type`: Sets the 'Content-Type' header. Unset by default, unless you're sending data in which case it's set accordingly to whatever is being sent (`application/x-www-form-urlencoded`, `application/json` or `multipart/form-data`). That is, of course, unless the option is passed, either here or through the `options.headers`. You're the boss.
 
 Node.js TLS Options
 -------------------
