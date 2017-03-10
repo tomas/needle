@@ -220,7 +220,7 @@ For information about options that've changed, there's always [the changelog](ht
 
  - `agent`       : Uses an [http.Agent](https://nodejs.org/api/http.html#http_class_http_agent) of your choice, instead of the global, default one. Useful for tweaking the behaviour at the connection level, such as when doing tunneling (see below for an example).
  - `json`        : When `true`, sets content type to `application/json` and sends request body as JSON string, instead of a query string.
-  - `open_timeout`: (or `timeout`) Returns error if connection takes longer than X milisecs to establish. Defaults to `10000` (10 secs). `0` means no timeout.
+ - `open_timeout`: (or `timeout`) Returns error if connection takes longer than X milisecs to establish. Defaults to `10000` (10 secs). `0` means no timeout.
  - `read_timeout`: Returns error if data transfer takes longer than X milisecs, after connection is established. Defaults to `0` (no timeout).
  - `follow_max`  : (or `follow`) Number of redirects to follow. Defaults to `0`. See below for more redirect options.
  - `multipart`   : Enables multipart/form-data encoding. Defaults to `false`. Use it when uploading files.
