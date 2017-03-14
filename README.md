@@ -219,7 +219,7 @@ All of the above methods return a Readable stream that emits the following event
 ### Event: `'response'`
 
  - `response <http.IncomingMessage>`
- 
+
 Emitted when the underlying [http.ClientRequest](https://nodejs.org/api/http.html#http_class_http_clientrequest) emits a response event. This is after the connection is established and the header received, but before any of it is processed (e.g. authorization required or redirect to be followed). No data has been consumed at this point.
 
 ### Event: `'redirect'`
@@ -230,8 +230,8 @@ Indicates that the a redirect is being followed. This means that the response co
 
  - `statusCode <Integer>`
  - `headers <Object>`
- 
-Triggered after the header has been processed, and just before the data is to be consumed. This implies that no redirect was followed and/or authentication header was received. In other words, we got a "valid" response. 
+
+Triggered after the header has been processed, and just before the data is to be consumed. This implies that no redirect was followed and/or authentication header was received. In other words, we got a "valid" response.
 
 ### Event: `'end'`
 
@@ -297,7 +297,7 @@ These are basically shortcuts to the `headers` option described above.
  - `accept`    : Sets 'Accept' HTTP header. Defaults to `*/*`.
  - `connection`: Sets 'Connection' HTTP header. Not set by default, unless running Node < 0.11.4 in which case it defaults to `close`. More info about this below.
  - `user_agent`: Sets the 'User-Agent' HTTP header. Defaults to `Needle/{version} (Node.js {node_version})`.
- - `content_type`: Sets the 'Content-Type' header. Unset by default, unless you're sending data in which case it's set accordingly to whatever is being sent (`application/x-www-form-urlencoded`, `application/json` or `multipart/form-data`). That is, of course, unless the option is passed, either here or through the `options.headers`. You're the boss.
+ - `content_type`: Sets the 'Content-Type' header. Unset by default, unless you're sending data in which case it's set accordingly to whatever is being sent (`application/x-www-form-urlencoded`, `application/json` or `multipart/form-data`). That is, of course, unless the option is passed, either here or through `options.headers`. You're the boss.
 
 Node.js TLS Options
 -------------------
