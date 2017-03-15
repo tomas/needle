@@ -224,7 +224,7 @@ Emitted when the underlying [http.ClientRequest](https://nodejs.org/api/http.htm
 
 ### Event: `'redirect'`
 
- - `location` <String>
+ - `location <String>`
 
 Indicates that the a redirect is being followed. This means that the response code was a redirect (`301`, `302`, `303`, `307`) and the given [redirect options](#redirect-options) allowed following the URL received in the `Location` header.
 
