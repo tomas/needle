@@ -214,7 +214,7 @@ needle.request('get', 'forum.com/search', params, { json: true }, function(err, 
 Events
 ------
 
-All of the above methods return a Readable stream that emits the following events:
+All of the above methods return a [Readable stream](https://nodejs.org/api/stream.html#stream_class_stream_readable) that emits the following events, in addition to the regular ones (e.g. `close`, `data`, `pipe`, `readable`).
 
 ### Event: `'response'`
 
@@ -223,6 +223,8 @@ All of the above methods return a Readable stream that emits the following event
 Emitted when the underlying [http.ClientRequest](https://nodejs.org/api/http.html#http_class_http_clientrequest) emits a response event. This is after the connection is established and the header received, but before any of it is processed (e.g. authorization required or redirect to be followed). No data has been consumed at this point.
 
 ### Event: `'redirect'`
+
+ - `location` <String>
 
 Indicates that the a redirect is being followed. This means that the response code was a redirect (`301`, `302`, `303`, `307`) and the given [redirect options](#redirect-options) allowed following the URL received in the `Location` header.
 
@@ -249,7 +251,7 @@ resp.on('end', function(err) {
 
 ### Event: `'err'`
 
- - `exception <Error>` (optional)
+ - `exception <Error>`
 
 Emitted when an error ocurrs. This should only happen once in the lifecycle of a Needle request.
 
