@@ -259,7 +259,7 @@ Emitted when an error ocurrs. This should only happen once in the lifecycle of a
 
  - `type <String>`
 
-Emitted when an timeout error occurs. Type can be either 'open_timeout' or 'read_timeout'. This will called right before aborting the request, which will also trigger an `err` event, a described above, with an `ECONNRESET` (Socket hang up) exception.
+Emitted when an timeout error occurs. Type can be either 'open' or 'read'. This will called right before aborting the request, which will also trigger an `err` event, a described above, with an `ECONNRESET` (Socket hang up) exception.
 
 Request options
 ---------------
