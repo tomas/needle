@@ -239,13 +239,15 @@ Triggered after the header has been processed, and just before the data is to be
 
  - `exception <Error>` (optional)
 
-Emitted when the response process has completed, either because all data has been consumed or an error ocurred somewhere in the middle. That's why the event callback's first argument may be an Error object. In other words:
+Emitted when the request/response process has finished, either because all data was consumed or an error ocurred somewhere in between. Unlike a regular stream's `end` event, Needle's `done` will be fired either on success or on failure, which is why the first argument may be an Error object. In other words:
 
 ```js
-var resp = needle.get('something.worthy/of/being/streamed/by/needle');
-resp.pipe(somewhereElse);
+var resp = needle.get('something.worthy/of/being/streamed/by/needle')
+                 .pipe(somewhereElse);
+
 resp.on('done', function(err) {
   if (err) console.log('An error ocurred: ' + err.message);
+  else console.log('Great success!');
 })
 ```
 
