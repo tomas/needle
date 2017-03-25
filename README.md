@@ -235,7 +235,7 @@ Indicates that the a redirect is being followed. This means that the response co
 
 Triggered after the header has been processed, and just before the data is to be consumed. This implies that no redirect was followed and/or authentication header was received. In other words, we got a "valid" response.
 
-### Event: `'done'`
+### Event: `'done'` (previously 'end')
 
  - `exception <Error>` (optional)
 
