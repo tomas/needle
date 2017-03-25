@@ -242,8 +242,8 @@ Triggered after the header has been processed, and just before the data is to be
 Emitted when the request/response process has finished, either because all data was consumed or an error ocurred somewhere in between. Unlike a regular stream's `end` event, Needle's `done` will be fired either on success or on failure, which is why the first argument may be an Error object. In other words:
 
 ```js
-var resp = needle.get('something.worthy/of/being/streamed/by/needle')
-                 .pipe(somewhereElse);
+var resp = needle.get('something.worthy/of/being/streamed/by/needle');
+resp.pipe(someWritableStream);
 
 resp.on('done', function(err) {
   if (err) console.log('An error ocurred: ' + err.message);
