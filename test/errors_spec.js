@@ -76,7 +76,7 @@ describe('errors', function(){
         var callcount = 0,
             stream = needle.get(url);
 
-        stream.on('end', function(err) {
+        stream.on('done', function(err) {
           callcount++;
         })
 
@@ -90,7 +90,7 @@ describe('errors', function(){
         var errorific,
             stream = needle.get(url);
 
-        stream.on('end', function(err) {
+        stream.on('done', function(err) {
           errorific = err;
         })
 
@@ -206,11 +206,11 @@ describe('errors', function(){
 
     describe('without callback', function() {
 
-      it('emits end event once, with error', function(done) {
+      it('emits done event once, with error', function(done) {
         var called = 0,
             stream = send_request();
 
-        stream.on('end', function(err) {
+        stream.on('done', function(err) {
           called++;
         })
 
@@ -225,7 +225,7 @@ describe('errors', function(){
         var time = new Date();
         var stream = send_request();
 
-        stream.on('end', function(err) {
+        stream.on('done', function(err) {
           var timediff = (new Date() - time);
           timediff.should.be.within(200, 300);
           done();
@@ -237,7 +237,7 @@ describe('errors', function(){
         var error,
             stream = send_request();
 
-        stream.on('end', function(err) {
+        stream.on('done', function(err) {
           error = err;
         })
 

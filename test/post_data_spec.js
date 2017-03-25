@@ -136,7 +136,7 @@ describe('post data (e.g. request body)', function() {
           get({ foo: 'bar' }, { multipart: true }, function(err, resp) {
             spy.called.should.be.true;
 
-            spy.args[0][0].should.be.a.Buffer;
+            spy.args[0][0].should.be.an.instanceof(String);
             spy.args[0][0].toString().should.equal(multiparts.join('\r\n'));
             resp.body.body.should.eql(multiparts.join('\r\n'));
             done();
@@ -149,7 +149,7 @@ describe('post data (e.g. request body)', function() {
           get({ foo: 'bar', test: '测试' }, { multipart: true }, function(err, resp) {
             spy.called.should.be.true;
 
-            spy.args[0][0].should.be.a.Buffer;
+            spy.args[0][0].should.be.an.instanceof(String);
             new Buffer(spy.args[0][0]).toString('hex').should.eql('2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d4e4f44454e4545444c4548545450434c49454e540d0a436f6e74656e742d446973706f736974696f6e3a20666f726d2d646174613b206e616d653d22666f6f220d0a0d0a6261720d0a2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d4e4f44454e4545444c4548545450434c49454e540d0a436f6e74656e742d446973706f736974696f6e3a20666f726d2d646174613b206e616d653d2274657374220d0a0d0ac3a6c2b5c28bc3a8c2afc2950d0a2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d4e4f44454e4545444c4548545450434c49454e542d2d')
             done();
           })
@@ -174,7 +174,7 @@ describe('post data (e.g. request body)', function() {
 
           post({ foo: 'bar' }, { multipart: true }, function(err, resp) {
             spy.called.should.be.true;
-            spy.args[0][0].should.be.a.Buffer;
+            spy.args[0][0].should.be.an.instanceof(String);
             spy.args[0][0].toString().should.equal(multiparts.join('\r\n'));
             resp.body.body.should.eql(multiparts.join('\r\n'));
             done();
@@ -186,7 +186,7 @@ describe('post data (e.g. request body)', function() {
 
           post({ foo: 'bar', test: '测试' }, { multipart: true }, function(err, resp) {
             spy.called.should.be.true;
-            spy.args[0][0].should.be.a.Buffer;
+            spy.args[0][0].should.be.an.instanceof(String);
             new Buffer(spy.args[0][0]).toString('hex').should.eql('2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d4e4f44454e4545444c4548545450434c49454e540d0a436f6e74656e742d446973706f736974696f6e3a20666f726d2d646174613b206e616d653d22666f6f220d0a0d0a6261720d0a2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d4e4f44454e4545444c4548545450434c49454e540d0a436f6e74656e742d446973706f736974696f6e3a20666f726d2d646174613b206e616d653d2274657374220d0a0d0ac3a6c2b5c28bc3a8c2afc2950d0a2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d4e4f44454e4545444c4548545450434c49454e542d2d')
             done();
           })
@@ -298,7 +298,7 @@ describe('post data (e.g. request body)', function() {
 
           post('foobar', {}, function(err, resp) {
             spy.called.should.be.true;
-            spy.args[0][0].should.be.a.Buffer;
+            spy.args[0][0].should.be.an.instanceof(Buffer);
             spy.args[0][0].toString().should.equal('foobar');
             resp.body.body.should.eql('foobar');
             done();
@@ -421,7 +421,7 @@ describe('post data (e.g. request body)', function() {
           it('writes as buffer', function(done) {
             post('foo=bar', { json: false }, function(err, resp) {
               spy.called.should.be.true;
-              spy.args[0][0].should.be.a.Buffer;
+              spy.args[0][0].should.be.an.instanceof(Buffer);
               spy.args[0][0].toString().should.equal('foo=bar');
               resp.body.body.should.eql('foo=bar');
               done();
@@ -584,7 +584,7 @@ describe('post data (e.g. request body)', function() {
           it('writes as buffer', function(done) {
             post({ foo: 'bar', test: '测试' }, { json: false }, function(err, resp) {
               spy.called.should.be.true;
-              spy.args[0][0].should.be.a.Buffer;
+              spy.args[0][0].should.be.an.instanceof(Buffer);
               spy.args[0][0].toString().should.equal('foo=bar&test=%E6%B5%8B%E8%AF%95');
               resp.body.body.should.eql('foo=bar&test=%E6%B5%8B%E8%AF%95');
               done();
@@ -787,7 +787,7 @@ describe('post data (e.g. request body)', function() {
           it('writes as buffer', function(done) {
             get(new Buffer('foobar'), { json: false }, function(err, resp) {
               spy.called.should.be.true;
-              spy.args[0][0].should.be.a.Buffer;
+              spy.args[0][0].should.be.an.instanceof(Buffer);
               spy.args[0][0].toString().should.equal('foobar');
               resp.body.body.should.eql('foobar');
               done();
@@ -865,7 +865,7 @@ describe('post data (e.g. request body)', function() {
           it('writes as buffer', function(done) {
             post(new Buffer('foobar'), { json: false }, function(err, resp) {
               spy.called.should.be.true;
-              spy.args[0][0].should.be.a.Buffer;
+              spy.args[0][0].should.be.an.instanceof(Buffer);
               spy.args[0][0].toString().should.equal('foobar');
               resp.body.body.should.eql('foobar');
               done();
@@ -967,7 +967,7 @@ describe('post data (e.g. request body)', function() {
           it('writes as buffer', function(done) {
             post(input_stream, { json: false }, function(err, resp) {
               spy.called.should.be.true;
-              spy.args[0][0].should.be.a.Buffer;
+              spy.args[0][0].should.be.an.instanceof(Buffer);
               spy.args[0][0].toString().should.equal('foobar');
               resp.body.body.should.eql('foobar');
               done();

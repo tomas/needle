@@ -35,7 +35,7 @@ describe('response streams', function() {
           readableCalled = true;
         })
 
-        stream.on('end', function () {
+        stream.on('done', function () {
           readableCalled.should.be.true;
           done();
         });
@@ -54,7 +54,7 @@ describe('response streams', function() {
           }
         })
 
-        stream.on('end', function () {
+        stream.on('done', function () {
           chunks.should.have.length(1)
           chunks[0].should.have.property('foo', 'bar');
           done();
@@ -72,7 +72,7 @@ describe('response streams', function() {
           }
         })
 
-        stream.on('end', function () {
+        stream.on('done', function() {
           var body = Buffer.concat(chunks).toString();
           body.should.equal('{"foo":"bar"}')
           done();

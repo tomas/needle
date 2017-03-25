@@ -185,10 +185,10 @@ describe('with output option', function() {
       before(function() {
         handler = function(req, res) {
           res.writeHead(200, { 'Content-Type': 'application/octet-stream', 'Transfer-Encoding': 'chunked' });
-          res.write(pixel.binarySlice(0, 10), 'binary');
-          res.write(pixel.binarySlice(10, 20), 'binary');
-          res.write(pixel.binarySlice(20, 30), 'binary');
-          res.write(pixel.binarySlice(30), 'binary');
+          res.write(pixel.slice(0, 10));
+          res.write(pixel.slice(10, 20));
+          res.write(pixel.slice(20, 30));
+          res.write(pixel.slice(30));
           res.end();
         }
       })

@@ -55,11 +55,10 @@ describe('urls', function() {
     })
 
     it('fails', function(done) {
-      send_request(function(err){
-        err.should.be.an.Error;
-        err.code.should.eql('ENOTFOUND');
-        done();
-      })
+      (function() {
+        send_request(function(){ })
+      }.should.throw(TypeError))
+      done()
     })
 
   })

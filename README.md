@@ -25,7 +25,7 @@ var data = {
 needle
   .post('https://my.server.com/foo', data, { multipart: true })
   .on('readable', function() { /* eat your chunks */ })
-  .on('end', function() {
+  .on('done', function() {
     console.log('Ready-o, friend-o.');
   })
 ```
@@ -108,8 +108,8 @@ stream.on('readable', function() {
   }
 })
 
-stream.on('end', function(err) {
-  // if our request had an error, our 'end' event will tell us.
+stream.on('done', function(err) {
+  // if our request had an error, our 'done' event will tell us.
   if (!err) console.log('Great success!');
 })
 ```

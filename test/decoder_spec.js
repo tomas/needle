@@ -19,7 +19,7 @@ describe('character encoding', function() {
       it('does not decode', function(done) {
 
         needle.get(url, { decode: false }, function(err, resp) {
-          resp.body.should.be.a.string;
+          resp.body.should.be.a.String;
           chardet.detect(resp.body).encoding.should.eql('windows-1252');
           resp.body.indexOf('EUCを使う').should.eql(-1);
           done();
@@ -34,7 +34,7 @@ describe('character encoding', function() {
       it('decodes', function(done) {
 
         needle.get(url, { decode: true }, function(err, resp) {
-          resp.body.should.be.a.string;
+          resp.body.should.be.a.String;
           chardet.detect(resp.body).encoding.should.eql('ascii');
           resp.body.indexOf('EUCを使う').should.not.eql(-1);
           done();

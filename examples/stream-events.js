@@ -1,6 +1,6 @@
 var needle = require('./..');
 
-var resp   = needle.get('google.com', { follow: true, timeout: 5000 });
+var resp   = needle.get('google.com', { follow_max: 10, timeout: 5000 });
 
 resp.on('readable', function() {
   var chunk;
@@ -17,7 +17,7 @@ resp.on('redirect', function(url) {
   console.log('Redirected to url ' + url);
 })
 
-resp.on('end', function(err) {
+resp.on('done', function(err) {
   console.log('Finished. No more data to receive.');
   if (err) console.log('With error', err)
 })
