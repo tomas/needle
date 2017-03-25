@@ -214,7 +214,7 @@ needle.request('get', 'forum.com/search', params, { json: true }, function(err, 
 Events
 ------
 
-All of the above methods return a [Readable stream](https://nodejs.org/api/stream.html#stream_class_stream_readable) that emits the following events, in addition to the regular ones (e.g. `close`, `data`, `pipe`, `readable`).
+All of the above methods return a [Readable stream](https://nodejs.org/api/stream.html#stream_class_stream_readable) that emits the following events, in addition to the regular ones (e.g. `end`, `close`, `data`, `pipe`, `readable`).
 
 ### Event: `'response'`
 
@@ -235,7 +235,7 @@ Indicates that the a redirect is being followed. This means that the response co
 
 Triggered after the header has been processed, and just before the data is to be consumed. This implies that no redirect was followed and/or authentication header was received. In other words, we got a "valid" response.
 
-### Event: `'end'`
+### Event: `'done'`
 
  - `exception <Error>` (optional)
 
@@ -244,7 +244,7 @@ Emitted when the response process has completed, either because all data has bee
 ```js
 var resp = needle.get('something.worthy/of/being/streamed/by/needle');
 resp.pipe(somewhereElse);
-resp.on('end', function(err) {
+resp.on('done', function(err) {
   if (err) console.log('An error ocurred: ' + err.message);
 })
 ```
