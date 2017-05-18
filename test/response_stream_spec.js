@@ -10,14 +10,14 @@ describe('response streams', function() {
 
   describe('when the server sends back json', function(){
 
-    before(function(){
+    before(function() {
       server = http.createServer(function(req, res) {
         res.setHeader('Content-Type', 'application/json')
         res.end('{"foo":"bar"}')
       }).listen(port);
     });
 
-    after(function(){
+    after(function() {
       server.close();
     })
 
@@ -31,16 +31,17 @@ describe('response streams', function() {
         should.equal(false, bool);
 
         var readableCalled = false;
-        stream.on('readable', function () {
+        stream.on('readable', function() {
           readableCalled = true;
         })
 
-        stream.on('done', function () {
+        stream.on('done', function() {
           readableCalled.should.be.true;
           done();
         });
 
-        stream.resume();
+        stream.resume()
+
       })
 
       it('emits a single data item which is our JSON object', function(done) {
@@ -62,7 +63,7 @@ describe('response streams', function() {
       })
 
       it('emits a raw buffer if we do not want to parse JSON', function(done) {
-        var stream     = needle.get('localhost:' + port, {parse: false})
+        var stream  = needle.get('localhost:' + port, { parse: false })
 
         var chunks = [];
         stream.on('readable', function () {

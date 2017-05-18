@@ -624,7 +624,7 @@ describe('post data (e.g. request body)', function() {
           it('writes as buffer', function(done) {
             post({ foo: 'bar', test: '测试' }, opts, function(err, resp) {
               spy.called.should.be.true;
-              spy.args[0][0].should.be.a.Buffer;
+              spy.args[0][0].constructor.name.should.eql('Buffer');
               spy.args[0][0].toString().should.equal('foo=bar&test=%E6%B5%8B%E8%AF%95');
               resp.body.body.should.eql('foo=bar&test=%E6%B5%8B%E8%AF%95');
               done();

@@ -133,7 +133,7 @@ describe('errors', function(){
 
   })
 
-  describe('when request timeouts', function(){
+  describe('when request times out', function(){
 
     var server,
         url = 'http://localhost:3333/foo';
@@ -199,7 +199,7 @@ describe('errors', function(){
         setTimeout(function() {
           emitted.should.eql(false);
           done();
-        }, 100);
+        }, 350);
       })
 
     })
