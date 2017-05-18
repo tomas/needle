@@ -4,7 +4,7 @@ var fs     = require('fs'),
 
 var url  = 'http://ibl.gamechaser.net/f/tagqfxtteucbuldhezkz/bt_level1.gz';
 
-var resp = needle.get(url, { compressed: true, follow: true });
+var resp = needle.get(url, { compressed: true, follow_max: 10 });
 console.log('Downloading...');
 
 resp.on('readable', function() {
@@ -17,6 +17,6 @@ resp.on('readable', function() {
 
 })
 
-resp.on('end', function(data) {
+resp.on('done', function(data) {
   console.log('Done');
 })

@@ -20,6 +20,6 @@ resp.on('readable', function() {
   }
 })
 
-resp.on('end', function(data) {
+resp.on('done', function(data) {
   console.log('Done.');
 })

@@ -6,7 +6,7 @@ var opts = {
   auth: 'digest'
 }
 
-needle.get('http://test.webdav.org/auth-digest/', opts, function(err, resp, body){
+needle.get('http://test.webdav.org/auth-digest/', opts, function(err, resp, body) {
   console.log(resp.headers);
 
   if (resp.statusCode == 401)

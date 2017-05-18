@@ -9,6 +9,6 @@ console.log('Downloading ' + file + '...');
 needle
   .get(url)
   .pipe(fs.createWriteStream(file))
-  .on('finish', function() {
+  .on('done', function() {
     console.log('Done!')
   })
