@@ -105,6 +105,24 @@ describe('stringify', function() {
 				res.should.eql('test=100');
 			})
 
+			describe('with object where val is an array', function() {
+
+				it('works', function() {
+					var res = stringify({ foo: ['bar', 'baz'] });
+					res.should.eql('foo[]=bar&foo[]=baz');
+				})
+
+			})
+
+			describe('with object where val is an array of key val objects', function() {
+
+				it('works', function() {
+					var res = stringify({ foo: [{'1': 'bar'}, {'2': 'baz'}] });
+					res.should.eql('foo[][1]=bar&foo[][2]=baz');
+				})
+
+			})
+
 	})
 
 })
