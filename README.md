@@ -158,11 +158,9 @@ Except from the above, all of Needle's request methods return a Readable stream,
 ### needle.head(url[, options][, callback])
 
 ```js
-var options = {
+needle.head('https://my.backend.server.com', {
   open_timeout: 5000 // if we don't get our response headers in 5 seconds, boom.
-}
-
-needle.head('https://my.backend.server.com', function(err, resp) {
+}, function(err, resp) {
   if (err)
     console.log('Shoot! Something is wrong: ' + err.message)
   else
