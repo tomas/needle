@@ -142,9 +142,9 @@ stream.on('done', function(err) {
 API
 ---
 
-### needle(method, url[, data][, options][, callback])
+### needle(method, url[, data][, options][, callback]) `(> 2.0.x)`
 
-Calling `needle()` directly returns a Promise, from versions 2.0.x up. Besides `method` and `url`, all parameters are optional, although when sending a `post`, `put` or `patch` request you will get an error if `data` is not present.
+Calling `needle()` directly returns a Promise. Besides `method` and `url`, all parameters are optional, although when sending a `post`, `put` or `patch` request you will get an error if `data` is not present.
 
 ```js
 needle('get', 'http://some.url.com')
