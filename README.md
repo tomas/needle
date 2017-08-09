@@ -16,17 +16,33 @@ needle.get('http://www.google.com', function(error, response) {
 
 Callbacks not floating your boat? Needle got your back.
 
-```js
+``` js
 var data = {
   file: '/home/johnlennon/walrus.png',
   content_type: 'image/png'
 };
 
+// the callback is optional, and needle returns a `readableStream` object
+// that triggers a 'done' event when the request/response process is complete.
 needle
   .post('https://my.server.com/foo', data, { multipart: true })
   .on('readable', function() { /* eat your chunks */ })
-  .on('done', function() {
-    console.log('Ready-o, friend-o.');
+  .on('done', function(err, resp) {
+    console.log('Ready-o!');
+  })
+
+```
+
+From version 2.0.x up, Promises are also supported. Just call `needle()` directly and you'll get a native Promise object.
+
+```js
+
+needle('put', 'https://hacking.the.gibson/api', { foo: 'bar' })
+  .then(function(response) {
+    return doSomethingWith(response)
+  })
+  .catch(function(err) { 
+    console.log('Call the locksmith!')
   })
 ```
 
