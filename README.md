@@ -248,7 +248,7 @@ needle.request('get', 'forum.com/search', params, { json: true }, function(err, 
 Events
 ------
 
-All of the above methods return a [Readable stream](https://nodejs.org/api/stream.html#stream_class_stream_readable) that emits the following events, in addition to the regular ones (e.g. `end`, `close`, `data`, `pipe`, `readable`).
+The [Readable stream](https://nodejs.org/api/stream.html#stream_class_stream_readable) object returned by the above request methods emits the following events, in addition to the regular ones (e.g. `end`, `close`, `data`, `pipe`, `readable`).
 
 ### Event: `'response'`
 
