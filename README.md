@@ -97,7 +97,7 @@ needle.get('https://google.com/images/logo.png').pipe(out).on('finish', function
 });
 ```
 
-As you can see, you can use Needle with Promises or without them. When using Promises or when a callback passed, the response body will be buffered and written to `response.body`, and the callback will be fired when all of the data has been collected and processed (e.g. decompressed, decoded and/or parsed).
+As you can see, you can use Needle with Promises or without them. When using Promises or when a callback is passed, the response's body will be buffered and written to `response.body`, and the callback will be fired when all of the data has been collected and processed (e.g. decompressed, decoded and/or parsed).
 
 When no callback is passed, however, the buffering logic will be skipped but the response stream will still go through Needle's processing pipeline, so you get all the benefits of post-processing while keeping the streamishness we all love from Node.
 
