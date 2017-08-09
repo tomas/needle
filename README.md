@@ -73,24 +73,34 @@ Usage
 -----
 
 ```js
-// using callback
-needle.get('ifconfig.me/all.json', function(error, response, body) {
-  if (!error) {
-    // body is an alias for `response.body`
-    console.log(body.ip_addr); // that in this case holds a JSON-decoded object.
-  }
+// using promises
+needle('get', 'https://server.com/posts/12')
+  .then(function(resp) {
+    // ...
+  })
+  .catch(function(err) {
+    // ...
+  })
 });
 
-// using streams
+// using callback
+needle.get('ifconfig.me/all.json', function(error, response, body) {
+  if (error) return throw error;
+  // body is an alias for `response.body`,
+  // that in this case holds a JSON-decoded object.
+  console.log(body.ip_addr);
+});
+
+// no callback, using streams
 var out = fs.createWriteStream('logo.png');
 needle.get('https://google.com/images/logo.png').pipe(out).on('finish', function() {
   console.log('Pipe finished!');
 });
 ```
 
-As you can see, you can call Needle with a callback or without it. When passed, the response body will be buffered and written to `response.body`, and the callback will be fired when all of the data has been collected and processed (e.g. decompressed, decoded and/or parsed).
+As you can see, you can use Needle with Promises or without them. When using Promises or when a callback passed, the response body will be buffered and written to `response.body`, and the callback will be fired when all of the data has been collected and processed (e.g. decompressed, decoded and/or parsed).
 
-When no callback is passed, the buffering logic will be skipped but the response stream will still go through Needle's processing pipeline, so you get all the benefits of post-processing while keeping the streamishness we all love from Node.
+When no callback is passed, however, the buffering logic will be skipped but the response stream will still go through Needle's processing pipeline, so you get all the benefits of post-processing while keeping the streamishness we all love from Node.
 
 Response pipeline
 -----------------
@@ -133,7 +143,18 @@ stream.on('done', function(err) {
 API
 ---
 
-All of Needle's request methods return a Readable stream, and both `options` and `callback` are optional. If passed, the callback will return three arguments: `error`, `response` and `body`, which is basically an alias for `response.body`.
+### needle(method, url[, data][, options][, callback])
+
+Calling `needle()` directly returns a Promise, from versions 2.0.x up. Besides `method` and `url`, all parameters are optional, although when sending a `post`, `put` or `patch` request you will get an error if `data` is not present.
+
+```js
+needle('get', 'http://some.url.com')
+  .then(function(resp) { console.log(resp.body) })
+  .catch(function(err) { console.error(err) })
+})
+```
+
+Except from the above, all of Needle's request methods return a Readable stream, and both `options` and `callback` are optional. If passed, the callback will return three arguments: `error`, `response` and `body`, which is basically an alias for `response.body`.
 
 ### needle.head(url[, options][, callback])
 
