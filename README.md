@@ -30,13 +30,11 @@ needle
   .on('done', function(err, resp) {
     console.log('Ready-o!');
   })
-
 ```
 
 From version 2.0.x up, Promises are also supported. Just call `needle()` directly and you'll get a native Promise object.
 
 ```js
-
 needle('put', 'https://hacking.the.gibson/api', { foo: 'bar' })
   .then(function(response) {
     return doSomethingWith(response)
@@ -58,7 +56,7 @@ With only one real dependency, Needle supports:
  - 301/302/303 redirect following, with fine-grained tuning, and
  - Streaming non-UTF-8 charset decoding, via `iconv-lite`
 
-And yes, Mr. Wayne, it does come with streams2 support.
+And yes, Mr. Wayne, it does come in black.
 
 This makes Needle an ideal alternative for performing quick HTTP requests in Node, either for API interaction, downloading or uploading streams of data, and so on. If you need OAuth, AWS support or anything fancier, you should check out mikeal's request module.
 
@@ -83,9 +81,10 @@ needle('get', 'https://server.com/posts/12')
   })
 });
 
-// using callback
+// with callback
 needle.get('ifconfig.me/all.json', function(error, response, body) {
-  if (error) return throw error;
+  if (error) throw error;
+
   // body is an alias for `response.body`,
   // that in this case holds a JSON-decoded object.
   console.log(body.ip_addr);
