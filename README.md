@@ -104,7 +104,7 @@ When no callback is passed, however, the buffering logic will be skipped but the
 Response pipeline
 -----------------
 
-Depending on the response's Content-Type, Needle will either attempt to parse JSON or XML streams, or, if a text response was received, will ensure that the final encoding you get is UTF-8. For XML decoding to work, though, you'll need to install the `xml2js` package as we don't enforce unneeded dependencies unless strictly needed.
+Depending on the response's Content-Type, Needle will either attempt to parse JSON or XML streams, or, if a text response was received, will ensure that the final encoding you get is UTF-8.
 
 You can also request a gzip/deflated response, which, if sent by the server, will be processed before parsing or decoding is performed.
 
@@ -322,8 +322,6 @@ Response options
  - `output`          : Dump response output to file. This occurs after parsing and charset decoding is done.
  - `parse_cookies`   : Whether to parse response’s `Set-Cookie` header. Defaults to `true`. If parsed, response cookies will be available at `resp.cookies`.
 
-Note: To stay light on dependencies, Needle doesn't include the `xml2js` module used for XML parsing. To enable it, simply do `npm install xml2js`.
-
 HTTP Header options
 -------------------
 
@@ -448,7 +446,7 @@ needle.get('api.github.com/users/tomas', options, function(err, resp, body) {
 
 ```js
 needle.get('https://news.ycombinator.com/rss', function(err, resp, body) {
-  // if xml2js is installed, you'll get a nice object containing the nodes in the RSS
+  // you'll get a nice object containing the nodes in the RSS
 });
 ```
 
