@@ -318,48 +318,47 @@ describe('parsing', function(){
       server.close(done);
     })
 
-    describe('and xml2js library is present', function(){
+    describe('and parse_response is true', function(){
 
-      require.bind(null, 'xml2js').should.not.throw();
-
-      describe('and parse_response is true', function(){
-
-        it('should return valid object', function(done){
-          needle.get('localhost:' + port, function(err, response, body){
-            should.not.exist(err);
-            body.post.should.have.property('body', 'hello there');
-            done();
-          })
+      it('should return valid object', function(done) {
+        needle.get('localhost:' + port, { parse_response: true }, function(err, response, body) {
+          should.not.exist(err);
+          body.name.should.eql('post')
+          body.children[0].name.should.eql('body')
+          body.children[0].text.should.eql('hello there')
+          done();
         })
-
-        it('should have a .parser = json property', function(done) {
-          needle.get('localhost:' + port, function(err, resp) {
-            should.not.exist(err);
-            resp.parser.should.eql('xml');
-            done();
-          })
-        })
-
       })
 
-      describe('and parse response is not true', function(){
-
-        it('should return xml string', function(){
-
+      it('should have a .parser = json property', function(done) {
+        needle.get('localhost:' + port, { parse_response: true }, function(err, resp) {
+          should.not.exist(err);
+          resp.parser.should.eql('xml');
+          done();
         })
-
       })
 
     })
 
-    describe('and xml2js is not found', function(){
+    describe('and parse response is false', function(){
 
-      it('should return xml string', function(){
+      it('should return valid object', function(done) {
+        needle.get('localhost:' + port, { parse_response: false }, function(err, response, body){
+          should.not.exist(err);
+          body.toString().should.eql('<post><body>hello there</body></post>')
+          done();
+        })
+      })
 
+      it('should not have a .parser = json property', function(done) {
+        needle.get('localhost:' + port, { parse_response: false }, function(err, resp) {
+          should.not.exist(err);
+          should.not.exist(resp.parser)
+          done();
+        })
       })
 
     })
-
 
   })
 
