@@ -133,13 +133,13 @@ describe('errors', function(){
 
   })
 
-  describe('when request times out', function(){
+  describe('when request times out waiting for response', function() {
 
     var server,
         url = 'http://localhost:3333/foo';
 
     var send_request = function(cb) {
-      return needle.get(url, { timeout: 200 }, cb);
+      return needle.get(url, { response_timeout: 200 }, cb);
     }
 
     before(function(){
