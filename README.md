@@ -39,7 +39,7 @@ needle('put', 'https://hacking.the.gibson/login', { password: 'god' })
   .then(function(response) {
     return doSomethingWith(response)
   })
-  .catch(function(err) { 
+  .catch(function(err) {
     console.log('Call the locksmith!')
   })
 ```
@@ -159,7 +159,7 @@ Except from the above, all of Needle's request methods return a Readable stream,
 
 ```js
 needle.head('https://my.backend.server.com', {
-  open_timeout: 5000 // if we don't get our response headers in 5 seconds, boom.
+  open_timeout: 5000 // if we're not able to open a connection in 5 seconds, boom.
 }, function(err, resp) {
   if (err)
     console.log('Shoot! Something is wrong: ' + err.message)
@@ -295,7 +295,7 @@ Emitted when an error ocurrs. This should only happen once in the lifecycle of a
 
  - `type <String>`
 
-Emitted when an timeout error occurs. Type can be either 'open' or 'read'. This will called right before aborting the request, which will also trigger an `err` event, a described above, with an `ECONNRESET` (Socket hang up) exception.
+Emitted when an timeout error occurs. Type can be either 'open', 'response', or 'read'. This will called right before aborting the request, which will also trigger an `err` event, a described above, with an `ECONNRESET` (Socket hang up) exception.
 
 Request options
 ---------------
@@ -305,7 +305,8 @@ For information about options that've changed, there's always [the changelog](ht
  - `agent`       : Uses an [http.Agent](https://nodejs.org/api/http.html#http_class_http_agent) of your choice, instead of the global, default one. Useful for tweaking the behaviour at the connection level, such as when doing tunneling (see below for an example).
  - `json`        : When `true`, sets content type to `application/json` and sends request body as JSON string, instead of a query string.
  - `open_timeout`: (or `timeout`) Returns error if connection takes longer than X milisecs to establish. Defaults to `10000` (10 secs). `0` means no timeout.
- - `read_timeout`: Returns error if data transfer takes longer than X milisecs, after connection is established. Defaults to `0` (no timeout).
+ - `response_timeout`: Returns error if no response headers are received in X milisecs, counting from when the connection is opened. Defaults to `0` (no response timeout).
+ - `read_timeout`: Returns error if data transfer takes longer than X milisecs, once response headers are received. Defaults to `0` (no timeout).
  - `follow_max`  : (or `follow`) Number of redirects to follow. Defaults to `0`. See below for more redirect options.
  - `multipart`   : Enables multipart/form-data encoding. Defaults to `false`. Use it when uploading files.
  - `proxy`       : Forwards request through HTTP(s) proxy. Eg. `proxy: 'http://user:pass@proxy.server.com:3128'`. For more advanced proxying/tunneling use a custom `agent`, as described below.
