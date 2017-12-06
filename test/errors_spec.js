@@ -15,35 +15,39 @@ var get_catch = function(url, opts) {
   return err;
 }
 
-describe('errors', function(){
+describe('errors', function() {
 
-  describe('when host does not exist', function(){
+  after(function(done) {
+    setTimeout(done, 100)
+  })
+
+  describe('when host does not exist', function() {
 
     var url = 'http://unexistinghost/foo';
 
     describe('with callback', function() {
 
-      it('does not throw', function(){
+      it('does not throw', function() {
         var ex = get_catch(url);
         should.not.exist(ex);
       })
 
       it('callbacks an error', function(done) {
-        needle.get(url, function(err){
+        needle.get(url, function(err) {
           err.should.be.a.Error;
           done();
         })
       })
 
-      it('error should be ENOTFOUND', function(done){
-        needle.get(url, function(err){
+      it('error should be ENOTFOUND', function(done) {
+        needle.get(url, function(err) {
           err.code.should.match(/ENOTFOUND|EADDRINFO/)
           done();
         })
       })
 
-      it('does not callback a response', function(done){
-        needle.get(url, function(err, resp){
+      it('does not callback a response', function(done) {
+        needle.get(url, function(err, resp) {
           should.not.exist(resp);
           done();
         })
@@ -67,7 +71,7 @@ describe('errors', function(){
 
     describe('without callback', function() {
 
-      it('does not throw', function(){
+      it('does not throw', function() {
         var ex = get_catch(url);
         should.not.exist(ex);
       })
@@ -101,7 +105,7 @@ describe('errors', function(){
         }, 200)
       })
 
-      it('does not emit a readable event', function(done){
+      it('does not emit a readable event', function(done) {
         var called = false,
             stream = needle.get(url);
 
@@ -142,21 +146,21 @@ describe('errors', function(){
       return needle.get(url, { response_timeout: 200 }, cb);
     }
 
-    before(function(){
+    before(function() {
       server = helpers.server({ port: 3333, wait: 1000 });
     })
 
-    after(function(){
+    after(function() {
       server.close();
     })
 
     describe('with callback', function() {
 
-      it('aborts the request', function(done){
+      it('aborts the request', function(done) {
 
         var time = new Date();
 
-        send_request(function(err){
+        send_request(function(err) {
           var timediff = (new Date() - time);
           timediff.should.be.within(200, 300);
           done();
@@ -164,22 +168,22 @@ describe('errors', function(){
 
       })
 
-      it('callbacks an error', function(done){
-        send_request(function(err){
+      it('callbacks an error', function(done) {
+        send_request(function(err) {
           err.should.be.a.Error;
           done();
         })
       })
 
-      it('error should be ECONNRESET', function(done){
-        send_request(function(err){
+      it('error should be ECONNRESET', function(done) {
+        send_request(function(err) {
           err.code.should.equal('ECONNRESET')
           done();
         })
       })
 
       it('does not callback a response', function(done) {
-        send_request(function(err, resp){
+        send_request(function(err, resp) {
           should.not.exist(resp);
           done();
         })
@@ -220,7 +224,7 @@ describe('errors', function(){
         }, 250)
       })
 
-      it('aborts the request', function(done){
+      it('aborts the request', function(done) {
 
         var time = new Date();
         var stream = send_request();
@@ -233,7 +237,7 @@ describe('errors', function(){
 
       })
 
-      it('error should be ECONNRESET', function(done){
+      it('error should be ECONNRESET', function(done) {
         var error,
             stream = send_request();
 
@@ -247,7 +251,7 @@ describe('errors', function(){
         }, 250)
       })
 
-      it('does not emit a readable event', function(done){
+      it('does not emit a readable event', function(done) {
         var called = false,
             stream = send_request();
 
