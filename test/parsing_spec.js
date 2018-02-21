@@ -305,12 +305,12 @@ describe('parsing', function(){
 
   });
 
-  describe('when response is an XML string', function(){
+  describe('when response is an invalid XML string', function(){
 
     before(function(done){
       server = http.createServer(function(req, res) {
         res.writeHeader(200, {'Content-Type': 'application/xml'})
-        res.end("<post><body>hello there</body></post>")
+        res.end("<post><body there11post>")
       }).listen(port, done);
     });
 
@@ -320,17 +320,76 @@ describe('parsing', function(){
 
     describe('and parse_response is true', function(){
 
-      it('should return valid object', function(done) {
+      it('should return original string', function(done) {
         needle.get('localhost:' + port, { parse_response: true }, function(err, response, body) {
           should.not.exist(err);
-          body.name.should.eql('post')
-          body.children[0].name.should.eql('body')
-          body.children[0].text.should.eql('hello there')
+          body.should.eql('<post><body there11post>')
+          should.not.exist(body.name);
           done();
         })
       })
 
-      it('should have a .parser = json property', function(done) {
+      it('should not have a .parser = xml property', function(done) {
+        needle.get('localhost:' + port, { parse_response: true }, function(err, resp) {
+          should.not.exist(err);
+          should.not.exist(resp.parser);
+          done();
+        })
+      })
+
+    })
+
+    describe('and parse response is false', function(){
+
+      it('should return valid object', function(done) {
+        needle.get('localhost:' + port, { parse_response: false }, function(err, response, body){
+          should.not.exist(err);
+          body.toString().should.eql('<post><body there11post>')
+          done();
+        })
+      })
+
+      it('should not have a .parser property', function(done) {
+        needle.get('localhost:' + port, { parse_response: false }, function(err, resp) {
+          should.not.exist(err);
+          should.not.exist(resp.parser)
+          done();
+        })
+      })
+
+    })
+
+  })
+
+  describe('when response is a valid XML string', function(){
+
+    before(function(done) {
+      server = http.createServer(function(req, res) {
+        res.writeHeader(200, {'Content-Type': 'application/xml'})
+        res.end("<post><p>hello</p><p>world</p></post>")
+      }).listen(port, done);
+    });
+
+    after(function(done) {
+      server.close(done);
+    })
+
+    describe('and parse_response is true', function(){
+
+      it('should return valid object', function(done) {
+        needle.get('localhost:' + port, { parse_response: true }, function(err, response, body) {
+          should.not.exist(err);
+          body.name.should.eql('post')
+          body.children[0].name.should.eql('p')
+          body.children[0].value.should.eql('hello')
+
+          body.children[1].name.should.eql('p')
+          body.children[1].value.should.eql('world')
+          done();
+        })
+      })
+
+      it('should have a .parser = xml property', function(done) {
         needle.get('localhost:' + port, { parse_response: true }, function(err, resp) {
           should.not.exist(err);
           resp.parser.should.eql('xml');
@@ -345,12 +404,12 @@ describe('parsing', function(){
       it('should return valid object', function(done) {
         needle.get('localhost:' + port, { parse_response: false }, function(err, response, body){
           should.not.exist(err);
-          body.toString().should.eql('<post><body>hello there</body></post>')
+          body.toString().should.eql('<post><p>hello</p><p>world</p></post>')
           done();
         })
       })
 
-      it('should not have a .parser = json property', function(done) {
+      it('should not have a .parser property', function(done) {
         needle.get('localhost:' + port, { parse_response: false }, function(err, resp) {
           should.not.exist(err);
           should.not.exist(resp.parser)
@@ -361,5 +420,75 @@ describe('parsing', function(){
     })
 
   })
+
+
+  describe('valid XML, using xml2js', function() {
+
+    var parsers, origParser;
+
+    before(function(done) {
+      var xml2js = require('xml2js')
+      parsers = require('../lib/parsers');
+      origParser = parsers['application/xml'];
+
+      var customParser = require('xml2js').parseString;
+      parsers.use('xml2js', ['application/xml'], function(buff, cb) {
+        var opts = { explicitRoot: true, explicitArray: false };
+        customParser(buff, opts, cb);
+      })
+
+      server = http.createServer(function(req, res) {
+        res.writeHeader(200, {'Content-Type': 'application/xml'})
+        res.end("<post><p>hello</p><p>world</p></post>")
+      }).listen(port, done);
+    });
+
+    after(function(done) {
+      parsers['application/xml'] = origParser;
+      server.close(done);
+    })
+
+    describe('and parse_response is true', function(){
+
+      it('should return valid object', function(done) {
+        needle.get('localhost:' + port, { parse_response: true }, function(err, response, body) {
+          should.not.exist(err);
+          body.should.eql({ post: { p: ['hello', 'world' ]}})
+          done();
+        })
+      })
+
+      it('should have a .parser = xml property', function(done) {
+        needle.get('localhost:' + port, { parse_response: true }, function(err, resp) {
+          should.not.exist(err);
+          resp.parser.should.eql('xml2js');
+          done();
+        })
+      })
+
+    })
+
+    describe('and parse response is false', function(){
+
+      it('should return valid object', function(done) {
+        needle.get('localhost:' + port, { parse_response: false }, function(err, response, body){
+          should.not.exist(err);
+          body.toString().should.eql('<post><p>hello</p><p>world</p></post>')
+          done();
+        })
+      })
+
+      it('should not have a .parser property', function(done) {
+        needle.get('localhost:' + port, { parse_response: false }, function(err, resp) {
+          should.not.exist(err);
+          should.not.exist(resp.parser)
+          done();
+        })
+      })
+
+    })
+
+  })
+
 
 })
