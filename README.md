@@ -44,11 +44,11 @@ needle('put', 'https://hacking.the.gibson/login', { password: 'god' })
   })
 ```
 
-With only one real dependency, Needle supports:
+With only two real dependencies, Needle supports:
 
  - HTTP/HTTPS requests, with the usual verbs you would expect
  - All of Node's native TLS options, such as 'rejectUnauthorized' (see below)
- - Basic & Digest authentication
+ - Basic & Digest authentication with auto-detection
  - Multipart form-data (e.g. file uploads)
  - HTTP Proxy forwarding, optionally with authentication
  - Streaming gzip or deflate decompression
