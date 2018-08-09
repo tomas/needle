@@ -35,7 +35,7 @@ needle
 From version 2.0.x up, Promises are also supported. Just call `needle()` directly and you'll get a native Promise object.
 
 ```js
-needle('put', 'https://hacking.the.gibson/login', { password: 'god' })
+needle('put', 'https://hacking.the.gibson/login', { password: 'god' }, { json: true })
   .then(function(response) {
     return doSomethingWith(response)
   })
