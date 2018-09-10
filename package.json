@@ -45,13 +45,13 @@
     "sax": "^1.2.4"
   },
   "devDependencies": {
-    "mocha": "",
-    "sinon": "",
-    "should": "",
-    "xml2js": "",
     "JSONStream": "",
+    "jschardet": "",
+    "mocha": "",
     "q": "",
-    "jschardet": ""
+    "should": "^13.2.3",
+    "sinon": "^2.3.0",
+    "xml2js": ""
   },
   "scripts": {
     "test": "mocha test"
