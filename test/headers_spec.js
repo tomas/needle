@@ -37,6 +37,53 @@ describe('request headers', function() {
     })
   }
 
+  describe('user-agent unit tests', function() {
+    let needle_setup
+    before(function() {
+      needle = require('..');
+      needle_setup = needle.setup
+    })
+    after(function() {
+      needle.setup = needle_setup
+    })
+    
+      it('has the default user-agent header', function(done) {
+        needle.setup = function(uri, options) {
+          const config = needle_setup(uri, options)
+          config.headers.should.have.property('User-Agent')
+        }
+
+        send_request({}, function(err, resp) {
+          done();
+        })
+      })
+
+    it('has the caller-specified user-agent header', function(done) {
+        const userAgent = 'my-user-agent'
+
+        needle.setup = function(uri, options) {
+          const config = needle_setup(uri, options)
+          config.headers.should.have.property('User-Agent', userAgent)
+        }
+
+        send_request({headers: { 'User-Agent': userAgent }}, function(err, resp) {
+          done();
+        })
+      })
+
+    it('has NO user-agent header, based on caller desire', function(done) {
+        needle.setup = function(uri, options) {
+          const config = needle_setup(uri, options)
+          config.headers.should.not.have.property('User-Agent')
+        }
+
+        send_request({headers: { 'User-Agent': undefined }}, function(err, resp) {
+          done();
+        })
+      })
+
+  })
+
   describe('old node versions (<0.11.4) with persistent keep-alive connections', function() {
 
     before(function() {
