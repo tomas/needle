@@ -78,8 +78,7 @@ needle('get', 'https://server.com/posts/12')
   })
   .catch(function(err) {
     // ...
-  })
-});
+  });
 
 // with callback
 needle.get('ifconfig.me/all.json', function(error, response, body) {
