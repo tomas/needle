@@ -19,7 +19,7 @@ describe('Basic Auth', function() {
 
   var get_auth = function(header) {
     var token  = header.split(/\s+/).pop();
-    return token && new Buffer(token, 'base64').toString().split(':');
+    return token && Buffer.from(token, 'base64').toString().split(':');
   }
 
   describe('when neither username or password are passed', function() {
@@ -144,6 +144,29 @@ describe('Basic Auth', function() {
       })
     })
 
+  })
+
+  describe('URL with @ but not username/pass', function() {
+    it('doesnt send Authorization header', function(done) {
+      var url = 'localhost:' + port + '/abc/@def/xyz.zip';
+
+      needle.get(url, {}, function(err, resp) {
+        var sent_headers = resp.body.headers;
+        Object.keys(sent_headers).should.not.containEql('authorization');
+        done();
+      })
+    })
+
+    it('sends user:pass headers if passed via options', function(done) {
+      var url = 'localhost:' + port + '/abc/@def/xyz.zip';
+
+      needle.get(url, { username: 'foo' }, function(err, resp) {
+        var sent_headers = resp.body.headers;
+        Object.keys(sent_headers).should.containEql('authorization');
+        sent_headers['authorization'].should.eql('Basic Zm9v')
+        done();
+      })
+    })
   })
 
   describe('when username/password are included in URL', function() {

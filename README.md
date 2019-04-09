@@ -35,7 +35,7 @@ needle
 From version 2.0.x up, Promises are also supported. Just call `needle()` directly and you'll get a native Promise object.
 
 ```js
-needle('put', 'https://hacking.the.gibson/login', { password: 'god' })
+needle('put', 'https://hacking.the.gibson/login', { password: 'god' }, { json: true })
   .then(function(response) {
     return doSomethingWith(response)
   })
@@ -44,11 +44,11 @@ needle('put', 'https://hacking.the.gibson/login', { password: 'god' })
   })
 ```
 
-With only one real dependency, Needle supports:
+With only two real dependencies, Needle supports:
 
  - HTTP/HTTPS requests, with the usual verbs you would expect
  - All of Node's native TLS options, such as 'rejectUnauthorized' (see below)
- - Basic & Digest authentication
+ - Basic & Digest authentication with auto-detection
  - Multipart form-data (e.g. file uploads)
  - HTTP Proxy forwarding, optionally with authentication
  - Streaming gzip or deflate decompression
@@ -78,8 +78,7 @@ needle('get', 'https://server.com/posts/12')
   })
   .catch(function(err) {
     // ...
-  })
-});
+  });
 
 // with callback
 needle.get('ifconfig.me/all.json', function(error, response, body) {
@@ -104,7 +103,7 @@ When no callback is passed, however, the buffering logic will be skipped but the
 Response pipeline
 -----------------
 
-Depending on the response's Content-Type, Needle will either attempt to parse JSON or XML streams, or, if a text response was received, will ensure that the final encoding you get is UTF-8. For XML decoding to work, though, you'll need to install the `xml2js` package as we don't enforce unneeded dependencies unless strictly needed.
+Depending on the response's Content-Type, Needle will either attempt to parse JSON or XML streams, or, if a text response was received, will ensure that the final encoding you get is UTF-8.
 
 You can also request a gzip/deflated response, which, if sent by the server, will be processed before parsing or decoding is performed.
 
@@ -313,6 +312,7 @@ For information about options that've changed, there's always [the changelog](ht
  - `headers`     : Object containing custom HTTP headers for request. Overrides defaults described below.
  - `auth`        : Determines what to do with provided username/password. Options are `auto`, `digest` or `basic` (default). `auto` will detect the type of authentication depending on the response headers.
  - `stream_length`: When sending streams, this lets you manually set the Content-Length header --if the stream's bytecount is known beforehand--, preventing ECONNRESET (socket hang up) errors on some servers that misbehave when receiving payloads of unknown size. Set it to `0` and Needle will get and set the stream's length for you, or leave unset for the default behaviour, which is no Content-Length header for stream payloads.
+ - `localAddress`     : <string>, IP address. Passed to http/https request. Local interface from witch the request should be emitted.
 
 Response options
 ----------------
@@ -321,8 +321,6 @@ Response options
  - `parse_response`  : (or `parse`) Whether to parse XML or JSON response bodies automagically. Defaults to `true`. You can also set this to 'xml' or 'json' in which case Needle will *only* parse the response if the content type matches.
  - `output`          : Dump response output to file. This occurs after parsing and charset decoding is done.
  - `parse_cookies`   : Whether to parse response’s `Set-Cookie` header. Defaults to `true`. If parsed, response cookies will be available at `resp.cookies`.
-
-Note: To stay light on dependencies, Needle doesn't include the `xml2js` module used for XML parsing. To enable it, simply do `npm install xml2js`.
 
 HTTP Header options
 -------------------
@@ -448,7 +446,7 @@ needle.get('api.github.com/users/tomas', options, function(err, resp, body) {
 
 ```js
 needle.get('https://news.ycombinator.com/rss', function(err, resp, body) {
-  // if xml2js is installed, you'll get a nice object containing the nodes in the RSS
+  // you'll get a nice object containing the nodes in the RSS
 });
 ```
 
