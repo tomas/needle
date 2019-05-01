@@ -6,21 +6,21 @@ Needle
 The leanest and most handsome HTTP client in the Nodelands.
 
 ```js
-var needle = require('needle');
+const needle = require('needle')
 
 needle.get('http://www.google.com', function(error, response) {
   if (!error && response.statusCode == 200)
-    console.log(response.body);
-});
+    console.log(response.body)
+})
 ```
 
 Callbacks not floating your boat? Needle got your back.
 
 ``` js
-var data = {
+const data = {
   file: '/home/johnlennon/walrus.png',
   content_type: 'image/png'
-};
+}
 
 // the callback is optional, and needle returns a `readableStream` object
 // that triggers a 'done' event when the request/response process is complete.
@@ -28,7 +28,7 @@ needle
   .post('https://my.server.com/foo', data, { multipart: true })
   .on('readable', function() { /* eat your chunks */ })
   .on('done', function(err, resp) {
-    console.log('Ready-o!');
+    console.log('Ready-o!')
   })
 ```
 
@@ -36,11 +36,11 @@ From version 2.0.x up, Promises are also supported. Just call `needle()` directl
 
 ```js
 needle('put', 'https://hacking.the.gibson/login', { password: 'god' }, { json: true })
-  .then(function(response) {
+  .then((response) => {
     return doSomethingWith(response)
   })
-  .catch(function(err) {
-    console.log('Call the locksmith!')
+  .catch((error) => {
+    console.error(error)
   })
 ```
 
@@ -64,7 +64,7 @@ Install
 -------
 
 ```
-$ npm install needle
+$ npm install needle // $ yarn add needle
 ```
 
 Usage
@@ -78,22 +78,22 @@ needle('get', 'https://server.com/posts/12')
   })
   .catch(function(err) {
     // ...
-  });
+  })
 
 // with callback
 needle.get('ifconfig.me/all.json', function(error, response, body) {
-  if (error) throw error;
+  if (error) throw error
 
   // body is an alias for `response.body`,
   // that in this case holds a JSON-decoded object.
-  console.log(body.ip_addr);
-});
+  console.log(body.ip_addr)
+})
 
 // no callback, using streams
-var out = fs.createWriteStream('logo.png');
+var out = fs.createWriteStream('logo.png')
 needle.get('https://google.com/images/logo.png').pipe(out).on('finish', function() {
-  console.log('Pipe finished!');
-});
+  console.log('Pipe finished!')
+})
 ```
 
 As you can see, you can use Needle with Promises or without them. When using Promises or when a callback is passed, the response's body will be buffered and written to `response.body`, and the callback will be fired when all of the data has been collected and processed (e.g. decompressed, decoded and/or parsed).
@@ -109,9 +109,9 @@ You can also request a gzip/deflated response, which, if sent by the server, wil
 
 ```js
 needle.get('http://stackoverflow.com/feeds', { compressed: true }, function(err, resp) {
-  console.log(resp.body); // this little guy won't be a Gzipped binary blob
+  console.log(resp.body) // this little guy won't be a Gzipped binary blob
                           // but a nice object containing all the latest entries
-});
+})
 ```
 
 Or in anti-callback mode, using a few other options:
@@ -123,18 +123,18 @@ var options = {
   rejectUnauthorized : true  // verify SSL certificate
 }
 
-var stream = needle.get('https://backend.server.com/everything.html', options);
+var stream = needle.get('https://backend.server.com/everything.html', options)
 
 // read the chunks from the 'readable' event, so the stream gets consumed.
 stream.on('readable', function() {
   while (data = this.read()) {
-    console.log(data.toString());
+    console.log(data.toString())
   }
 })
 
 stream.on('done', function(err) {
   // if our request had an error, our 'done' event will tell us.
-  if (!err) console.log('Great success!');
+  if (!err) console.log('Great success!')
 })
 ```
 
@@ -172,7 +172,7 @@ needle.head('https://my.backend.server.com', {
 ```js
 needle.get('google.com/search?q=syd+barrett', function(err, resp) {
   // if no http:// is found, Needle will automagically prepend it.
-});
+})
 ```
 
 ### needle.post(url, data[, options][, callback])
@@ -184,7 +184,7 @@ var options = {
 
 needle.post('https://my.app.com/endpoint', 'foo=bar', options, function(err, resp) {
   // you can pass params as a string or as an object.
-});
+})
 ```
 
 ### needle.put(url, data[, options][, callback])
@@ -200,7 +200,7 @@ var nested = {
 
 needle.put('https://api.app.com/v2', nested, function(err, resp) {
   console.log('Got ' + resp.bytes + ' bytes.') // another nice treat from this handsome fella.
-});
+})
 ```
 
 ### needle.patch(url, data[, options][, callback])
@@ -217,7 +217,7 @@ var options = {
 
 needle.delete('https://api.app.com/messages/123', null, options, function(err, resp) {
   // in this case, data may be null, but you need to explicity pass it.
-});
+})
 ```
 
 ### needle.request(method, url, data[, options][, callback])
@@ -232,16 +232,16 @@ var params = {
 
 needle.request('get', 'forum.com/search', params, function(err, resp) {
   if (!err && resp.statusCode == 200)
-    console.log(resp.body); // here you go, mister.
-});
+    console.log(resp.body) // here you go, mister.
+})
 ```
 
 Now, if you set pass `json: true` among the options, Needle won't set your params as a querystring but instead send a JSON representation of your data through the request's body, as well as set the `Content-Type` and `Accept` headers to `application/json`.
 
 ```js
 needle.request('get', 'forum.com/search', params, { json: true }, function(err, resp) {
-  if (resp.statusCode == 200) console.log('It worked!');
-});
+  if (resp.statusCode == 200) console.log('It worked!')
+})
 ```
 
 Events
@@ -275,12 +275,12 @@ Triggered after the header has been processed, and just before the data is to be
 Emitted when the request/response process has finished, either because all data was consumed or an error ocurred somewhere in between. Unlike a regular stream's `end` event, Needle's `done` will be fired either on success or on failure, which is why the first argument may be an Error object. In other words:
 
 ```js
-var resp = needle.get('something.worthy/of/being/streamed/by/needle');
-resp.pipe(someWritableStream);
+var resp = needle.get('something.worthy/of/being/streamed/by/needle')
+resp.pipe(someWritableStream)
 
 resp.on('done', function(err) {
-  if (err) console.log('An error ocurred: ' + err.message);
-  else console.log('Great success!');
+  if (err) console.log('An error ocurred: ' + err.message)
+  else console.log('Great success!')
 })
 ```
 
@@ -370,7 +370,7 @@ Yes sir, we have it. Needle includes a `defaults()` method, that lets you overri
 needle.defaults({
   open_timeout: 60000,
   user_agent: 'MyApp/1.2.3',
-  parse_response: false });
+  parse_response: false })
 ```
 
 This will override Needle's default user agent and 10-second timeout, and disable response parsing, so you don't need to pass those options in every other request.
@@ -381,12 +381,12 @@ More advanced Proxy support
 Since you can pass a custom HTTPAgent to Needle you can do all sorts of neat stuff. For example, if you want to use the [`tunnel`](https://github.com/koichik/node-tunnel) module for HTTPS proxying, you can do this:
 
 ```js
-var tunnel = require('tunnel');
+var tunnel = require('tunnel')
 var myAgent = tunnel.httpOverHttp({
   proxy: { host: 'localhost' }
-});
+})
 
-needle.get('foobar.com', { agent: myAgent });
+needle.get('foobar.com', { agent: myAgent })
 ```
 
 Regarding the 'Connection' header
@@ -407,7 +407,7 @@ Examples Galore
 needle.get('https://api.server.com', { username: 'you', password: 'secret' },
   function(err, resp) {
     // used HTTP auth
-});
+})
 ```
 
 Or use [RFC-1738](http://tools.ietf.org/html/rfc1738#section-3.1) basic auth URL syntax:
@@ -415,7 +415,7 @@ Or use [RFC-1738](http://tools.ietf.org/html/rfc1738#section-3.1) basic auth URL
 ```js
 needle.get('https://username:password@api.server.com', function(err, resp) {
     // used HTTP auth from URL
-});
+})
 ```
 
 ### Digest Auth
@@ -424,7 +424,7 @@ needle.get('https://username:password@api.server.com', function(err, resp) {
 needle.get('other.server.com', { username: 'you', password: 'secret', auth: 'digest' },
   function(err, resp, body) {
     // needle prepends 'http://' to your URL, if missing
-});
+})
 ```
 
 ### Custom Accept header, deflate
@@ -439,7 +439,7 @@ var options = {
 needle.get('api.github.com/users/tomas', options, function(err, resp, body) {
   // body will contain a JSON.parse(d) object
   // if parsing fails, you'll simply get the original body
-});
+})
 ```
 
 ### GET XML object
@@ -447,7 +447,7 @@ needle.get('api.github.com/users/tomas', options, function(err, resp, body) {
 ```js
 needle.get('https://news.ycombinator.com/rss', function(err, resp, body) {
   // you'll get a nice object containing the nodes in the RSS
-});
+})
 ```
 
 ### GET binary, output to file
@@ -455,7 +455,7 @@ needle.get('https://news.ycombinator.com/rss', function(err, resp, body) {
 ```js
 needle.get('http://upload.server.com/tux.png', { output: '/tmp/tux.png' }, function(err, resp, body) {
   // you can dump any response to a file, not only binaries.
-});
+})
 ```
 
 ### GET through proxy
@@ -463,35 +463,35 @@ needle.get('http://upload.server.com/tux.png', { output: '/tmp/tux.png' }, funct
 ```js
 needle.get('http://search.npmjs.org', { proxy: 'http://localhost:1234' }, function(err, resp, body) {
   // request passed through proxy
-});
+})
 ```
 
 ### GET a very large document in a stream (from 0.7+)
 
 ```js
-var stream = needle.get('http://www.as35662.net/100.log');
+var stream = needle.get('http://www.as35662.net/100.log')
 
 stream.on('readable', function() {
-  var chunk;
+  var chunk
   while (chunk = this.read()) {
-    console.log('got data: ', chunk);
+    console.log('got data: ', chunk)
   }
-});
+})
 ```
 
 ### GET JSON object in a stream (from 0.7+)
 
 ```js
-var stream = needle.get('http://jsonplaceholder.typicode.com/db', { parse: true });
+var stream = needle.get('http://jsonplaceholder.typicode.com/db', { parse: true })
 
 stream.on('readable', function() {
-  var node;
+  var node
 
   // our stream will only emit a single JSON root node.
   while (node = this.read()) {
-    console.log('got data: ', node);
+    console.log('got data: ', node)
   }
-});
+})
 ```
 
 ### GET JSONStream flexible parser with search query (from 0.7+)
@@ -502,10 +502,10 @@ stream.on('readable', function() {
  // of the titles of all posts.
 
 needle.get('http://jsonplaceholder.typicode.com/db', { parse: true })
-      .pipe(new JSONStream.parse('posts.*.title'));
+      .pipe(new JSONStream.parse('posts.*.title'))
       .on('data', function (obj) {
-        console.log('got post title: %s', obj);
-      });
+        console.log('got post title: %s', obj)
+      })
 ```
 
 ### File upload using multipart, passing file path
@@ -518,7 +518,7 @@ var data = {
 
 needle.post('http://my.other.app.com', data, { multipart: true }, function(err, resp, body) {
   // needle will read the file and include it in the form-data as binary
-});
+})
 ```
 
 ### Stream upload, PUT or POST
@@ -526,13 +526,13 @@ needle.post('http://my.other.app.com', data, { multipart: true }, function(err, 
 ``` js
 needle.put('https://api.app.com/v2', fs.createReadStream('myfile.txt'), function(err, resp, body) {
   // stream content is uploaded verbatim
-});
+})
 ```
 
 ### Multipart POST, passing data buffer
 
 ```js
-var buffer = fs.readFileSync('/path/to/package.zip');
+var buffer = fs.readFileSync('/path/to/package.zip')
 
 var data = {
   zip_file: {
@@ -546,7 +546,7 @@ needle.post('http://somewhere.com/over/the/rainbow', data, { multipart: true }, 
   // if you see, when using buffers we need to pass the filename for the multipart body.
   // you can also pass a filename when using the file path method, in case you want to override
   // the default filename to be received on the other end.
-});
+})
 ```
 
 ### Multipart with custom Content-Type
@@ -563,7 +563,7 @@ var data = {
 needle.post('http://test.com/', data, { timeout: 5000, multipart: true }, function(err, resp, body) {
   // in this case, if the request takes more than 5 seconds
   // the callback will return a [Socket closed] error
-});
+})
 ```
 
 For even more examples, check out the examples directory in the repo.
