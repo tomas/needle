@@ -91,7 +91,7 @@ needle.get('ifconfig.me/all.json', function(error, response, body) {
 
 // no callback, using streams
 var out = fs.createWriteStream('logo.png');
-needle.get('https://google.com/images/logo.png').pipe(out).on('finish', function() {
+needle.get('https://google.com/images/logo.png').pipe(out).on('done', function() {
   console.log('Pipe finished!');
 });
 ```
