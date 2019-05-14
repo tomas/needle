@@ -40,7 +40,7 @@
     "url": "https://github.com/tomas/needle.git"
   },
   "dependencies": {
-    "debug": "^4.1.0",
+    "debug": "^3.2.6",
     "iconv-lite": "^0.4.4",
     "sax": "^1.2.4"
   },
