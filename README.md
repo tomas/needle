@@ -51,7 +51,7 @@ With only two real dependencies, Needle supports:
  - Basic & Digest authentication with auto-detection
  - Multipart form-data (e.g. file uploads)
  - HTTP Proxy forwarding, optionally with authentication
- - Streaming gzip or deflate decompression
+ - Streaming gzip, deflate, and brotli decompression
  - Automatic XML & JSON parsing
  - 301/302/303 redirect following, with fine-grained tuning, and
  - Streaming non-UTF-8 charset decoding, via `iconv-lite`
@@ -105,7 +105,7 @@ Response pipeline
 
 Depending on the response's Content-Type, Needle will either attempt to parse JSON or XML streams, or, if a text response was received, will ensure that the final encoding you get is UTF-8.
 
-You can also request a gzip/deflated response, which, if sent by the server, will be processed before parsing or decoding is performed.
+You can also request a gzip/deflated/brotli response, which, if sent by the server, will be processed before parsing or decoding is performed. (Note: brotli is only supported on Node 10.16.0 or above, and will not be requested or processed on earlier versions.)
 
 ```js
 needle.get('http://stackoverflow.com/feeds', { compressed: true }, function(err, resp) {
@@ -118,7 +118,7 @@ Or in anti-callback mode, using a few other options:
 
 ```js
 var options = {
-  compressed         : true, // sets 'Accept-Encoding' to 'gzip,deflate'
+  compressed         : true, // sets 'Accept-Encoding' to 'gzip, deflate, br'
   follow_max         : 5,    // follow up to five redirects
   rejectUnauthorized : true  // verify SSL certificate
 }
