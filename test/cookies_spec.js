@@ -5,12 +5,14 @@ var needle  = require('../'),
     should  = require('should'),
     assert  = require('assert');
 
-var WEIRD_COOKIE_NAME      = 'wc',
+var REQUEST_COOKIE_NAME    = 'rc',
+    WEIRD_COOKIE_NAME      = 'wc',
     BASE64_COOKIE_NAME     = 'bc',
     FORBIDDEN_COOKIE_NAME  = 'fc',
     NUMBER_COOKIE_NAME     = 'nc';
 
-var WEIRD_COOKIE_VALUE     = '!\'*+#()&-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~',
+var REQUEST_COOKIE_VALUE   = 'a492b257b5e9eab8b1bb7421e394c893afa08b21',
+    WEIRD_COOKIE_VALUE     = '!\'*+#()&-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~',
     BASE64_COOKIE_VALUE    = 'Y29va2llCg==',
     FORBIDDEN_COOKIE_VALUE = ' ;"\\,',
     NUMBER_COOKIE_VALUE    = 12354342;
@@ -194,12 +196,15 @@ describe('cookies', function() {
 
       describe('and follow_set_cookies is true', function() {
         var opts = {
+          cookies: { REQUEST_COOKIE_NAME: REQUEST_COOKIE_VALUE },
           follow_set_cookies: true,
           follow_max: 4
         };
 
         it('should have all the cookies', function(done) {
           needle.get(TEST_HOST + ':' + testPort + '/0', opts, function(err, resp) {
+            resp.cookies.should.have.property(REQUEST_COOKIE_NAME)
+            resp.cookies[REQUEST_COOKIE_NAME].should.eql(REQUEST_COOKIE_VALUE)
             resp.cookies.should.have.property(WEIRD_COOKIE_NAME);
             resp.cookies.should.have.property(BASE64_COOKIE_NAME);
             resp.cookies.should.have.property(FORBIDDEN_COOKIE_NAME);
