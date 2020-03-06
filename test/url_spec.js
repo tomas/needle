@@ -59,7 +59,7 @@ describe('urls', function() {
   describe('invalid host', function(){
 
     before(function() {
-      url = 'http://s1\\\2.com/'
+      url = 'http://s1\\\u0002.com/'
     })
 
     it('fails', function(done) {
