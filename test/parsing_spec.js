@@ -366,7 +366,7 @@ describe('parsing', function(){
     before(function(done) {
       server = http.createServer(function(req, res) {
         res.writeHeader(200, {'Content-Type': 'application/xml'})
-        res.end("<post><p>hello</p><p>world</p></post>")
+        res.end("<post><p>hello</p><p><![CDATA[world]]></p></post>")
       }).listen(port, done);
     });
 
@@ -404,7 +404,7 @@ describe('parsing', function(){
       it('should return valid object', function(done) {
         needle.get('localhost:' + port, { parse_response: false }, function(err, response, body){
           should.not.exist(err);
-          body.toString().should.eql('<post><p>hello</p><p>world</p></post>')
+          body.toString().should.eql('<post><p>hello</p><p><![CDATA[world]]></p></post>')
           done();
         })
       })
