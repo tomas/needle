@@ -196,7 +196,7 @@ describe('cookies', function() {
 
       describe('and follow_set_cookies is true', function() {
         var opts = {
-          cookies: { REQUEST_COOKIE_NAME: REQUEST_COOKIE_VALUE },
+          cookies: { 'rc': REQUEST_COOKIE_VALUE },
           follow_set_cookies: true,
           follow_max: 4
         };
