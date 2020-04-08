@@ -2,6 +2,7 @@ var should  = require('should'),
     needle  = require('./../'),
     Q       = require('q'),
     chardet = require('jschardet');
+    nock    = require('nock')
 
 describe('character encoding', function() {
 
@@ -82,5 +83,32 @@ describe('character encoding', function() {
         done();
       });
     })
+  })
+
+  describe('Given content-type: "text/html"', function () {
+    var hungarianUrl = 'https://some.domain.com';
+    beforeEach(function () {
+      nock(hungarianUrl)
+        .get('/')
+        .reply(200, 'Magyarországi Fióktelepe', {
+          'content-type': 'text/html',
+        });
+    })
+    describe('with decode = false', function () {
+
+      it('decodes by default to utf-8', function (done) {
+
+        needle.get(hungarianUrl, { decode: false }, function (err, resp) {
+          console.log(resp.body)
+          resp.body.should.be.a.String;
+          chardet.detect(resp.body).encoding.should.eql('ISO-8859-2');
+          resp.body.should.eql('Magyarországi Fióktelepe')
+          done();
+        })
+
+      })
+
+    })
+
   })
 })
