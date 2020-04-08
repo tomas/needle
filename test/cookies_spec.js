@@ -139,6 +139,7 @@ describe('cookies', function() {
     describe('and response is a redirect', function() {
 
       var redirectServer, testPort = 22222;
+      var requestCookies = [];
 
       var responseCookies = [
         [ // first req
@@ -158,7 +159,10 @@ describe('cookies', function() {
           var number  = parseInt(req.url.replace('/', ''));
           var nextUrl = 'http://' + TEST_HOST + ':' + testPort + '/' + (number + 1);
 
-          if (responseCookies[number]) { // got cookies
+          if (number == 0) requestCookies = []; // reset
+          requestCookies.push(req.headers['cookie']);
+
+          if (responseCookies[number]) { // we should send cookies for this request
             res.statusCode = 302;
             res.setHeader('Set-Cookie', responseCookies[number]);
             res.setHeader('Location', nextUrl);
@@ -177,38 +181,126 @@ describe('cookies', function() {
 
       describe('and follow_set_cookies is false', function() {
 
-        var opts = {
-          follow_set_cookies: false,
-          follow_max: 4
-        };
+        describe('with original request cookie', function() {
 
-        it('no cookie header set on redirection request', function(done) {
-          var spy = sinon.spy(cookies, 'write');
+          var opts = {
+            follow_set_cookies: false,
+            follow_max: 4,
+            cookies: { 'xxx': 123 }
+          };
 
-          needle.get(TEST_HOST + ':' + testPort + '/0', opts, function(err, resp) {
-            spy.callCount.should.eql(0);
-            done();
+          it('request cookie is not passed to redirects', function(done) {
+            needle.get(TEST_HOST + ':' + testPort + '/0', opts, function(err, resp) {
+              requestCookies.should.eql(["xxx=123", undefined, undefined, undefined, undefined])
+              done();
+            });
           });
-        });
+
+          it('response cookies are not passed either', function(done) {
+            needle.get(TEST_HOST + ':' + testPort + '/0', opts, function(err, resp) {
+              should.not.exist(resp.cookies);
+              done();
+            });
+          });
+
+        })
+
+        describe('without original request cookie', function() {
+
+          var opts = {
+            follow_set_cookies: false,
+            follow_max: 4,
+          };
+
+          it('no request cookies are sent', function(done) {
+            needle.get(TEST_HOST + ':' + testPort + '/0', opts, function(err, resp) {
+              requestCookies.should.eql([undefined, undefined, undefined, undefined, undefined])
+              done();
+            });
+          });
+
+          it('response cookies are not passed either', function(done) {
+            needle.get(TEST_HOST + ':' + testPort + '/0', opts, function(err, resp) {
+              should.not.exist(resp.cookies);
+              done();
+            });
+          });
+
+        })
+
       });
 
       describe('and follow_set_cookies is true', function() {
-        var opts = {
-          follow_set_cookies: true,
-          follow_max: 4
-        };
 
-        it('should have all the cookies', function(done) {
-          needle.get(TEST_HOST + ':' + testPort + '/0', opts, function(err, resp) {
-            resp.cookies.should.have.property(WEIRD_COOKIE_NAME);
-            resp.cookies.should.have.property(BASE64_COOKIE_NAME);
-            resp.cookies.should.have.property(FORBIDDEN_COOKIE_NAME);
-            resp.cookies.should.have.property(NUMBER_COOKIE_NAME);
-            resp.cookies.should.have.property('FOO');
-            resp.cookies.FOO.should.eql('BAR'); // should overwrite previous one
-            done();
+        describe('with original request cookie', function() {
+
+          var opts = {
+            follow_set_cookies: true,
+            follow_max: 4,
+            cookies: { 'xxx': 123 }
+          };
+
+          it('request cookie is passed passed to redirects, and response cookies are added too', function(done) {
+            needle.get(TEST_HOST + ':' + testPort + '/0', opts, function(err, resp) {
+              requestCookies.should.eql([
+                "xxx=123",
+                "xxx=123; wc=!'*+#()&-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~; bc=Y29va2llCg==; FOO=123",
+                "xxx=123; wc=!\'*+#()&-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~; bc=Y29va2llCg==; FOO=123; fc=%20%3B%22%5C%2C; nc=12354342",
+                "xxx=123; wc=!\'*+#()&-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~; bc=Y29va2llCg==; FOO=BAR; fc=%20%3B%22%5C%2C; nc=12354342",
+                "xxx=123; wc=!\'*+#()&-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~; bc=Y29va2llCg==; FOO=BAR; fc=%20%3B%22%5C%2C; nc=12354342"
+              ])
+              done();
+            });
           });
-        });
+
+          it('response cookies are passed as well', function(done) {
+            needle.get(TEST_HOST + ':' + testPort + '/0', opts, function(err, resp) {
+              resp.cookies.should.have.property(WEIRD_COOKIE_NAME);
+              resp.cookies.should.have.property(BASE64_COOKIE_NAME);
+              resp.cookies.should.have.property(FORBIDDEN_COOKIE_NAME);
+              resp.cookies.should.have.property(NUMBER_COOKIE_NAME);
+              resp.cookies.should.have.property('FOO');
+              resp.cookies.FOO.should.eql('BAR'); // should overwrite previous one
+              done();
+            });
+          });
+
+        })
+
+        describe('without original request cookie', function() {
+
+          var opts = {
+            follow_set_cookies: true,
+            follow_max: 4,
+          };
+
+          it('response cookies are passed to redirects', function(done) {
+            needle.get(TEST_HOST + ':' + testPort + '/0', opts, function(err, resp) {
+              requestCookies.should.eql([
+                undefined,
+                "wc=!'*+#()&-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~; bc=Y29va2llCg==; FOO=123",
+                "wc=!\'*+#()&-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~; bc=Y29va2llCg==; FOO=123; fc=%20%3B%22%5C%2C; nc=12354342",
+                "wc=!\'*+#()&-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~; bc=Y29va2llCg==; FOO=BAR; fc=%20%3B%22%5C%2C; nc=12354342",
+                "wc=!\'*+#()&-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~; bc=Y29va2llCg==; FOO=BAR; fc=%20%3B%22%5C%2C; nc=12354342"
+              ])
+              done();
+            });
+          });
+
+          it('response cookies are passed as well', function(done) {
+            needle.get(TEST_HOST + ':' + testPort + '/0', opts, function(err, resp) {
+              resp.cookies.should.have.property(WEIRD_COOKIE_NAME);
+              resp.cookies.should.have.property(BASE64_COOKIE_NAME);
+              resp.cookies.should.have.property(FORBIDDEN_COOKIE_NAME);
+              resp.cookies.should.have.property(NUMBER_COOKIE_NAME);
+              resp.cookies.should.have.property('FOO');
+              resp.cookies.FOO.should.eql('BAR'); // should overwrite previous one
+              done();
+            });
+          });
+
+        })
+
       });
     });
 
