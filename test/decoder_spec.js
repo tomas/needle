@@ -8,7 +8,7 @@ describe('character encoding', function() {
   var url;
   this.timeout(5000);
 
-  describe('test A', function() {
+  describe('Given content-type: "text/html; charset=EUC-JP"', function() {
 
     before(function() {
       url = 'http://www.nina.jp/server/slackware/webapp/tomcat_charset.html';
@@ -46,7 +46,7 @@ describe('character encoding', function() {
 
   })
 
-  describe('test B', function() {
+  describe('Given content-type: "text/html but file is charset: gb2312', function() {
 
     it('encodes to UTF-8', function(done) {
 
@@ -71,11 +71,11 @@ describe('character encoding', function() {
           chardet.detect(bodies[1]).encoding,
         ]
 
-        // We wanted to decode our first stream.
+        // We wanted to decode our first stream as specified by options
         charsets[0].should.equal('ascii');
         bodies[0].indexOf('全球中文网站前二十强').should.not.equal(-1);
 
-        // But not our second stream.
+        // But not our second stream
         charsets[1].should.equal('windows-1252');
         bodies[1].indexOf('全球中文网站前二十强').should.equal(-1);
 
