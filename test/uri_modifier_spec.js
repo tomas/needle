@@ -6,12 +6,12 @@ var needle  = require('../'),
 
 var port = 3456;
 
-describe('uri_mod config parameter function', function() {
+describe('uri_modifier config parameter function', function() {
 
   var server, uri;
 
   function send_request(mw, cb) {
-    return needle.get(uri, null, { uri_mod: mw }, cb);
+    return needle.get(uri, null, { uri_modifier: mw }, cb);
   }
 
   before(function(done){
