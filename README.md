@@ -350,6 +350,7 @@ These options are passed directly to `https.request` if present. Taken from the 
  - `ciphers`            : A string describing the ciphers to use or exclude.
  - `rejectUnauthorized` : If true, the server certificate is verified against the list of supplied CAs. An 'error' event is emitted if verification fails. Verification happens at the connection level, before the HTTP request is sent.
  - `secureProtocol`     : The SSL method to use, e.g. SSLv3_method to force SSL version 3.
+ - `family`             : IP address family to use when resolving host and hostname. Valid values are 4 or 6. When unspecified, both IP v4 and v6 will be used.
 
 Redirect options
 ----------------
