@@ -19,7 +19,7 @@ describe('request headers', function() {
   })
 
   after(function(done) {
-    server.close(done)
+    server.close(done);
   })
 
   function send_request(opts, cb) {
@@ -29,7 +29,6 @@ describe('request headers', function() {
   function get_active_sockets() {
     var handles = process._getActiveHandles();
 
-    // only return the ones that have a .end() function (like a socket)
     return handles.filter(function(el) {
       if (el.constructor.name.toString() == 'Socket') {
         return el.destroyed !== true;

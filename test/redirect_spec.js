@@ -95,10 +95,12 @@ describe('redirects', function() {
 
     function followed_other_protocol(done) {
       send_request(opts, function(err, resp) {
-        // on new node versions, https.request calls http.request internally,
+        // on new-ish node versions, https.request calls http.request internally,
         // so we need to amount for that additional call.
+        // update: this doesn't happen on node > 10.x
 
-        var http_calls = protocols.http.Agent.defaultMaxSockets == Infinity ? 2 : 1;
+        var node_major_ver = process.version.split('.')[0].replace('v', '');
+        var http_calls = protocols.http.Agent.defaultMaxSockets == Infinity && parseInt(node_major_ver) < 10 ? 2 : 1;
 
         spies.http.callCount.should.eql(http_calls); // the one(s) from http.request
         spies.https.callCount.should.eql(1); // the one from https.request (redirect)
