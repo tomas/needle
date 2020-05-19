@@ -6,25 +6,26 @@ var server, port = 11112;
 
 describe('socket reuse', function() {
 
-  before(function() {
+  var httpAgent = new http.Agent({
+    keepAlive  : true,
+    maxSockets : 1
+  });
+
+  before(function(done) {
     server = http.createServer(function(req, res) {
       res.setHeader('Content-Type', 'application/json');
       setTimeout(function() {
         res.end('{"foo":"bar"}');
       }, 50);
-    }).listen(port);
+    }).listen(port, done);
   });
 
-  after(function() {
-    server.close();
+  after(function(done) {
+    httpAgent.destroy();
+    server.close(done);
   });
 
   describe('when sockets are reused', function() {
-
-    var httpAgent = new http.Agent({
-      keepAlive  : true,
-      maxSockets : 1
-    });
 
     it('does not duplicate listeners on .end', function(done) {
 
