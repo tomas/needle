@@ -1,8 +1,8 @@
 var should  = require('should'),
     needle  = require('./../'),
     Q       = require('q'),
-    chardet = require('jschardet');
-    nock    = require('nock')
+    chardet = require('jschardet'),
+    helpers = require('./helpers');
 
 describe('character encoding', function() {
 
@@ -86,20 +86,27 @@ describe('character encoding', function() {
   })
 
   describe('Given content-type: "text/html"', function () {
-    var hungarianUrl = 'https://some.domain.com';
-    beforeEach(function () {
-      nock(hungarianUrl)
-        .get('/')
-        .reply(200, 'Magyarországi Fióktelepe', {
-          'content-type': 'text/html',
-        });
-    })
-    describe('with decode = false', function () {
 
+    var server,
+        port = 54321,
+        text = 'Magyarországi Fióktelepe'
+
+    before(function(done) {
+      server = helpers.server({
+        port: port,
+        response: text,
+        headers: { 'Content-Type': 'text/html' }
+      }, done);
+    })
+
+    after(function(done) {
+      server.close(done)
+    })
+
+    describe('with decode = false', function () {
       it('decodes by default to utf-8', function (done) {
 
-        needle.get(hungarianUrl, { decode: false }, function (err, resp) {
-          console.log(resp.body)
+        needle.get('http://localhost:' + port, { decode: false }, function (err, resp) {
           resp.body.should.be.a.String;
           chardet.detect(resp.body).encoding.should.eql('ISO-8859-2');
           resp.body.should.eql('Magyarországi Fióktelepe')
