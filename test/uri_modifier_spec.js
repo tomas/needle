@@ -11,7 +11,7 @@ describe('uri_modifier config parameter function', function() {
   var server, uri;
 
   function send_request(mw, cb) {
-    return needle.get(uri, null, { uri_modifier: mw }, cb);
+    needle.get(uri, { uri_modifier: mw }, cb);
   }
 
   before(function(done){
@@ -22,7 +22,7 @@ describe('uri_modifier config parameter function', function() {
     server.close(done);
   })
 
-  describe('modifies uri', function(){
+  describe('modifies uri', function() {
 
     var path = '/foo/replace';
 
