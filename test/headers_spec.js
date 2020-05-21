@@ -61,8 +61,10 @@ describe('request headers', function() {
 
       it('no open sockets remain after request', function(done) {
         send_request({}, function(err, resp) {
-          get_active_sockets().length.should.eql(existing_sockets);
-          done();
+          setTimeout(function() {
+            get_active_sockets().length.should.eql(existing_sockets);
+            done();
+          }, 10)
         });
       })
 
@@ -79,8 +81,10 @@ describe('request headers', function() {
 
       it('no open sockets remain after request', function(done) {
         send_request({ connection: 'close' }, function(err, resp) {
-          get_active_sockets().length.should.eql(existing_sockets);
-          done();
+          setTimeout(function() {
+            get_active_sockets().length.should.eql(existing_sockets);
+            done();
+          }, 10)
         });
       })
 
@@ -160,8 +164,10 @@ describe('request headers', function() {
 
       it('no open sockets remain after request', function(done) {
         send_request({ connection: 'close' }, function(err, resp) {
-          get_active_sockets().length.should.eql(existing_sockets);
-          done();
+          setTimeout(function() {
+            get_active_sockets().length.should.eql(existing_sockets);
+            done();
+          }, 10);
         });
       })
 
