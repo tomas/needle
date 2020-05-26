@@ -149,7 +149,6 @@ Calling `needle()` directly returns a Promise. Besides `method` and `url`, all p
 needle('get', 'http://some.url.com')
   .then(function(resp) { console.log(resp.body) })
   .catch(function(err) { console.error(err) })
-})
 ```
 
 Except from the above, all of Needle's request methods return a Readable stream, and both `options` and `callback` are optional. If passed, the callback will return three arguments: `error`, `response` and `body`, which is basically an alias for `response.body`.
