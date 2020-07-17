@@ -392,6 +392,22 @@ var myAgent = tunnel.httpOverHttp({
 needle.get('foobar.com', { agent: myAgent });
 ```
 
+Otherwise, you can use the [`hpagent`](https://github.com/delvedor/hpagent) package, which keeps the internal sockets alive to be reused.
+
+```js
+const { HttpsProxyAgent } = require('hpagent');
+needle('get', 'https://localhost:9200', {
+  agent: new HttpsProxyAgent({
+    keepAlive: true,
+    keepAliveMsecs: 1000,
+    maxSockets: 256,
+    maxFreeSockets: 256,
+    scheduling: 'lifo',
+    proxy: 'https://localhost:8080'
+  })
+});
+```
+
 Regarding the 'Connection' header
 ---------------------------------
 
