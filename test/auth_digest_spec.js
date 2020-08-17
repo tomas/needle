@@ -1,9 +1,9 @@
-var needle  = require('../'),
-    auth = require('../lib/auth'),
-    sinon   = require('sinon'),
-    should  = require('should'),
-    http    = require('http'),
-    helpers = require('./helpers');
+var needle = require('../'),
+  auth = require('../lib/auth'),
+  sinon = require('sinon'),
+  should = require('should'),
+  http = require('http'),
+  helpers = require('./helpers');
 
 var createHash = require('crypto').createHash;
 
@@ -13,12 +13,12 @@ function md5(string) {
 
 function parse_header(header) {
   var challenge = {},
-      matches   = header.match(/([a-z0-9_-]+)="?([a-z0-9=\/\.@\s-\+]+)"?/gi);
+    matches = header.match(/([a-z0-9_-]+)="?([a-z0-9=\/\.@\s-\+]+)"?/gi);
 
   for (var i = 0, l = matches.length; i < l; i++) {
     var parts = matches[i].split('='),
-        key   = parts.shift(),
-        val   = parts.join('=').replace(/^"/, '').replace(/"$/, '');
+      key = parts.shift(),
+      val = parts.join('=').replace(/^"/, '').replace(/"$/, '');
 
     challenge[key] = val;
   }
@@ -26,11 +26,11 @@ function parse_header(header) {
   return challenge;
 }
 
-describe('auth_digest', function() {
-  describe('With qop (RFC 2617)', function() {
-    it('should generate a proper header', function() {
+describe('auth_digest', function () {
+  describe('With qop (RFC 2617)', function () {
+    it('should generate a proper header', function () {
       // from https://tools.ietf.org/html/rfc2617
-      var performDigest = function() {
+      var performDigest = function () {
         var header = 'Digest realm="testrealm@host.com", qop="auth,auth-int", nonce="dcd98b7102dd2f0e8b11d0f600bfb0c093", opaque="5ccc069c403ebaf9f0171e9517f40e41"';
         var user = 'Mufasa';
         var pass = 'Circle Of Life';
@@ -74,10 +74,10 @@ describe('auth_digest', function() {
     });
   });
 
-  describe('With a special character in the nonce', function() {
-    it('should generate a proper header', function() {
+  describe('With a special character in the nonce', function () {
+    it('should generate a proper header', function () {
       // from https://tools.ietf.org/html/rfc2617
-      var performDigest = function() {
+      var performDigest = function () {
         var header = 'Digest realm="testrealm@host.com", qop="auth,auth-int", nonce="dcd98b7102dd2f0e8b11d0f60+0bfb0c093", opaque="5ccc069c403ebaf9f0171e9517f40e41"';
         var user = 'Mufasa';
         var pass = 'Circle Of Life';
@@ -114,17 +114,17 @@ describe('auth_digest', function() {
         .match(/realm="testrealm@host\.com"/)
         .match(/response=/)
         .match(/nc=/)
-        .match(/nonce=/)
+        .match(/nonce="dcd98b7102dd2f0e8b11d0f60\+0bfb0c093"/)
         .match(/cnonce=/);
 
       (result.parsed.response).should.be.eql(result.expectedResponse);
     });
   });
 
-  describe('Without qop (RFC 2617)', function() {
-    it('should generate a proper header', function() {
+  describe('Without qop (RFC 2617)', function () {
+    it('should generate a proper header', function () {
       // from https://tools.ietf.org/html/rfc2069
-      var performDigest = function() {
+      var performDigest = function () {
         var header = 'Digest realm="testrealm@host.com", nonce="dcd98b7102dd2f0e8b11d0f600bfb0c093", opaque="5ccc069c403ebaf9f0171e9517f40e41"';
         var user = 'Mufasa';
         var pass = 'Circle Of Life';
