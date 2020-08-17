@@ -1,9 +1,9 @@
-var needle  = require('../'),
-    auth = require('../lib/auth'),
-    sinon   = require('sinon'),
-    should  = require('should'),
-    http    = require('http'),
-    helpers = require('./helpers');
+var needle = require('../'),
+  auth = require('../lib/auth'),
+  sinon = require('sinon'),
+  should = require('should'),
+  http = require('http'),
+  helpers = require('./helpers');
 
 var createHash = require('crypto').createHash;
 
@@ -13,12 +13,12 @@ function md5(string) {
 
 function parse_header(header) {
   var challenge = {},
-      matches   = header.match(/([a-z0-9_-]+)="?([a-z0-9=\/\.@\s-]+)"?/gi);
+      matches   = header.match(/([a-z0-9_-]+)="?([a-z0-9=\/\.@\s-\+]+)"?/gi);
 
   for (var i = 0, l = matches.length; i < l; i++) {
     var parts = matches[i].split('='),
-        key   = parts.shift(),
-        val   = parts.join('=').replace(/^"/, '').replace(/"$/, '');
+        key = parts.shift(),
+        val = parts.join('=').replace(/^"/, '').replace(/"$/, '');
 
     challenge[key] = val;
   }
@@ -71,6 +71,44 @@ describe('auth_digest', function() {
         .match(/cnonce=/);
 
       (result.parsed.response).should.be.eql(result.expectedResponse);
+    });
+  });
+
+  describe('With plus character in nonce header', function() {
+    it('should generate a proper header', function() {
+      // from https://tools.ietf.org/html/rfc2617
+      var performDigest = function() {
+        var header = 'Digest realm="testrealm@host.com", qop="auth,auth-int", nonce="dcd98b7102dd2f0e8b11d0f6+00bfb0c093", opaque="5ccc069c403ebaf9f0171e9517f40e41"';
+        var user = 'Mufasa';
+        var pass = 'Circle Of Life';
+        var method = 'get';
+        var path = '/dir/index.html';
+
+        var updatedHeader = auth.digest(header, user, pass, method, path);
+        var parsedUpdatedHeader = parse_header(updatedHeader);
+
+        var ha1 = md5(user + ':' + parsedUpdatedHeader.realm + ':' + pass);
+        var ha2 = md5(method.toUpperCase() + ':' + path);
+        var expectedResponse = md5([
+          ha1,
+          parsedUpdatedHeader.nonce,
+          parsedUpdatedHeader.nc,
+          parsedUpdatedHeader.cnonce,
+          parsedUpdatedHeader.qop,
+          ha2
+        ].join(':'));
+
+        return {
+          header: updatedHeader,
+          parsed: parsedUpdatedHeader,
+          expectedResponse: expectedResponse,
+        }
+      }
+
+      const result = performDigest();
+
+      (result.header).should
+        .match(/nonce="dcd98b7102dd2f0e8b11d0f6\+00bfb0c093"/)
     });
   });
 
