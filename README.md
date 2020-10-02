@@ -312,7 +312,7 @@ For information about options that've changed, there's always [the changelog](ht
  - `headers`     : Object containing custom HTTP headers for request. Overrides defaults described below.
  - `auth`        : Determines what to do with provided username/password. Options are `auto`, `digest` or `basic` (default). `auto` will detect the type of authentication depending on the response headers.
  - `stream_length`: When sending streams, this lets you manually set the Content-Length header --if the stream's bytecount is known beforehand--, preventing ECONNRESET (socket hang up) errors on some servers that misbehave when receiving payloads of unknown size. Set it to `0` and Needle will get and set the stream's length for you, or leave unset for the default behaviour, which is no Content-Length header for stream payloads.
- - `localAddress`: <string>, IP address. Passed to http/https request. Local interface from witch the request should be emitted.
+ - `localAddress`: <string>, IP address. Passed to http/https request. Local interface from which the request should be emitted.
  - `uri_modifier`: Anonymous function taking request (or redirect location if following redirects) URI as an argument and modifying it given logic. It has to return a valid URI string for successful request.
 
 Response options
