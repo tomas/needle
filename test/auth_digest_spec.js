@@ -112,6 +112,44 @@ describe('auth_digest', function() {
     });
   });
 
+  describe('With brackets in realm header', function() {
+    it('should generate a proper header', function() {
+      // from https://tools.ietf.org/html/rfc2617
+      var performDigest = function() {
+        var header = 'Digest qop="auth", realm="IP Camera(76475)", nonce="4e4449794d575269597a706b5a575935595441324d673d3d", stale="FALSE", Basic realm="IP Camera(76475)"';
+        var user = 'Mufasa';
+        var pass = 'Circle Of Life';
+        var method = 'get';
+        var path = '/dir/index.html';
+
+        var updatedHeader = auth.digest(header, user, pass, method, path);
+        var parsedUpdatedHeader = parse_header(updatedHeader);
+
+        var ha1 = md5(user + ':' + parsedUpdatedHeader.realm + ':' + pass);
+        var ha2 = md5(method.toUpperCase() + ':' + path);
+        var expectedResponse = md5([
+          ha1,
+          parsedUpdatedHeader.nonce,
+          parsedUpdatedHeader.nc,
+          parsedUpdatedHeader.cnonce,
+          parsedUpdatedHeader.qop,
+          ha2
+        ].join(':'));
+
+        return {
+          header: updatedHeader,
+          parsed: parsedUpdatedHeader,
+          expectedResponse: expectedResponse,
+        }
+      }
+
+      const result = performDigest();
+
+      (result.header).should
+        .match(/realm="IP Camera\(76475\)"/)
+    });
+  });
+
   describe('Without qop (RFC 2617)', function() {
     it('should generate a proper header', function() {
       // from https://tools.ietf.org/html/rfc2069
