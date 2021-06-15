@@ -1,5 +1,5 @@
 {
-  "name": "needle",
+  "name": "@trayio/needle",
   "version": "2.6.0",
   "description": "The leanest and most handsome HTTP client in the Nodelands.",
   "keywords": [
@@ -34,10 +34,10 @@
     "cookie",
     "redirect"
   ],
-  "author": "Tomás Pollak <tomas@forkhq.com>",
+  "author": "trayio",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tomas/needle.git"
+    "url": "https://github.com/trayio/needle.git"
   },
   "dependencies": {
     "debug": "^3.2.6",
