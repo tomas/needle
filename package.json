@@ -61,7 +61,7 @@
   },
   "main": "./lib/needle",
   "bin": {
-    "needle": "./bin/needle"
+    "@trayio/needle": "./bin/needle"
   },
   "license": "MIT",
   "engines": {
