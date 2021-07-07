@@ -12,16 +12,40 @@ var keys = {
 
 var helpers = {};
 
+function* createRawHeadersIterator(arr){
+  var curr = 0;
+  while (curr < arr.length){
+    if(yield { name: arr[curr++], value: arr[curr++] }) {
+      curr = 0;
+    }
+  }
+}
+
+function rawHeadersByKey(rawHeaders) {
+  var headersObject = {}
+  var iterator = createRawHeadersIterator(rawHeaders);
+  var headerIteration = iterator.next();
+  while(!headerIteration.done) {
+    let header = headerIteration.value;
+    headersObject[header.name] = header.value;
+    headerIteration = iterator.next();
+  }
+  return headersObject;
+}
+
+
 helpers.server = function(opts, cb) {
 
   var defaults = {
     code    : 200,
     headers : {'Content-Type': 'application/json'}
   }
+  
 
   var mirror_response = function(req) {
     return JSON.stringify({
       headers: req.headers,
+      raw_headers: rawHeadersByKey(req.rawHeaders),
       body: req.body
     })
   }
