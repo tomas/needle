@@ -35,7 +35,7 @@ function rawHeadersByKey(rawHeaders) {
 
 
 helpers.server = function(opts, cb) {
-    console.log("lol", opts)
+    // console.log("lol", opts)
   var defaults = {
     code    : 200,
     headers : {'Content-Type': 'application/json'}
@@ -66,7 +66,7 @@ helpers.server = function(opts, cb) {
   }
 
   var finish = function(req, res) {
-    console.log("req and res", req.headers,res.body);
+    // console.log("req and res", req.headers,res.body);
     res.writeHead(get('code'), get('headers'));
     res.end(opts.response || mirror_response(req));
   }
