@@ -66,17 +66,13 @@ helpers.server = function(opts, cb) {
   }
 
   var finish = function(req, res) {
-
+    server.requestReceived = req
     res.writeHead(get('code'), get('headers'));
     res.end(opts.response || mirror_response(req));
   }
 
 
   var handler = function(req, res) {
-    // if(opts.headers.location) {
-    //     console.log("woooooww", req.headers);
-    //     redirect(req, res)
-    // }
     req.setEncoding('utf8'); // get as string
     req.body = '';
     req.on('data', function(str) { req.body += str })
