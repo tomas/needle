@@ -1,12 +1,10 @@
 let helpers = require('./helpers'),
-    should = require('should'),
     needle = require('./../'),
     server;
 
 const port = 7708;
 
-describe('Follow authorization header', function () {
-
+describe('follow_authorization_header', () => {
     before(done => {
         server = helpers.server({
             port: port,
@@ -21,9 +19,8 @@ describe('Follow authorization header', function () {
         server.close(done);
     })
 
-    describe('without headers', () => {
-
-        it('without header', done => {
+    describe('when false', () => {
+        it('should omit authorization header', done => {
             needle.get('localhost:' + port, {
                 parse: true,
                 follow_max: 1,
@@ -31,7 +28,7 @@ describe('Follow authorization header', function () {
                 headers: {
                     'authorization': 'token42'
                 }
-            }, function (err, resp, body) {
+            },  () => {
                 Object.keys(server.requestReceived.headers).should.not.containEql('authorization');
                 done();
             })
@@ -39,14 +36,14 @@ describe('Follow authorization header', function () {
 
     })
 
-    describe('with header', () => {
-        it('with header', done => {
+    describe('when true', () => {
+        it('should include authorization header', done => {
             needle.get('localhost:' + port, {
                 parse: true,
                 follow_max: 1,
                 follow_authorization_header: true,
                 headers: {
-                    'Authorization': 'token42'
+                    'authorization': 'token42'
                 }
             }, (err, resp) => {
                 Object.keys(server.requestReceived.headers).should.containEql('authorization');
