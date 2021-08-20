@@ -50,11 +50,6 @@ helpers.server = function(opts, cb) {
     })
   }
 
-  var redirect = function (req, res) {
-    res.writeHead(302)
-    res.end(opts.response || mirror_response(req));
-  }
-
   var get = function(what) {
     if (!opts[what])
       return defaults[what];
