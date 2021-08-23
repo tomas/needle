@@ -311,6 +311,7 @@ For information about options that've changed, there's always [the changelog](ht
  - `proxy`       : Forwards request through HTTP(s) proxy. Eg. `proxy: 'http://user:pass@proxy.server.com:3128'`. For more advanced proxying/tunneling use a custom `agent`, as described below.
  - `headers`     : Object containing custom HTTP headers for request. Overrides defaults described below.
  - `case_sensitive_headers`     : Set to `true` to prevent header key lower casing. Defaults to `false`.
+ - `follow_authorization_header` : Set to `true` to retain authorization header when a redirect happens to a different hostname. Defaults to `true`.
  - `auth`        : Determines what to do with provided username/password. Options are `auto`, `digest` or `basic` (default). `auto` will detect the type of authentication depending on the response headers.
  - `stream_length`: When sending streams, this lets you manually set the Content-Length header --if the stream's bytecount is known beforehand--, preventing ECONNRESET (socket hang up) errors on some servers that misbehave when receiving payloads of unknown size. Set it to `0` and Needle will get and set the stream's length for you, or leave unset for the default behaviour, which is no Content-Length header for stream payloads.
  - `localAddress`: <string>, IP address. Passed to http/https request. Local interface from which the request should be emitted.

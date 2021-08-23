@@ -35,10 +35,10 @@ function rawHeadersByKey(rawHeaders) {
 
 
 helpers.server = function(opts, cb) {
-
   var defaults = {
     code    : 200,
     headers : {'Content-Type': 'application/json'}
+    
   }
   
 
@@ -61,12 +61,13 @@ helpers.server = function(opts, cb) {
   }
 
   var finish = function(req, res) {
+    server.requestReceived = req
     res.writeHead(get('code'), get('headers'));
     res.end(opts.response || mirror_response(req));
   }
 
-  var handler = function(req, res) {
 
+  var handler = function(req, res) {
     req.setEncoding('utf8'); // get as string
     req.body = '';
     req.on('data', function(str) { req.body += str })
@@ -85,7 +86,7 @@ helpers.server = function(opts, cb) {
   var server;
 
   if (protocol == 'https')
-    server = protocols[protocol].createServer(keys, handler);
+    server = protocols[protocol].createServer(keys, handler);  
   else
     server = protocols[protocol].createServer(handler);
 
