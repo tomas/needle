@@ -46,7 +46,7 @@ describe('parsing', function(){
 
           needle.get('localhost:' + port, function(err, response, body) {
             should.not.exist(err);
-            body.should.be.an.instanceof(Buffer)
+            body.should.be.an.instanceof(String)
             body.toString().should.eql('{"foo":"bar"}');
 
             needle.defaults({ parse_response: 'all' });
@@ -141,7 +141,7 @@ describe('parsing', function(){
       it('does NOT return object', function(done){
         needle.get('localhost:' + port, { parse: false }, function(err, response, body) {
           should.not.exist(err);
-          body.should.be.an.instanceof(Buffer)
+          body.should.be.an.instanceof(String)
           body.toString().should.eql('{"foo":"bar"}');
           done();
         })
@@ -162,7 +162,7 @@ describe('parsing', function(){
       it('does NOT return object', function(done){
         needle.get('localhost:' + port, { parse: 'xml' }, function(err, response, body) {
           should.not.exist(err);
-          body.should.be.an.instanceof(Buffer)
+          body.should.be.an.instanceof(String)
           body.toString().should.eql('{"foo":"bar"}');
           done();
         })
@@ -281,7 +281,7 @@ describe('parsing', function(){
       it('does NOT return object', function(done){
         needle.get('localhost:' + port, { parse: false }, function(err, response, body) {
           should.not.exist(err);
-          body.should.be.an.instanceof(Buffer)
+          body.should.be.an.instanceof(String)
           body.toString().should.eql('false');
           done();
         })
@@ -294,7 +294,7 @@ describe('parsing', function(){
       it('does NOT return object', function(done){
         needle.get('localhost:' + port, { parse: 'xml' }, function(err, response, body) {
           should.not.exist(err);
-          body.should.be.an.instanceof(Buffer)
+          body.should.be.an.instanceof(String)
           body.toString().should.eql('false');
           done();
         })
