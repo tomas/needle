@@ -2,7 +2,7 @@ var http    = require('http'),
     helpers = require('./helpers'),
     should  = require('should');
 
-var port = 5432;
+var port = 54321;
 
 describe('request headers', function() {
 
@@ -19,7 +19,7 @@ describe('request headers', function() {
   })
 
   after(function(done) {
-    server.close(done)
+    server.close(done);
   })
 
   function send_request(opts, cb) {
@@ -29,7 +29,6 @@ describe('request headers', function() {
   function get_active_sockets() {
     var handles = process._getActiveHandles();
 
-    // only return the ones that have a .end() function (like a socket)
     return handles.filter(function(el) {
       if (el.constructor.name.toString() == 'Socket') {
         return el.destroyed !== true;
@@ -109,8 +108,10 @@ describe('request headers', function() {
 
       it('no open sockets remain after request', function(done) {
         send_request({}, function(err, resp) {
-          get_active_sockets().length.should.eql(existing_sockets);
-          done();
+          setTimeout(function() {
+            get_active_sockets().length.should.eql(existing_sockets);
+            done();
+          }, 10)
         });
       })
 
@@ -127,8 +128,10 @@ describe('request headers', function() {
 
       it('no open sockets remain after request', function(done) {
         send_request({ connection: 'close' }, function(err, resp) {
-          get_active_sockets().length.should.eql(existing_sockets);
-          done();
+          setTimeout(function() {
+            get_active_sockets().length.should.eql(existing_sockets);
+            done();
+          }, 10)
         });
       })
 
@@ -208,8 +211,10 @@ describe('request headers', function() {
 
       it('no open sockets remain after request', function(done) {
         send_request({ connection: 'close' }, function(err, resp) {
-          get_active_sockets().length.should.eql(existing_sockets);
-          done();
+          setTimeout(function() {
+            get_active_sockets().length.should.eql(existing_sockets);
+            done();
+          }, 10);
         });
       })
 

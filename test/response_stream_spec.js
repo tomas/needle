@@ -10,20 +10,20 @@ describe('response streams', function() {
 
   describe('when the server sends back json', function(){
 
-    before(function() {
+    before(function(done) {
       server = http.createServer(function(req, res) {
         res.setHeader('Content-Type', 'application/json')
         res.end('{"foo":"bar"}')
-      }).listen(port);
+      }).listen(port, done);
     });
 
-    after(function() {
-      server.close();
+    after(function(done) {
+      server.close(done);
     })
 
     describe('and the client uses streams', function(){
 
-      it('should create a proper streams2 stream', function(done) {
+      it('creates a proper streams2 stream', function(done) {
         var stream = needle.get('localhost:' + port)
 
         // newer node versions set this to null instead of false
@@ -35,13 +35,12 @@ describe('response streams', function() {
           readableCalled = true;
         })
 
-        stream.on('done', function() {
+        stream.on('finish', function() {
           readableCalled.should.be.true;
           done();
         });
 
-        stream.resume()
-
+        stream.resume();
       })
 
       it('emits a single data item which is our JSON object', function(done) {

@@ -29,6 +29,9 @@ describe('compression', function(){
         } else if (acceptEncoding.match(/\bgzip\b/)) {
           res.setHeader('Content-Encoding', 'gzip');
           raw.pipe(zlib.createGzip()).pipe(res);
+        } else if (acceptEncoding.match(/\bbr\b/)) {
+          res.setHeader('Content-Encoding', 'br');
+          raw.pipe(zlib.createBrotliCompress()).pipe(res);
         } else {
           raw.pipe(res);
         }
@@ -86,6 +89,21 @@ describe('compression', function(){
           should.exist(err);
           err.message.should.equal("incorrect header check");
           err.code.should.equal("Z_DATA_ERROR")
+          done();
+        })
+      })
+    })
+
+    describe('and client requests brotli compression', function() {
+      it('should have the body decompressed', function(done){
+        // Skip this test if Brotli is not supported
+        if (typeof zlib.BrotliDecompress !== 'function') {
+          return done();
+        }
+        needle.get('localhost:' + port, {headers: {'Accept-Encoding': 'br'}}, function(err, response, body){
+          should.ifError(err);
+          body.should.have.property('foo', 'bar');
+          response.bytes.should.not.equal(jsonData.length);
           done();
         })
       })

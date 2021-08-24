@@ -51,7 +51,7 @@ With only two real dependencies, Needle supports:
  - Basic & Digest authentication with auto-detection
  - Multipart form-data (e.g. file uploads)
  - HTTP Proxy forwarding, optionally with authentication
- - Streaming gzip or deflate decompression
+ - Streaming gzip, deflate, and brotli decompression
  - Automatic XML & JSON parsing
  - 301/302/303 redirect following, with fine-grained tuning, and
  - Streaming non-UTF-8 charset decoding, via `iconv-lite`
@@ -78,8 +78,7 @@ needle('get', 'https://server.com/posts/12')
   })
   .catch(function(err) {
     // ...
-  })
-});
+  });
 
 // with callback
 needle.get('ifconfig.me/all.json', function(error, response, body) {
@@ -91,10 +90,18 @@ needle.get('ifconfig.me/all.json', function(error, response, body) {
 });
 
 // no callback, using streams
+// without pipelines
+needle.get('/api.json', {json: true})
+  .on('done', function(err, resp) {
+    console.log(JSON.stringify(resp.body, null, 4));
+  })
+// with pipelines, here the event is triggered by fs which has a 'close' event
 var out = fs.createWriteStream('logo.png');
-needle.get('https://google.com/images/logo.png').pipe(out).on('finish', function() {
-  console.log('Pipe finished!');
-});
+needle.get('https://google.com/images/logo.png')
+  .pipe(out)
+  .on('close', function() {
+    console.log('Pipe finished!');
+   });
 ```
 
 As you can see, you can use Needle with Promises or without them. When using Promises or when a callback is passed, the response's body will be buffered and written to `response.body`, and the callback will be fired when all of the data has been collected and processed (e.g. decompressed, decoded and/or parsed).
@@ -106,7 +113,7 @@ Response pipeline
 
 Depending on the response's Content-Type, Needle will either attempt to parse JSON or XML streams, or, if a text response was received, will ensure that the final encoding you get is UTF-8.
 
-You can also request a gzip/deflated response, which, if sent by the server, will be processed before parsing or decoding is performed.
+You can also request a gzip/deflated/brotli response, which, if sent by the server, will be processed before parsing or decoding is performed. (Note: brotli is only supported on Node 10.16.0 or above, and will not be requested or processed on earlier versions.)
 
 ```js
 needle.get('http://stackoverflow.com/feeds', { compressed: true }, function(err, resp) {
@@ -119,7 +126,7 @@ Or in anti-callback mode, using a few other options:
 
 ```js
 var options = {
-  compressed         : true, // sets 'Accept-Encoding' to 'gzip,deflate'
+  compressed         : true, // sets 'Accept-Encoding' to 'gzip, deflate, br'
   follow_max         : 5,    // follow up to five redirects
   rejectUnauthorized : true  // verify SSL certificate
 }
@@ -150,7 +157,6 @@ Calling `needle()` directly returns a Promise. Besides `method` and `url`, all p
 needle('get', 'http://some.url.com')
   .then(function(resp) { console.log(resp.body) })
   .catch(function(err) { console.error(err) })
-})
 ```
 
 Except from the above, all of Needle's request methods return a Readable stream, and both `options` and `callback` are optional. If passed, the callback will return three arguments: `error`, `response` and `body`, which is basically an alias for `response.body`.
@@ -313,7 +319,8 @@ For information about options that've changed, there's always [the changelog](ht
  - `headers`     : Object containing custom HTTP headers for request. Overrides defaults described below.
  - `auth`        : Determines what to do with provided username/password. Options are `auto`, `digest` or `basic` (default). `auto` will detect the type of authentication depending on the response headers.
  - `stream_length`: When sending streams, this lets you manually set the Content-Length header --if the stream's bytecount is known beforehand--, preventing ECONNRESET (socket hang up) errors on some servers that misbehave when receiving payloads of unknown size. Set it to `0` and Needle will get and set the stream's length for you, or leave unset for the default behaviour, which is no Content-Length header for stream payloads.
- - `localAddress`     : <string>, IP address. Passed to http/https request. Local interface from witch the request should be emitted.
+ - `localAddress`: <string>, IP address. Passed to http/https request. Local interface from which the request should be emitted.
+ - `uri_modifier`: Anonymous function taking request (or redirect location if following redirects) URI as an argument and modifying it given logic. It has to return a valid URI string for successful request.
 
 Response options
 ----------------
@@ -350,6 +357,7 @@ These options are passed directly to `https.request` if present. Taken from the 
  - `ciphers`            : A string describing the ciphers to use or exclude.
  - `rejectUnauthorized` : If true, the server certificate is verified against the list of supplied CAs. An 'error' event is emitted if verification fails. Verification happens at the connection level, before the HTTP request is sent.
  - `secureProtocol`     : The SSL method to use, e.g. SSLv3_method to force SSL version 3.
+ - `family`             : IP address family to use when resolving host and hostname. Valid values are 4 or 6. When unspecified, both IP v4 and v6 will be used.
 
 Redirect options
 ----------------
@@ -361,6 +369,7 @@ These options only apply if the `follow_max` (or `follow`) option is higher than
  - `follow_keep_method`      : If enabled, resends the request using the original verb instead of being rewritten to `get` with no data. `false` by default.
  - `follow_if_same_host`     : When true, Needle will only follow redirects that point to the same host as the original request. `false` by default.
  - `follow_if_same_protocol` : When true, Needle will only follow redirects that point to the same protocol as the original request. `false` by default.
+ - `follow_if_same_location` : Unless true, Needle will not follow redirects that point to same location (as set in the response header) as the original request URL. `false` by default.
 
 Overriding Defaults
 -------------------
@@ -390,10 +399,26 @@ var myAgent = tunnel.httpOverHttp({
 needle.get('foobar.com', { agent: myAgent });
 ```
 
+Otherwise, you can use the [`hpagent`](https://github.com/delvedor/hpagent) package, which keeps the internal sockets alive to be reused.
+
+```js
+const { HttpsProxyAgent } = require('hpagent');
+needle('get', 'https://localhost:9200', {
+  agent: new HttpsProxyAgent({
+    keepAlive: true,
+    keepAliveMsecs: 1000,
+    maxSockets: 256,
+    maxFreeSockets: 256,
+    scheduling: 'lifo',
+    proxy: 'https://localhost:8080'
+  })
+});
+```
+
 Regarding the 'Connection' header
 ---------------------------------
 
-Unless you're running an old version of Node (< 0.11.4), by default Needle won't set the Connection header on requests, yielding Node's default behaviour of keeping the connection alive with the target server. This speeds up inmensely the process of sending several requests to the same host.
+Unless you're running an old version of Node (< 0.11.4), by default Needle won't set the Connection header on requests, yielding Node's default behaviour of keeping the connection alive with the target server. This speeds up immensely the process of sending several requests to the same host.
 
 On older versions, however, this has the unwanted behaviour of preventing the runtime from exiting, either because of a bug or 'feature' that was changed on 0.11.4. To overcome this Needle does set the 'Connection' header to 'close' on those versions, however this also means that making new requests to the same host doesn't benefit from Keep-Alive.
 
