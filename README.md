@@ -90,10 +90,18 @@ needle.get('ifconfig.me/all.json', function(error, response, body) {
 });
 
 // no callback, using streams
+// without pipelines
+needle.get('/api.json', {json: true})
+  .on('done', function(err, resp) {
+    console.log(JSON.stringify(resp.body, null, 4));
+  })
+// with pipelines, here the event is triggered by fs which has a 'close' event
 var out = fs.createWriteStream('logo.png');
-needle.get('https://google.com/images/logo.png').pipe(out).on('done', function() {
-  console.log('Pipe finished!');
-});
+needle.get('https://google.com/images/logo.png')
+  .pipe(out)
+  .on('close', function() {
+    console.log('Pipe finished!');
+   });
 ```
 
 As you can see, you can use Needle with Promises or without them. When using Promises or when a callback is passed, the response's body will be buffered and written to `response.body`, and the callback will be fired when all of the data has been collected and processed (e.g. decompressed, decoded and/or parsed).
