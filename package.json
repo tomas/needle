@@ -42,6 +42,7 @@
   "dependencies": {
     "debug": "^3.2.6",
     "iconv-lite": "^0.4.4",
+    "pump": "^3.0.0",
     "sax": "^1.2.4"
   },
   "devDependencies": {
