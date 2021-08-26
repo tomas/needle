@@ -81,26 +81,12 @@ describe('errors', function() {
             stream = needle.get(url);
 
         stream.on('done', function(err) {
+          err.code.should.match(/ENOTFOUND|EADDRINFO|EAI_AGAIN/)
           callcount++;
         })
 
         setTimeout(function() {
           callcount.should.equal(1);
-          done();
-        }, 200)
-      })
-
-      it('error should be ENOTFOUND or EADDRINFO or EAI_AGAIN', function(done) {
-        var errorific,
-            stream = needle.get(url);
-
-        stream.on('done', function(err) {
-          errorific = err;
-        })
-
-        setTimeout(function() {
-          should.exist(errorific);
-          errorific.code.should.match(/ENOTFOUND|EADDRINFO|EAI_AGAIN/)
           done();
         }, 200)
       })
@@ -113,24 +99,24 @@ describe('errors', function() {
           called = true;
         })
 
-        setTimeout(function() {
+        stream.on('done', function(err) {
           called.should.be.false;
           done();
-        }, 50)
+        })
       })
 
       it('does not emit an error event', function(done) {
         var emitted = false,
-            req = needle.get(url);
+            stream = needle.get(url);
 
-        req.on('error', function() {
+        stream.on('error', function() {
           emitted = true;
         })
 
-        setTimeout(function() {
+        stream.on('done', function(err) {
           emitted.should.eql(false);
           done();
-        }, 100);
+        })
       })
 
     })
@@ -211,10 +197,12 @@ describe('errors', function() {
     describe('without callback', function() {
 
       it('emits done event once, with error', function(done) {
-        var called = 0,
+        var error,
+            called = 0,
             stream = send_request();
 
         stream.on('done', function(err) {
+          err.code.should.equal('ECONNRESET');
           called++;
         })
 
@@ -242,13 +230,9 @@ describe('errors', function() {
             stream = send_request();
 
         stream.on('done', function(err) {
-          error = err;
-        })
-
-        setTimeout(function() {
-          error.code.should.equal('ECONNRESET')
+          err.code.should.equal('ECONNRESET')
           done();
-        }, 250)
+        })
       })
 
       it('does not emit a readable event', function(done) {
@@ -259,24 +243,26 @@ describe('errors', function() {
           called = true;
         })
 
-        setTimeout(function() {
+        stream.on('done', function(err) {
           called.should.be.false;
           done();
-        }, 250)
+        })
       })
 
       it('does not emit an error event', function(done) {
         var emitted = false;
-        var req = send_request();
+        var stream = send_request();
 
-        req.on('error', function() {
+        stream.on('error', function() {
           emitted = true;
         })
 
-        setTimeout(function() {
+        stream.on('done', function(err) {
+          err.should.be.a.Error;
+          err.code.should.equal('ECONNRESET')
           emitted.should.eql(false);
           done();
-        }, 100);
+        })
       })
 
     })
