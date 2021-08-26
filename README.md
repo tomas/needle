@@ -32,8 +32,6 @@ needle
   })
 ```
 
-Pipe
-
 From version 2.0.x up, Promises are also supported. Just call `needle()` directly and you'll get a native Promise object.
 
 ```js
