@@ -60,7 +60,7 @@ describe('socket cleanup', function(){
     var writable = fs.createWriteStream(outFile);
 
     stream.pipeline(resp, writable, function(err) {
-      // err.code.should.eql('ERR_STREAM_PREMATURE_CLOSE')
+      err.code.should.eql('ERR_STREAM_PREMATURE_CLOSE')
       // if (err) resp.request.destroy();
     });
 
