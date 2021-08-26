@@ -46,9 +46,7 @@ describe('request stream length', function() {
   })
 
   function send_request(opts, cb) {
-    needle.post('http://localhost:' + port, writable, opts, function(err, resp) {
-      cb(err, resp)
-    })
+    needle.post('http://localhost:' + port, writable, opts, cb)
   }
 
   describe('no stream_length set', function() {
@@ -138,7 +136,8 @@ describe('request stream length', function() {
     it('works if Transfer-Encoding is set to a blank string', function(done) {
       send_request({ stream_length: 11, headers: { 'Transfer-Encoding': '' }}, function(err, resp) {
         should.not.exist(err);
-        resp.statusCode.should.eql(200);
+        var code = node_major_ver == 10 ? 400 : 200;
+        resp.statusCode.should.eql(code);
         done()
       })
     })
@@ -181,7 +180,8 @@ describe('request stream length', function() {
       it('works if Transfer-Encoding is set to a blank string', function(done) {
         send_request({ stream_length: 0, headers: { 'Transfer-Encoding': '' }}, function(err, resp) {
           should.not.exist(err);
-          resp.statusCode.should.eql(200);
+          var code = node_major_ver == 10 ? 400 : 200;
+          resp.statusCode.should.eql(code);
           done()
         })
       })
