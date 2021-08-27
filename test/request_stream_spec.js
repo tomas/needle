@@ -8,6 +8,7 @@ var fs     = require('fs'),
 var port   = 2233;
 
 var node_major_ver = parseInt(process.version.split('.')[0].replace('v', ''));
+var node_minor_ver = parseInt(process.version.split('.')[1]);
 
 describe('request stream length', function() {
 
@@ -136,7 +137,7 @@ describe('request stream length', function() {
     it('works if Transfer-Encoding is set to a blank string', function(done) {
       send_request({ stream_length: 11, headers: { 'Transfer-Encoding': '' }}, function(err, resp) {
         should.not.exist(err);
-        var code = node_major_ver == 10 ? 400 : 200;
+        var code = node_major_ver == 10 && node_minor_ver > 15 ? 400 : 200;
         resp.statusCode.should.eql(code);
         done()
       })
@@ -161,7 +162,7 @@ describe('request stream length', function() {
 
       beforeEach(function() {
         writable.path = '/foo/bar';
-        stub = sinon.stub(fs, 'stat', function(path, cb) {
+        stub = sinon.stub(fs, 'stat').callsFake(function(path, cb) {
           cb(null, { size: 11 })
         })
       })
@@ -180,7 +181,7 @@ describe('request stream length', function() {
       it('works if Transfer-Encoding is set to a blank string', function(done) {
         send_request({ stream_length: 0, headers: { 'Transfer-Encoding': '' }}, function(err, resp) {
           should.not.exist(err);
-          var code = node_major_ver == 10 ? 400 : 200;
+          var code = node_major_ver == 10 && node_minor_ver > 15 ? 400 : 200;
           resp.statusCode.should.eql(code);
           done()
         })
