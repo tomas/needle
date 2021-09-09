@@ -1,5 +1,6 @@
 var should  = require('should'),
     needle  = require('./../'),
+    decoder = require('./../lib/decoder'),
     Q       = require('q'),
     chardet = require('jschardet'),
     helpers = require('./helpers');
@@ -117,5 +118,34 @@ describe('character encoding', function() {
 
     })
 
+  })
+  
+  describe('multibyte characters split across chunks', function () {
+
+    var d, 
+      result = [];
+
+    before(function(done) {
+      d = decoder('utf8');
+      done();
+    });
+
+    it('reassembles split multibyte characters', function (done) {
+
+      d.on("data", function(chunk){
+        result.push(chunk.toString("utf-8"));
+      });
+
+      d.on("end", function(){
+        result.join("").should.eql('ä')
+        done();
+      });
+
+      // write 'ä' split across chunks
+      d.write(Buffer.from([0xC3]));
+      d.write(Buffer.from([0xA4]));
+      d.end();
+
+    })
   })
 })
