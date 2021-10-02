@@ -417,7 +417,7 @@ On older versions, however, this has the unwanted behaviour of preventing the ru
 
 So if you're stuck on 0.10 or even lower and want full speed, you can simply set the Connection header to 'Keep-Alive' by using `{ connection: 'Keep-Alive' }`. Please note, though, that an event loop handler will prevent the runtime from exiting so you'll need to manually call `process.exit()` or the universe will collapse.
 
-By default, Node uses [http.globalAgent](https://nodejs.org/api/http.html#http_http_globalagent) with `keepAlive` option set to `false` to send HTTP(S) requests. That's why, by default, "Connection: close" header is sent, and the Connection is destroyed after the request.
+By default, Node uses [http.globalAgent](https://nodejs.org/api/http.html#http_http_globalagent) with `keepAlive` option set to `false` to send HTTP(s) requests. That's why, by default, "Connection: close" header is sent, and the Connection is destroyed after the request.
 
 To keep the Connection alive, you should create `http(s).Agent` with `keepAlive: true` and pass it as request option:
 
