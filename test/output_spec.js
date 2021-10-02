@@ -1,3 +1,10 @@
+// this lets us run tests in ancient node versions (v0.10.x)
+if (process.version.split('.')[0] == 'v0' && !Buffer.from) {
+  Buffer.from = function(args) {
+    return new Buffer(args);
+  }
+}
+
 var should = require('should'),
     needle = require('./../'),
     http   = require('http'),
