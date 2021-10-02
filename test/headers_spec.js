@@ -161,7 +161,7 @@ describe('request headers', function() {
 
         it('one open socket remains after request (> v8 && v0.10)', function(done) {
           send_request({}, function(err, resp) {
-            get_active_sockets().length.should.eql(1);
+            get_active_sockets().length.should.eql(existing_sockets + 1);
             done();
           });
         })
@@ -170,7 +170,7 @@ describe('request headers', function() {
 
         it('no open sockets remain after request (> v0.10 && < v8)', function(done) {
           send_request({}, function(err, resp) {
-            get_active_sockets().length.should.eql(0);
+            get_active_sockets().length.should.eql(existing_sockets);
             done();
           });
         })
