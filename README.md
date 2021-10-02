@@ -419,7 +419,7 @@ So if you're stuck on 0.10 or even lower and want full speed, you can simply set
 
 By default, Node uses [http.globalAgent](https://nodejs.org/api/http.html#http_http_globalagent) with `keepAlive` option set to `false` to send HTTP(S) requests. That's why, by default, "Connection: close" header is sent, and the Connection is destroyed after the request.
 
-To keep the Connection alive, you should create `http(s)Agent` with `keepAlive: true` and pass it as request option:
+To keep the Connection alive, you should create `http(s).Agent` with `keepAlive: true` and pass it as request option:
 
 ```js
 const keepAliveAgent = new require('https').Agent({ keepAlive: true, keepAliveMsecs: 10000 });
