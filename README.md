@@ -360,7 +360,7 @@ Redirect options
 
 These options only apply if the `follow_max` (or `follow`) option is higher than 0.
 
- - `follow_set_cookies`      : Sends the cookies received in the `set-cookie` header as part of the following request. `false` by default.
+ - `follow_set_cookies`      : Sends the cookies received in the `set-cookie` header as part of the following request, *if hosts match*. `false` by default.
  - `follow_set_referer`      : Sets the 'Referer' header to the requested URI when following a redirect. `false` by default.
  - `follow_keep_method`      : If enabled, resends the request using the original verb instead of being rewritten to `get` with no data. `false` by default.
  - `follow_if_same_host`     : When true, Needle will only follow redirects that point to the same host as the original request. `false` by default.
