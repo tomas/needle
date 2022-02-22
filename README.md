@@ -617,9 +617,9 @@ Then you should be able to run `npm test` once you have the dependencies in plac
 Credits
 -------
 
-Written by Tomás Pollak, with the help of contributors. If Needle's of any help to you, please consider buying me a coffee:
-  
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/tomaspollak)
+Written by Tomás Pollak, with the help of contributors. If Needle's of any help to you, please consider supporting its development!
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/A0A0ASWH3)
 
 Copyright
 ---------
