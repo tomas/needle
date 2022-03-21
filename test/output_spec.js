@@ -109,7 +109,7 @@ describe('with output option', function() {
         })
       })
 
-      if (process.platform != 'win32') {
+      if (process.platform == 'linux') {
         it('closes the file descriptor', function(done) {
           var open_descriptors = get_open_file_descriptors();
           send_request(file + Math.random(), function(err, resp) {
@@ -167,14 +167,16 @@ describe('with output option', function() {
         })
       })
 
-      it('closes the file descriptor', function(done) {
-        var open_descriptors = get_open_file_descriptors();
-        send_request(file + Math.random(), function(err, resp) {
-          var current_descriptors = get_open_file_descriptors();
-          open_descriptors.should.eql(current_descriptors);
-          done()
+      if (process.platform == 'linux') {
+        it('closes the file descriptor', function(done) {
+          var open_descriptors = get_open_file_descriptors();
+          send_request(file + Math.random(), function(err, resp) {
+            var current_descriptors = get_open_file_descriptors();
+            open_descriptors.should.eql(current_descriptors);
+            done()
+          })
         })
-      })
+      }
 
     })
 
@@ -236,7 +238,7 @@ describe('with output option', function() {
         })
       })
 
-      if (process.platform != 'win32') {
+      if (process.platform == 'linux') {
         it('closes the file descriptor', function(done) {
           var open_descriptors = get_open_file_descriptors();
           send_request(file + Math.random(), function(err, resp) {

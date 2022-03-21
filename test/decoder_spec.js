@@ -2,17 +2,50 @@ var should  = require('should'),
     needle  = require('./../'),
     Q       = require('q'),
     chardet = require('jschardet'),
+    fs      = require('fs'),
+    http    = require('http'),
     helpers = require('./helpers');
 
 describe('character encoding', function() {
 
-  var url;
   this.timeout(5000);
 
   describe('Given content-type: "text/html; charset=EUC-JP"', function() {
 
-    before(function() {
-      url = 'http://www.nina.jp/server/slackware/webapp/tomcat_charset.html';
+    var port = 2233;
+    var server;
+
+    function createServer() {
+      return http.createServer(function(req, res) {
+
+        req.on('data', function(chunk) {})
+
+        req.on('end', function() {
+          // We used to pull from a particular site that is no longer up.
+          // This is a local mirror pulled from archive.org
+          // https://web.archive.org/web/20181003202907/http://www.nina.jp/server/slackware/webapp/tomcat_charset.html
+          fs.readFile('test/tomcat_charset.html', function(err, data) {
+            if (err) {
+              res.writeHead(404);
+              res.end(JSON.stringify(err));
+              return;
+            }
+            res.writeHeader(200, { 'Content-Type': 'text/html; charset=EUC-JP' })
+            res.end(data);
+          });
+        })
+
+      })
+    }
+
+    before(function(done) {
+      server = createServer();
+      server.listen(port, done)
+      url = 'http://localhost:' + port;
+    })
+
+    after(function(done) {
+      server.close(done)
     })
 
     describe('with decode = false', function() {
