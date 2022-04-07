@@ -65,7 +65,7 @@ describe('redirects', function() {
         url  = protocol + '://' + host + ':' + ports[protocol] + '/hello';
 
     function send_request(opts, cb) {
-      opts.rejectUnauthorized = false;
+      if (protocol == 'https') opts.rejectUnauthorized = false;
       // console.log(' -- sending request ' + url + ' -- redirect to ' + location);
       needle.post(url, { foo: 'bar' }, opts, cb);
     }
