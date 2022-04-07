@@ -59,23 +59,6 @@ describe('request stream length', function() {
       })
     })
 
-    if (node_major_ver >= 10) {
-      it('returns 400 if Transfer-Encoding is set to a blank string', function(done) {
-        send_request({ headers: { 'Transfer-Encoding': '' }}, function(err, resp) {
-          should.not.exist(err);
-          resp.statusCode.should.eql(400);
-          done()
-        })
-      })
-    } else {
-      it('doesnt work if Transfer-Encoding is set to a blank string', function(done) {
-        send_request({ headers: { 'Transfer-Encoding': '' }}, function(err, resp) {
-          err.code.should.eql('ECONNRESET');
-          done()
-        })
-      })
-    }
-
     it('works if Transfer-Encoding is not set', function(done) {
       send_request({}, function(err, resp) {
         should.not.exist(err);
@@ -83,45 +66,6 @@ describe('request stream length', function() {
         done()
       })
     })
-
-  })
-
-  describe('stream_length set to invalid value', function() {
-
-    if (node_major_ver >= 10) {
-
-      it('returns 400 if Transfer-Encoding is set to a blank string', function(done) {
-        send_request({ stream_length: 5, headers: { 'Transfer-Encoding': '' }}, function(err, resp) {
-          should.not.exist(err);
-          resp.statusCode.should.eql(400);
-          done()
-        })
-      })
-
-      it('returns 400 if Transfer-Encoding is not set', function(done) {
-        send_request({ stream_length: 5 }, function(err, resp) {
-          should.not.exist(err);
-          resp.statusCode.should.eql(400);
-          done()
-        })
-      })
-
-    } else {
-
-      it('doesnt work if Transfer-Encoding is set to a blank string', function(done) {
-        send_request({ stream_length: 5, headers: { 'Transfer-Encoding': '' }}, function(err, resp) {
-          err.code.should.eql('ECONNRESET');
-          done()
-        })
-      })
-      it('doesnt work if Transfer-Encoding is not set', function(done) {
-        send_request({ stream_length: 5 }, function(err, resp) {
-          err.code.should.eql('ECONNRESET');
-          done()
-        })
-      })
-
-    }
 
   })
 
@@ -205,23 +149,6 @@ describe('request stream length', function() {
           done()
         })
       })
-
-      if (node_major_ver >= 10) {
-        it('returns 400 if Transfer-Encoding is set to a blank string', function(done) {
-          send_request({ stream_length: 0, headers: { 'Transfer-Encoding': '' }}, function(err, resp) {
-            should.not.exist(err);
-            resp.statusCode.should.eql(400);
-            done()
-          })
-        })
-      } else {
-        it('throws ECONNRESET if Transfer-Encoding is set to a blank string', function(done) {
-          send_request({ stream_length: 0, headers: { 'Transfer-Encoding': '' }}, function(err, resp) {
-            err.code.should.eql('ECONNRESET');
-            done()
-          })
-        })
-      }
 
       it('works if Transfer-Encoding is not set', function(done) {
         send_request({ stream_length: 0 }, function(err, resp) {
