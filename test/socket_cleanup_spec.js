@@ -61,7 +61,7 @@ describe('socket cleanup', function(){
 
     stream.pipeline(resp, writable, function(err) {
       err.code.should.eql('ERR_STREAM_PREMATURE_CLOSE')
-      // if (err) resp.request.destroy();
+      if (err) resp.request.destroy();
     });
 
     setTimeout(function() {
