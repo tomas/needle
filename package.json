@@ -1,6 +1,6 @@
 {
   "name": "needle",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "The leanest and most handsome HTTP client in the Nodelands.",
   "keywords": [
     "http",
@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "debug": "^3.2.6",
-    "iconv-lite": "^0.4.4",
+    "iconv-lite": "^0.6.3",
     "sax": "^1.2.4"
   },
   "devDependencies": {
