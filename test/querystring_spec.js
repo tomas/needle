@@ -151,10 +151,11 @@ describe('stringify', function() {
 		// TODO
 		it('works as expected', function() {
 			var encoded = stringify(data)
-			encoded.should.eql('field1=x&field3[0][subfield1]=this%20is%20a%20string&field3[0][subfield2][0]=this%20is%20array&field3[0][subfield3][0]=another%20array&field3[1][subfield1]=this%20is%20a%20string&field3[1][subfield2][0]=this%20is%20array&field3[1][subfield3][0]=another%20array&field3[2][subfield1]=this%20is%20a%20string&field3[2][subfield2][0]=this%20is%20array&field3[2][subfield3][0]=another%20array')
 
-			// console.log(data);
-			// console.log(encoded.replace(/\&/g, '\n'));
+			console.log(data);
+			console.log(encoded.replace(/\&/g, '\n'));
+
+			encoded.should.eql('field1=x&field3[0][subfield1]=this%20is%20a%20string&field3[0][subfield2][0]=this%20is%20array&field3[0][subfield3][0]=another%20array&field3[1][subfield1]=this%20is%20a%20string&field3[1][subfield2][0]=this%20is%20array&field3[1][subfield3][0]=another%20array&field3[2][subfield1]=this%20is%20a%20string&field3[2][subfield2][0]=this%20is%20array&field3[2][subfield3][0]=another%20array')
 
 			// var qs = require("querystring");
 			// var res = qs.decode(encoded);
