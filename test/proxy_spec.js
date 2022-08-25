@@ -2,7 +2,8 @@ var helpers = require('./helpers'),
     should  = require('should'),
     sinon   = require('sinon'),
     http    = require('http'),
-    needle  = require('./../');
+    needle  = require('./../'),
+    should_proxy_to = require('./../lib/proxy').should_proxy_to;
 
 var port = 7707;
 var url = 'localhost:' + port;
@@ -137,9 +138,9 @@ describe('proxy option', function() {
         }))
       })
 
-      it('proxies request if matching host in list but different port', function(done) {
+      it('does not proxy request if matching host in list and just has a different port', function(done) {
         process.env.NO_PROXY = 'localhost';
-        send_request({ proxy: nonexisting_host + ':123/done' }, proxied(nonexisting_host, '123', function() {
+        send_request({ proxy: nonexisting_host + ':123/done' }, not_proxied(function() {
           delete process.env.NO_PROXY;
           done();
         }))
@@ -152,6 +153,103 @@ describe('proxy option', function() {
           done();
         }))
       })
+
+      describe('should_proxy_to()', function() {
+
+        const noProxy = ".ic1.mycorp,localhost,127.0.0.1,*.mycorp.org";
+        const noProxyWithPorts = " ,.mycorp.org:1234,.ic1.mycorp,localhost,127.0.0.1";
+        const URI = "http://registry.random.opr.mycorp.org";
+        const URIWithPort = "http://registry.random.opr.mycorp.org:9874";
+        const URIWithPort1234 = "http://registry.random.opr.mycorp.org:1234";
+        const URIlocalhost = "http://localhost";
+        const URIip = "http://127.0.0.1";
+
+        it("shall return true if NO_PROXY is undefined", function(done) {
+          process.env.NO_PROXY = undefined;
+          should_proxy_to(URI).should.true()
+          delete process.env.NO_PROXY;
+          done();
+        });
+
+        it("shall return true if NO_PROXY is empty", function(done) {
+          process.env.NO_PROXY = "";
+          should_proxy_to(URI).should.true()
+          delete process.env.NO_PROXY;
+          done();
+        });
+
+        it("shall return false if NO_PROXY is a wildcard", function(done) {
+          process.env.NO_PROXY = "*";
+          should_proxy_to(URI).should.false()
+          delete process.env.NO_PROXY;
+          done();
+        });
+
+        it("shall return true if the host matches and the ports don't (URI doesn't have port specified)", function(done) {
+          process.env.NO_PROXY = noProxyWithPorts;
+          should_proxy_to(URI).should.true()
+          delete process.env.NO_PROXY;
+          done();
+        });
+
+        it("shall return true if the host matches and the ports don't (both have a port specified but just different values)", function(done) {
+          process.env.NO_PROXY = noProxyWithPorts;
+          should_proxy_to(URIWithPort).should.true()
+          delete process.env.NO_PROXY;
+          done();
+        });
+
+        it("shall return false if the host matches and the ports don't (no_proxy pattern doesn't have a port)", function(done) {
+          process.env.NO_PROXY = noProxy;
+          should_proxy_to(URIWithPort).should.false()
+          delete process.env.NO_PROXY;
+          done();
+        });
+
+        it("shall return false if host matches", function(done) {
+          process.env.NO_PROXY = noProxy;
+          should_proxy_to(URI).should.false()
+          delete process.env.NO_PROXY;
+          done();
+        });
+
+        it("shall return false if the host and port matches", function(done) {
+          process.env.NO_PROXY = noProxyWithPorts;
+          should_proxy_to(URIWithPort1234).should.false()
+          delete process.env.NO_PROXY;
+          done();
+        });
+
+        it("shall return false if the host matches (localhost)", function(done) {
+          process.env.NO_PROXY = noProxy;
+          should_proxy_to(URIlocalhost).should.false()
+          delete process.env.NO_PROXY;
+          done();
+        });
+
+        it("shall return false if the host matches (ip)", function(done) {
+          process.env.NO_PROXY = noProxy;
+          should_proxy_to(URIip).should.false()
+          delete process.env.NO_PROXY;
+          done();
+        });
+
+        it("shall return false if the host matches (ip)", function(done) {
+          process.env.NO_PROXY = noProxy.replace(/,g/, " ");
+          should_proxy_to(URIip).should.false()
+          delete process.env.NO_PROXY;
+          done();
+        });
+
+        it("shall return false if the host matches (ip)", function(done) {
+          process.env.NO_PROXY = noProxy.replace(/,g/, " ");
+          should_proxy_to(URIip).should.false()
+          delete process.env.NO_PROXY;
+          done();
+        });
+
+      })
+      
     })
 
     describe('and proxy url contains user:pass', function() {
