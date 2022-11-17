@@ -137,9 +137,9 @@ describe('proxy option', function() {
         }))
       })
 
-      it('proxies request if matching host in list but different port', function(done) {
+      it('does not proxy request if matching host in list and just has a different port', function(done) {
         process.env.NO_PROXY = 'localhost';
-        send_request({ proxy: nonexisting_host + ':123/done' }, proxied(nonexisting_host, '123', function() {
+        send_request({ proxy: nonexisting_host + ':123/done' }, not_proxied(function() {
           delete process.env.NO_PROXY;
           done();
         }))
