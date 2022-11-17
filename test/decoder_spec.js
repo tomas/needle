@@ -11,36 +11,31 @@ describe('character encoding', function() {
 
   this.timeout(5000);
 
-  describe('Given content-type: "text/html; charset=EUC-JP"', function() {
-
-    var port = 2233;
-    var server;
-
-    function createServer() {
-      return http.createServer(function(req, res) {
-
-        req.on('data', function(chunk) {})
-
-        req.on('end', function() {
-          // We used to pull from a particular site that is no longer up.
-          // This is a local mirror pulled from archive.org
-          // https://web.archive.org/web/20181003202907/http://www.nina.jp/server/slackware/webapp/tomcat_charset.html
-          fs.readFile('test/tomcat_charset.html', function(err, data) {
-            if (err) {
-              res.writeHead(404);
-              res.end(JSON.stringify(err));
-              return;
-            }
-            res.writeHeader(200, { 'Content-Type': 'text/html; charset=EUC-JP' })
-            res.end(data);
-          });
-        })
-
+  function staticServerFor(file, content_type) {
+    return http.createServer(function(req, res) {
+      req.on('data', function(chunk) {})
+      req.on('end', function() {
+        // We used to pull from a particular site that is no longer up.
+        // This is a local mirror pulled from archive.org
+        // https://web.archive.org/web/20181003202907/http://www.nina.jp/server/slackware/webapp/tomcat_charset.html
+        fs.readFile(file, function(err, data) {
+          if (err) {
+            res.writeHead(404);
+            res.end(JSON.stringify(err));
+            return;
+          }
+          res.writeHeader(200, { 'Content-Type': content_type })
+          res.end(data);
+        });
       })
-    }
+    })
+  }
+
+  describe('Given content-type: "text/html; charset=EUC-JP"', function() {
+    var server, port = 2233;
 
     before(function(done) {
-      server = createServer();
+      server = staticServerFor('test/files/tomcat_charset.html', 'text/html; charset=EUC-JP')
       server.listen(port, done)
       url = 'http://localhost:' + port;
     })
@@ -50,35 +45,26 @@ describe('character encoding', function() {
     })
 
     describe('with decode = false', function() {
-
       it('does not decode', function(done) {
-
         needle.get(url, { decode: false }, function(err, resp) {
           resp.body.should.be.a.String;
           chardet.detect(resp.body).encoding.should.eql('windows-1252');
           resp.body.indexOf('EUCを使う').should.eql(-1);
           done();
         })
-
       })
-
     })
 
     describe('with decode = true', function() {
-
       it('decodes', function(done) {
-
         needle.get(url, { decode: true }, function(err, resp) {
           resp.body.should.be.a.String;
           chardet.detect(resp.body).encoding.should.eql('ascii');
           resp.body.indexOf('EUCを使う').should.not.eql(-1);
           done();
         })
-
       })
-
     })
-
   })
 
   describe('Given content-type: "text/html but file is charset: gb2312', function() {
@@ -119,6 +105,43 @@ describe('character encoding', function() {
     })
   })
 
+  describe('Given content-type: text/html; charset=maccentraleurope', function() {
+    var server, port = 2233;
+
+    // from 'https://wayback.archive-it.org/3259/20160921140616/https://www.arc.gov/research/MapsofAppalachia.asp?MAP_ID=11';
+    before(function(done) {
+      server = staticServerFor('test/files/Appalachia.html', 'text/html; charset=maccentraleurope')
+      server.listen(port, done)
+      url = 'http://localhost:' + port;
+    })
+
+    after(function(done) {
+      server.close(done)
+    })
+
+    describe('with decode = false', function() {
+      it('does not decode', function(done) {
+        needle.get(url, { decode: false }, function(err, resp) {
+          resp.body.should.be.a.String;
+          chardet.detect(resp.body).encoding.should.eql('ascii');
+          done();
+        })
+      })
+    })
+
+    describe('with decode = true', function() {
+      it('does not explode', function(done) {
+        (function() {
+          needle.get(url, { decode: true }, function(err, resp) {
+            resp.body.should.be.a.String;
+            chardet.detect(resp.body).encoding.should.eql('ascii');
+            done();
+          })
+        }).should.not.throw();
+      })
+    })
+  })
+
   describe('Given content-type: "text/html"', function () {
 
     var server,
@@ -150,7 +173,6 @@ describe('character encoding', function() {
       })
 
     })
-
   })
   
   describe('multibyte characters split across chunks', function () {
