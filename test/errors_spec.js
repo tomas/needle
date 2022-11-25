@@ -269,7 +269,7 @@ describe('errors', function() {
 
   })
 
-  describe('when request is aborted by signal', function() {
+  describe.only('when request is aborted by signal', function() {
 
     var server,
         url = 'http://localhost:3333/foo';
@@ -288,13 +288,13 @@ describe('errors', function() {
     })
 
     it('works if passing an already aborted signal aborts the request', function(done) {
-      const abortedSignal = AbortSignal.abort();
-      const start = new Date();
+      var abortedSignal = AbortSignal.abort();
+      var start = new Date();
 
       abortedSignal.aborted.should.equal(true);
 
       needle.get(url, { signal: abortedSignal, response_timeout: 10000 }, function(err, res) {
-        const timediff = (new Date() - start);
+        var timediff = (new Date() - start);
 
         should.not.exist(res);
         err.code.should.equal('ABORT_ERR');
@@ -305,11 +305,11 @@ describe('errors', function() {
     })
 
     it('works if request aborts before timing out', function(done) {
-      const cancel = new AbortController();
-      const start = new Date();
+      var cancel = new AbortController();
+      var start = new Date();
 
       needle.get(url, { signal: cancel.signal, response_timeout: 500, open_timeout: 500, read_timeout: 500 }, function(err, res) {
-        const timediff = (new Date() - start);
+        var timediff = (new Date() - start);
 
         should.not.exist(res);
         err.code.should.equal('ECONNRESET');
@@ -326,11 +326,11 @@ describe('errors', function() {
     })
 
     it('works if request times out before being aborted', function(done) {
-      const cancel = new AbortController();
-      const start = new Date();
+      var cancel = new AbortController();
+      var start = new Date();
 
       needle.get(url, { signal: cancel.signal, response_timeout: 200, open_timeout: 200, read_timeout: 200 }, function(err, res) {
-        const timediff = (new Date() - start);
+        var timediff = (new Date() - start);
 
         should.not.exist(res);
         err.code.should.equal('ECONNRESET');
@@ -345,14 +345,14 @@ describe('errors', function() {
     })
 
     it('works if setting default signal aborts all requests', function(done) {
-      const cancel = new AbortController();
+      var cancel = new AbortController();
 
       needle.defaults({signal: cancel.signal});
 
-      const start = new Date();
-      let count = 0;
+      var start = new Date();
+      var count = 0;
       function cb(err, res) {
-        const timediff = (new Date() - start);
+        var timediff = (new Date() - start);
 
         should.not.exist(res);
         err.code.should.equal('ECONNRESET');
