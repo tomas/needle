@@ -272,7 +272,8 @@ describe('errors', function() {
   describe('when request is aborted by signal', function() {
 
     var server,
-        url = 'http://localhost:3333/foo';
+        url = 'http://localhost:3333/foo',
+        node_major_ver = process.version.split('.')[0].replace('v', '');
 
     before(function() {
       server = helpers.server({ port: 3333, wait: 600 });
@@ -312,8 +313,10 @@ describe('errors', function() {
         var timediff = (new Date() - start);
 
         should.not.exist(res);
-        // err.code.should.equal('ECONNRESET'); works with node 16, not with node > 16
-        err.code.should.match(/ECONNRESET|ABORT_ERR/) // Work with node >= 16
+        if (node_major_ver <= 16)
+          err.code.should.equal('ECONNRESET');
+        if (node_major_ver > 16)
+          err.code.should.equal('ABORT_ERR');
         cancel.signal.aborted.should.equal(true);
         timediff.should.be.within(200, 250);
 
@@ -356,8 +359,10 @@ describe('errors', function() {
         var timediff = (new Date() - start);
 
         should.not.exist(res);
-        // err.code.should.equal('ECONNRESET'); works with node 16, not with node > 16
-        err.code.should.match(/ECONNRESET|ABORT_ERR/) // Work with node >= 16
+        if (node_major_ver <= 16)
+          err.code.should.equal('ECONNRESET');
+        if (node_major_ver > 16)
+          err.code.should.equal('ABORT_ERR');
         cancel.signal.aborted.should.equal(true);
         timediff.should.be.within(200, 250);
 
