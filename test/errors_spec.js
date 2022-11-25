@@ -269,7 +269,7 @@ describe('errors', function() {
 
   })
 
-  describe.only('when request is aborted by signal', function() {
+  describe('when request is aborted by signal', function() {
 
     var server,
         url = 'http://localhost:3333/foo';
