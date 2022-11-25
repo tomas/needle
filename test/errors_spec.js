@@ -312,7 +312,8 @@ describe('errors', function() {
         var timediff = (new Date() - start);
 
         should.not.exist(res);
-        err.code.should.equal('ECONNRESET');
+        // err.code.should.equal('ECONNRESET'); works with node 16, not with node > 16
+        err.code.should.match(/ECONNRESET|ABORT_ERR/) // Work with node >= 16
         cancel.signal.aborted.should.equal(true);
         timediff.should.be.within(200, 250);
 
@@ -355,7 +356,8 @@ describe('errors', function() {
         var timediff = (new Date() - start);
 
         should.not.exist(res);
-        err.code.should.equal('ECONNRESET');
+        // err.code.should.equal('ECONNRESET'); works with node 16, not with node > 16
+        err.code.should.match(/ECONNRESET|ABORT_ERR/) // Work with node >= 16
         cancel.signal.aborted.should.equal(true);
         timediff.should.be.within(200, 250);
 
