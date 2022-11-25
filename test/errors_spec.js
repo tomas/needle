@@ -269,136 +269,138 @@ describe('errors', function() {
 
   })
 
-  describe('when request is aborted by signal', function() {
+  var node_major_ver = process.version.split('.')[0].replace('v', '');
+  if (node_major_ver >= 16) {
+    describe('when request is aborted by signal', function() {
 
-    var server,
-        url = 'http://localhost:3333/foo',
-        node_major_ver = process.version.split('.')[0].replace('v', '');
-
-    before(function() {
-      server = helpers.server({ port: 3333, wait: 600 });
-    })
-
-    after(function() {
-      server.close();
-    })
-
-    afterEach(function() {
-      // reset signal to default
-      needle.defaults({signal: null});
-    })
-
-    it('works if passing an already aborted signal aborts the request', function(done) {
-      var abortedSignal = AbortSignal.abort();
-      var start = new Date();
-
-      abortedSignal.aborted.should.equal(true);
-
-      needle.get(url, { signal: abortedSignal, response_timeout: 10000 }, function(err, res) {
-        var timediff = (new Date() - start);
-
-        should.not.exist(res);
-        err.code.should.equal('ABORT_ERR');
-        timediff.should.be.within(0, 50);
-
-        done();
-      });
-    })
-
-    it('works if request aborts before timing out', function(done) {
-      var cancel = new AbortController();
-      var start = new Date();
-
-      needle.get(url, { signal: cancel.signal, response_timeout: 500, open_timeout: 500, read_timeout: 500 }, function(err, res) {
-        var timediff = (new Date() - start);
-
-        should.not.exist(res);
-        if (node_major_ver <= 16)
-          err.code.should.equal('ECONNRESET');
-        if (node_major_ver > 16)
+      var server,
+          url = 'http://localhost:3333/foo';
+  
+      before(function() {
+        server = helpers.server({ port: 3333, wait: 600 });
+      })
+  
+      after(function() {
+        server.close();
+      })
+  
+      afterEach(function() {
+        // reset signal to default
+        needle.defaults({signal: null});
+      })
+  
+      it('works if passing an already aborted signal aborts the request', function(done) {
+        var abortedSignal = AbortSignal.abort();
+        var start = new Date();
+  
+        abortedSignal.aborted.should.equal(true);
+  
+        needle.get(url, { signal: abortedSignal, response_timeout: 10000 }, function(err, res) {
+          var timediff = (new Date() - start);
+  
+          should.not.exist(res);
           err.code.should.equal('ABORT_ERR');
-        cancel.signal.aborted.should.equal(true);
-        timediff.should.be.within(200, 250);
-
-        done();
-      });
-
-      function abort() {
-        cancel.abort();
-      }
-      setTimeout(abort, 200);
-    })
-
-    it('works if request times out before being aborted', function(done) {
-      var cancel = new AbortController();
-      var start = new Date();
-
-      needle.get(url, { signal: cancel.signal, response_timeout: 200, open_timeout: 200, read_timeout: 200 }, function(err, res) {
-        var timediff = (new Date() - start);
-
-        should.not.exist(res);
-        err.code.should.equal('ECONNRESET');
-        timediff.should.be.within(200, 250);
-      });
-
-      function abort() {
-        cancel.signal.aborted.should.equal(false);
-        done();
-      }
-      setTimeout(abort, 500);
-    })
-
-    it('works if setting default signal aborts all requests', function(done) {
-      var cancel = new AbortController();
-
-      needle.defaults({signal: cancel.signal});
-
-      var start = new Date();
-      var count = 0;
-      function cb(err, res) {
-        var timediff = (new Date() - start);
-
-        should.not.exist(res);
-        if (node_major_ver <= 16)
-          err.code.should.equal('ECONNRESET');
-        if (node_major_ver > 16)
-          err.code.should.equal('ABORT_ERR');
-        cancel.signal.aborted.should.equal(true);
-        timediff.should.be.within(200, 250);
-
-        if ( count++ === 2 ) done();
-      }
-
-      needle.get(url, { timeout: 300 }, cb);
-      needle.get(url, { timeout: 350 }, cb);
-      needle.get(url, { timeout: 400}, cb);
-
-      function abort() {
-        cancel.abort();
-      }
-      setTimeout(abort, 200);
-    })
-
-    it('does not work if invalid signal passed', function(done) {
-      try {
-        needle.get(url, { signal: 'invalid signal' }, function(err, res) {
-          done(new Error('A bad option error expected to be thrown'));
+          timediff.should.be.within(0, 50);
+  
+          done();
         });
-      } catch(e) {
-        e.should.be.a.TypeError;
-        done();
-      }
+      })
+  
+      it('works if request aborts before timing out', function(done) {
+        var cancel = new AbortController();
+        var start = new Date();
+  
+        needle.get(url, { signal: cancel.signal, response_timeout: 500, open_timeout: 500, read_timeout: 500 }, function(err, res) {
+          var timediff = (new Date() - start);
+  
+          should.not.exist(res);
+          if (node_major_ver <= 16)
+            err.code.should.equal('ECONNRESET');
+          if (node_major_ver > 16)
+            err.code.should.equal('ABORT_ERR');
+          cancel.signal.aborted.should.equal(true);
+          timediff.should.be.within(200, 250);
+  
+          done();
+        });
+  
+        function abort() {
+          cancel.abort();
+        }
+        setTimeout(abort, 200);
+      })
+  
+      it('works if request times out before being aborted', function(done) {
+        var cancel = new AbortController();
+        var start = new Date();
+  
+        needle.get(url, { signal: cancel.signal, response_timeout: 200, open_timeout: 200, read_timeout: 200 }, function(err, res) {
+          var timediff = (new Date() - start);
+  
+          should.not.exist(res);
+          err.code.should.equal('ECONNRESET');
+          timediff.should.be.within(200, 250);
+        });
+  
+        function abort() {
+          cancel.signal.aborted.should.equal(false);
+          done();
+        }
+        setTimeout(abort, 500);
+      })
+  
+      it('works if setting default signal aborts all requests', function(done) {
+        var cancel = new AbortController();
+  
+        needle.defaults({signal: cancel.signal});
+  
+        var start = new Date();
+        var count = 0;
+        function cb(err, res) {
+          var timediff = (new Date() - start);
+  
+          should.not.exist(res);
+          if (node_major_ver <= 16)
+            err.code.should.equal('ECONNRESET');
+          if (node_major_ver > 16)
+            err.code.should.equal('ABORT_ERR');
+          cancel.signal.aborted.should.equal(true);
+          timediff.should.be.within(200, 250);
+  
+          if ( count++ === 2 ) done();
+        }
+  
+        needle.get(url, { timeout: 300 }, cb);
+        needle.get(url, { timeout: 350 }, cb);
+        needle.get(url, { timeout: 400}, cb);
+  
+        function abort() {
+          cancel.abort();
+        }
+        setTimeout(abort, 200);
+      })
+  
+      it('does not work if invalid signal passed', function(done) {
+        try {
+          needle.get(url, { signal: 'invalid signal' }, function(err, res) {
+            done(new Error('A bad option error expected to be thrown'));
+          });
+        } catch(e) {
+          e.should.be.a.TypeError;
+          done();
+        }
+      })
+  
+      it('does not work if invalid signal set by default', function(done) {
+        try {
+          needle.defaults({signal: new Error(), timeout: 1200});
+          done(new Error('A bad option error expected to be thrown'));
+        } catch(e) {
+          e.should.be.a.TypeError;
+          done();
+        }
+      })
+  
     })
-
-    it('does not work if invalid signal set by default', function(done) {
-      try {
-        needle.defaults({signal: new Error(), timeout: 1200});
-        done(new Error('A bad option error expected to be thrown'));
-      } catch(e) {
-        e.should.be.a.TypeError;
-        done();
-      }
-    })
-
-  })
+  }
 })
