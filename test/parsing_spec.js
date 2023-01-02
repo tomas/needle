@@ -544,4 +544,45 @@ describe('parsing', function(){
 
   });
 
+  describe('when response is a HAL JSON content-type', function () {
+
+    var json_string = '{"name": "Tomás", "_links": {"href": "https://github.com/tomas/needle.git"}}';
+
+    before(function(done){
+      server = http.createServer(function(req, res) {
+        res.setHeader('Content-Type', 'application/hal+json');
+        res.end(json_string);
+      }).listen(port, done);
+    });
+
+    after(function(done){
+      server.close(done);
+    });
+
+    describe('and parse option is not passed', function() {
+
+      describe('with default parse_response', function() {
+
+        before(function() {
+          needle.defaults().parse_response.should.eql('all')
+        })
+
+        it('should return object', function(done){
+          needle.get('localhost:' + port, function(err, response, body){
+            should.ifError(err);
+            body.should.deepEqual({
+              'name': 'Tomás',
+              '_links': {
+                'href': 'https://github.com/tomas/needle.git'
+              }});
+            done();
+          });
+        });
+
+      });
+
+    })
+
+  });
+
 })
