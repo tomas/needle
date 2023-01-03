@@ -612,7 +612,13 @@ Then you should be able to run `npm test` once you have the dependencies in plac
 
 > Note: Tests currently only work on linux-based environments that have `/proc/self/fd`. They *do not* work on MacOS environments.
 > You can use Docker to run tests by creating a container and mounting the needle project directory on `/app`
-> `docker create --name Needle -v /app -w /app -v /app/node_modules -i node:argon`
+
+```bash
+# Located in your local cloned project :
+docker run -it -w /app --name Needle \
+--mount type=bind,source="$(pwd)",target=/app \
+node:fermium bash
+```
 
 Credits
 -------
