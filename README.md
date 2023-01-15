@@ -609,10 +609,11 @@ To run tests, you need to generate a self-signed SSL certificate in the `test` d
     $ openssl req -new -key test/keys/ssl.key -x509 -days 999 -out test/keys/ssl.cert
 
 Then you should be able to run `npm test` once you have the dependencies in place.
+To run the tests with debug logs, set the environment variable `NODE_DEBUG` to `needle` (for example, by running `NODE_DEBUG=needle npm test`).
 
 > Note: Tests currently only work on linux-based environments that have `/proc/self/fd`. They *do not* work on MacOS environments.
 > You can use Docker to run tests by creating a container and mounting the needle project directory on `/app`
-> `docker create --name Needle -v /app -w /app -v /app/node_modules -i node:argon`
+> `docker create --name Needle -v $(pwd) -w /app -v $(pwd)/node_modules -i node:argon`
 
 Credits
 -------
