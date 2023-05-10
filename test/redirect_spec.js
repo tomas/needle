@@ -30,7 +30,7 @@ describe('redirects', function() {
       servers = {};
 
   var current_protocol;
-  var hostname = require('os').hostname();
+  var hostname = require('os').hostname().toLowerCase();
 
   // open two servers, one that responds to a redirect
   before(function(done) {
