@@ -4,6 +4,7 @@ var http    = require('http'),
 
 var port = 54321;
 
+
 describe('request headers', function() {
 
   var needle,
@@ -38,6 +39,7 @@ describe('request headers', function() {
 
   describe('old node versions (<0.11.4) with persistent keep-alive connections', function() {
 
+    // emulate old node behaviour
     before(function() {
       delete require.cache[require.resolve('..')] // in case it was already loaded
       original_defaultMaxSockets = http.Agent.defaultMaxSockets;
@@ -133,23 +135,57 @@ describe('request headers', function() {
 
     describe('default options', function() {
 
-      // TODO:
-      // this is weird. by default, new node versions set a 'close' header
-      // while older versions set a keep-alive header
+      var node_major_ver = process.version.split('.')[0].replace('v', '');
 
-      it.skip('sets a Connection header', function(done) {
-        send_request({}, function(err, resp) {
-          // should.not.exist(resp.body.headers['connection']);
-          // done();
+      if (parseInt(node_major_ver) >= 4) {
+
+        it('sets Connection header to close (> v4)', function(done) {
+          send_request({}, function(err, resp) {
+            resp.body.headers['connection'].should.eql('close');
+            done()
+          })
         })
-      })
 
-      it.skip('one open sockets remain after request', function(done) {
-        send_request({}, function(err, resp) {
-          // get_active_sockets().length.should.eql(1);
-          // done();
-        });
-      })
+      } else {
+
+        it('sets Connection header to keep-alive (< v4)', function(done) {
+          send_request({}, function(err, resp) {
+            resp.body.headers['connection'].should.eql('keep-alive');
+            done();
+          })
+        })
+
+      }
+
+      if (parseInt(node_major_ver) >= 14) {
+
+        // TODO: figure out why this happens
+        it('two open sockets remains after request (>= v14)', function(done) {
+          send_request({}, function(err, resp) {
+            get_active_sockets().length.should.eql(existing_sockets + 2);
+            done();
+          });
+        })
+
+      } else if (parseInt(node_major_ver) >= 8 || parseInt(node_major_ver) == 0) {
+
+        it('one open socket remains after request (> v8 && v0.10)', function(done) {
+          send_request({}, function(err, resp) {
+            get_active_sockets().length.should.eql(existing_sockets + 1);
+            done();
+          });
+        })
+
+      } else {
+
+        it('no open sockets remain after request (> v0.10 && < v8)', function(done) {
+          send_request({}, function(err, resp) {
+            get_active_sockets().length.should.eql(existing_sockets);
+            done();
+          });
+        })
+
+      }
 
     })
 
@@ -197,6 +233,87 @@ describe('request headers', function() {
       })
 
     })
+
+  })
+
+  describe('using shared keep-alive agent', function() {
+
+    before(function() {
+      needle.defaults({ agent: http.Agent({ keepAlive: true }) })
+    })
+
+    after(function() {
+      needle.defaults().agent.destroy(); // close existing connections
+      needle.defaults({ agent: null }); // and reset default value
+    })
+
+    describe('default options', function() {
+
+      it('sends a Connection: keep-alive header', function(done) {
+        send_request({}, function(err, resp) {
+          resp.body.headers['connection'].should.eql('keep-alive');
+          done();
+        })
+      })
+
+      it('one open socket remain after request', function(done) {
+        send_request({ connection: 'keep-alive' }, function(err, resp) {
+          setTimeout(function() {
+            get_active_sockets().length.should.eql(existing_sockets + 1);
+            done();
+          }, 10);
+        });
+      })
+
+    })
+
+    describe('passing connection: close', function() {
+
+      it('sends a Connection: close header', function(done) {
+        send_request({ connection: 'close' }, function(err, resp) {
+          resp.body.headers['connection'].should.eql('close');
+          done();
+        })
+      })
+
+      it('no open sockets remain after request', function(done) {
+        send_request({ connection: 'close' }, function(err, resp) {
+          setTimeout(function() {
+            get_active_sockets().length.should.eql(existing_sockets);
+            done();
+          }, 10)
+        });
+      })
+
+    })
+
+    describe('passing connection: keep-alive', function() {
+
+      it('sends a Connection: keep-alive header (using options.headers.connection)', function(done) {
+        send_request({ headers: { connection: 'keep-alive' }}, function(err, resp) {
+          resp.body.headers['connection'].should.eql('keep-alive');
+          done();
+        })
+      })
+
+      it('sends a Connection: keep-alive header (using options.connection)', function(done) {
+        send_request({ connection: 'keep-alive' }, function(err, resp) {
+          resp.body.headers['connection'].should.eql('keep-alive');
+          done();
+        })
+      })
+
+      it('one open socket remain after request', function(done) {
+        send_request({ connection: 'keep-alive' }, function(err, resp) {
+          setTimeout(function() {
+            get_active_sockets().length.should.eql(existing_sockets + 1);
+            done();
+          }, 10);
+        })
+      })
+
+    })
+
 
   })
 

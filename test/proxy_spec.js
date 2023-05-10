@@ -117,12 +117,41 @@ describe('proxy option', function() {
 
   describe('when valid url is passed', function() {
 
-    it('proxies request', function(done) {
-      send_request({ proxy: nonexisting_host + ':123/done' }, proxied(nonexisting_host, '123', done))
+    describe('without NO_PROXY env var set', function() {
+      it('proxies request', function(done) {
+        send_request({ proxy: nonexisting_host + ':123/done' }, proxied(nonexisting_host, '123', done))
+      })
+
+      it('does not set a Proxy-Authorization header', function(done) {
+        send_request({ proxy: nonexisting_host + ':123/done' }, no_proxy_auth(done));
+      })
     })
 
-    it('does not set a Proxy-Authorization header', function(done) {
-      send_request({ proxy: nonexisting_host + ':123/done' }, no_proxy_auth(done));
+    describe('with NO_PROXY env var set', function() {
+
+      it('proxies request if matching host not found in list', function(done) {
+        process.env.NO_PROXY = 'foo';
+        send_request({ proxy: nonexisting_host + ':123/done' }, proxied(nonexisting_host, '123', function() {
+          delete process.env.NO_PROXY;
+          done();
+        }))
+      })
+
+      it('does not proxy request if matching host in list and just has a different port', function(done) {
+        process.env.NO_PROXY = 'localhost';
+        send_request({ proxy: nonexisting_host + ':123/done' }, not_proxied(function() {
+          delete process.env.NO_PROXY;
+          done();
+        }))
+      })
+
+      it('does not proxy if matching host found in list', function(done) {
+        process.env.NO_PROXY = 'foo,' + url;
+        send_request({ proxy: nonexisting_host + ':123/done' }, not_proxied(function() {
+          delete process.env.NO_PROXY;
+          done();
+        }))
+      })
     })
 
     describe('and proxy url contains user:pass', function() {

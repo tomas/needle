@@ -112,6 +112,45 @@ describe('auth_digest', function() {
     });
   });
 
+  describe('With colon character in nonce header', function() {
+    it('should generate a proper header', function() {
+      // from https://tools.ietf.org/html/rfc2617
+      var performDigest = function() {
+        var header = 'Digest realm="IP Camera", charset="UTF-8", algorithm="MD5", nonce="636144c2:2970b5fdd41b5ac6b669848f43d2d22b", qop="auth"';
+        var user = 'Mufasa';
+        var pass = 'Circle Of Life';
+        var method = 'get';
+        var path = '/dir/index.html';
+
+        var updatedHeader = auth.digest(header, user, pass, method, path);
+        var parsedUpdatedHeader = parse_header(updatedHeader);
+
+        var ha1 = md5(user + ':' + parsedUpdatedHeader.realm + ':' + pass);
+        var ha2 = md5(method.toUpperCase() + ':' + path);
+        var expectedResponse = md5([
+          ha1,
+          parsedUpdatedHeader.nonce,
+          parsedUpdatedHeader.nc,
+          parsedUpdatedHeader.cnonce,
+          parsedUpdatedHeader.qop,
+          ha2
+        ].join(':'));
+
+        return {
+          header: updatedHeader,
+          parsed: parsedUpdatedHeader,
+          expectedResponse: expectedResponse,
+        }
+      }
+
+      const result = performDigest();
+
+      (result.header).should
+        .match(/nonce="636144c2:2970b5fdd41b5ac6b669848f43d2d22b"/)
+    });
+  });
+
+
   describe('With brackets in realm header', function() {
     it('should generate a proper header', function() {
       // from https://tools.ietf.org/html/rfc2617

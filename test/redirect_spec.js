@@ -65,7 +65,7 @@ describe('redirects', function() {
         url  = protocol + '://' + host + ':' + ports[protocol] + '/hello';
 
     function send_request(opts, cb) {
-      opts.rejectUnauthorized = false;
+      if (protocol == 'https') opts.rejectUnauthorized = false;
       // console.log(' -- sending request ' + url + ' -- redirect to ' + location);
       needle.post(url, { foo: 'bar' }, opts, cb);
     }
@@ -90,7 +90,6 @@ describe('redirects', function() {
         spies[current_protocol].callCount.should.eql(2);
         done();
       })
-
     }
 
     function followed_other_protocol(done) {
@@ -193,8 +192,6 @@ describe('redirects', function() {
           opts = { follow: value };
         })
 
-
-
         describe('and redirected to the same path on same host and protocol', function() {
           before(function() {
             location = url;
@@ -258,8 +255,26 @@ describe('redirects', function() {
 
           it('sends a GET request with no data', function(done) {
             send_request(opts, function(err, resp) {
-              spies.http.args[0][0].method.should.eql('GET');
               // spy.args[0][3].should.eql(null);
+              spies.http.args[0][0].method.should.eql('GET');
+              done();
+            })
+          })
+
+          it('does not resend cookies if follow_set_cookies is false', function(done) {
+            opts.cookies = {foo: 'bar'};
+            opts.follow_set_cookies = false;
+            send_request(opts, function(err, resp) {
+              should.not.exist(spies.http.args[0][0].headers['cookie']);
+              done();
+            })
+          })
+
+          it('resends cookies if follow_set_cookies is true', function(done) {
+            opts.cookies = {foo: 'bar'};
+            opts.follow_set_cookies = true;
+            send_request(opts, function(err, resp) {
+              spies.http.args[0][0].headers['cookie'].should.eql('foo=bar')
               done();
             })
           })
@@ -285,8 +300,26 @@ describe('redirects', function() {
 
           it('sets Referer header when following redirect', function(done) {
             send_request(opts, function(err, resp) {
-              spies.http.args[0][0].headers['referer'].should.eql("http://" + host + ":8888/hello");
               // spies.http.args[0][3].should.eql({ foo: 'bar'});
+              spies.http.args[0][0].headers['referer'].should.eql("http://" + host + ":8888/hello");
+              done();
+            })
+          })
+
+          it('does not resend cookies if follow_set_cookies is false', function(done) {
+            opts.cookies = {foo: 'bar'};
+            opts.follow_set_cookies = false;
+            send_request(opts, function(err, resp) {
+              should.not.exist(spies.http.args[0][0].headers['cookie']);
+              done();
+            })
+          })
+
+          it('resends cookies if follow_set_cookies is true', function(done) {
+            opts.cookies = {foo: 'bar'};
+            opts.follow_set_cookies = true;
+            send_request(opts, function(err, resp) {
+              spies.http.args[0][0].headers['cookie'].should.eql('foo=bar')
               done();
             })
           })
@@ -318,6 +351,24 @@ describe('redirects', function() {
             })
           })
 
+          it('does not resend cookies if follow_set_cookies is false', function(done) {
+            opts.cookies = {foo: 'bar'};
+            opts.follow_set_cookies = false;
+            send_request(opts, function(err, resp) {
+              should.not.exist(spies.http.args[0][0].headers['cookie']);
+              done();
+            })
+          })
+
+          it('resends cookies if follow_set_cookies is true', function(done) {
+            opts.cookies = {foo: 'bar'};
+            opts.follow_set_cookies = true;
+            send_request(opts, function(err, resp) {
+              spies.http.args[0][0].headers['cookie'].should.eql('foo=bar')
+              done();
+            })
+          })
+
         })
 
       })
@@ -333,7 +384,17 @@ describe('redirects', function() {
           before(function() {
             location = url.replace(host, hostname);
           })
+
           it('follows redirect', followed_same_protocol);
+
+          it('does not resend cookies even if follow_set_cookies is true', function(done) {
+            opts.cookies = {foo: 'bar'};
+            opts.follow_set_cookies = true;
+            send_request(opts, function(err, resp) {
+              should.not.exist(spies.http.args[0][0].headers['cookie']);
+              done();
+            })
+          })
         })
 
       })
@@ -366,7 +427,17 @@ describe('redirects', function() {
           before(function() {
             location = url.replace(host, hostname).replace(protocol, other_protocol).replace(ports[protocol], ports[other_protocol]);
           })
+
           it('follows redirect', followed_other_protocol);
+
+          it('does not resend cookies even if follow_set_cookies is true', function(done) {
+            opts.cookies = {foo: 'bar'};
+            opts.follow_set_cookies = true;
+            send_request(opts, function(err, resp) {
+              should.not.exist(spies.http.args[0][0].headers['cookie']);
+              done();
+            })
+          })
         })
 
       })
