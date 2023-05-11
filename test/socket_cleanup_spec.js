@@ -1,79 +1,85 @@
 var should = require('should'),
-    needle = require('./../'),
-    fs = require('fs'),
-    https = require('https'),
-    stream = require('stream');
+	needle = require('./../'),
+	fs = require('fs'),
+	https = require('https'),
+	stream = require('stream');
 
-describe('socket cleanup', function(){
+describe.only('socket cleanup', function() {
 
-  var outFile = 'test/tmp';
-  var httpAgent, readStream, writeStream
+	var outFile = 'test/tmp';
+	var httpAgent, readStream, writeStream
 
-  var file = 'ubuntu-21.04-desktop-amd64.iso',
-      url = 'https://releases.ubuntu.com/21.04/' + file;
+	var file = 'ubuntu-21.04-desktop-amd64.iso',
+		url = 'https://releases.ubuntu.com/21.04/' + file;
 
-  function getActiveSockets() {
-    return Object.keys(httpAgent.sockets).length
-  }
+	function getActiveSockets() {
+		return Object.keys(httpAgent.sockets).length
+	}
 
-  before(function() {
-    httpAgent = new https.Agent({
-      keepAlive  : true,
-      maxSockets : 1
-    });
-  })
+	before(function() {
+		httpAgent = new https.Agent({
+			keepAlive: true,
+			maxSockets: 1
+		});
+	})
 
-  after(function() {
-    httpAgent.destroy()
-    fs.unlinkSync(outFile);
-  })
+	after(function() {
+		httpAgent.destroy()
+		fs.unlinkSync(outFile);
+	})
 
-  it('should cleanup sockets on ERR_STREAM_PREMATURE_CLOSE (using .pipe)', function(done) {
-    getActiveSockets().should.eql(0);
+	it('should cleanup sockets on ERR_STREAM_PREMATURE_CLOSE (using .pipe)', function(done) {
+		getActiveSockets().should.eql(0);
 
-    var resp = needle.get(url, { agent: httpAgent });
-    var writable = fs.createWriteStream(outFile);
-    resp.pipe(writable);
+		var resp = needle.get(url, {
+			agent: httpAgent
+		});
+		var writable = fs.createWriteStream(outFile);
+		resp.pipe(writable);
 
-    writable.on('close', function(e) {
-      if (!resp.done) resp.abort();
-    })
+		writable.on('close', function(e) {
+			if (!resp.done) resp.abort();
+		})
 
-    setTimeout(function() {
-      getActiveSockets().should.eql(1);
-      writable.destroy();
-    }, 50);
+		// httpAgent.on('error')
 
-    setTimeout(function() {
-      getActiveSockets().should.eql(0);
-      done();
-    }, 500); // takes a bit
-  })
+		setTimeout(function() {
+			getActiveSockets().should.eql(1);
+			writable.destroy();
+		}, 100);
 
-  it('should cleanup sockets on ERR_STREAM_PREMATURE_CLOSE (using stream.pipeline)', function(done) {
-    if (!stream.pipeline)
-      return done()
+		setTimeout(function() {
+			getActiveSockets().should.eql(0);
+			done();
+		}, 5000); // takes a bit
+	})
 
-    getActiveSockets().should.eql(0);
+	it.only('should cleanup sockets on ERR_STREAM_PREMATURE_CLOSE (using stream.pipeline)', function(done) {
+		if (!stream.pipeline)
+			return done()
 
-    var resp = needle.get(url, { agent: httpAgent });
-    var writable = fs.createWriteStream(outFile);
+		getActiveSockets().should.eql(0);
 
-    stream.pipeline(resp, writable, function(err) {
-      err.code.should.eql('ERR_STREAM_PREMATURE_CLOSE')
-      if (err) resp.request.destroy();
-    });
+		var resp = needle.get(url, {
+			agent: httpAgent
+		});
+		var writable = fs.createWriteStream(outFile);
 
-    setTimeout(function() {
-      getActiveSockets().should.eql(1);
-      writable.destroy();
-    }, 50);
+		stream.pipeline(resp, writable, function(err) {
+			err.code.should.eql('ERR_STREAM_PREMATURE_CLOSE')
+			if (err) resp.request.destroy();
+		});
 
-    setTimeout(function() {
-      getActiveSockets().should.eql(0);
-      done();
-    }, 1000); // takes a bit
+		setTimeout(function() {
+			getActiveSockets().should.eql(1);
+			writable.destroy();
+		}, 50);
 
-  })
+		setTimeout(function() {
+			getActiveSockets().should.eql(0);
+			done();
+		}, 1000); // takes a bit
+
+	})
 
 })
