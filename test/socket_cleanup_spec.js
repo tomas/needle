@@ -4,13 +4,13 @@ var should = require('should'),
 	https = require('https'),
 	stream = require('stream');
 
-describe.only('socket cleanup', function() {
+describe('socket cleanup', function() {
 
 	var outFile = 'test/tmp';
 	var httpAgent, readStream, writeStream
 
 	var file = 'ubuntu-21.04-desktop-amd64.iso',
-		url = 'https://releases.ubuntu.com/21.04/' + file;
+		url = 'https://old-releases.ubuntu.com/releases/21.04/' + file;
 
 	function getActiveSockets() {
 		return Object.keys(httpAgent.sockets).length
@@ -41,8 +41,6 @@ describe.only('socket cleanup', function() {
 			if (!resp.done) resp.abort();
 		})
 
-		// httpAgent.on('error')
-
 		setTimeout(function() {
 			getActiveSockets().should.eql(1);
 			writable.destroy();
@@ -51,10 +49,10 @@ describe.only('socket cleanup', function() {
 		setTimeout(function() {
 			getActiveSockets().should.eql(0);
 			done();
-		}, 5000); // takes a bit
+		}, 500); // takes a bit
 	})
 
-	it.only('should cleanup sockets on ERR_STREAM_PREMATURE_CLOSE (using stream.pipeline)', function(done) {
+	it('should cleanup sockets on ERR_STREAM_PREMATURE_CLOSE (using stream.pipeline)', function(done) {
 		if (!stream.pipeline)
 			return done()
 
@@ -73,12 +71,12 @@ describe.only('socket cleanup', function() {
 		setTimeout(function() {
 			getActiveSockets().should.eql(1);
 			writable.destroy();
-		}, 50);
+		}, 100);
 
 		setTimeout(function() {
 			getActiveSockets().should.eql(0);
 			done();
-		}, 1000); // takes a bit
+		}, 500); // takes a bit
 
 	})
 
