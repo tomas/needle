@@ -61,6 +61,7 @@ helpers.server = function(opts, cb) {
   }
 
   var finish = function(req, res) {
+	server.requestReceived = req; //Tray specific functionality
     if (opts.handler) return opts.handler(req, res);
 
     res.writeHead(get('code'), get('headers'));
