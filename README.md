@@ -1,10 +1,12 @@
-Needle
+Needle (tray.io)
 ======
 
 [![NPM](https://nodei.co/npm/needle.png)](https://nodei.co/npm/needle/)<br />
 <!--[![npm version](https://img.shields.io/npm/v/needle.svg?style=flat-square)](https://www.npmjs.org/package/needle)-->
 [![npm downloads](https://img.shields.io/npm/dm/needle.svg?style=flat)](http://npm-stat.com/charts.html?package=needle)
 ![Build status](https://github.com/tomas/needle/actions/workflows/nodejs.yml/badge.svg)
+
+**NOTE:** this is a tray.io fork of needle.
 
 The leanest and most handsome HTTP client in the Nodelands.
 
