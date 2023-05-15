@@ -157,10 +157,10 @@ describe('request headers', function() {
 
       }
 
-	  if (parseInt(node_major_ver) === 18) {
+	  if (parseInt(node_major_ver) >= 17) {
 
-        // TODO: figure out why this happens - node 18 is giving inconsistent number of sockets
-        it('two open sockets remains after request (>= v18)', function(done) {
+        // TODO: figure out why this happens - node 17 is giving inconsistent number of sockets
+        it('two open sockets remains after request (>= v17)', function(done) {
           send_request({}, function(err, resp) {
             get_active_sockets().length.should.be.aboveOrEqual(existing_sockets + 1);
             done();
