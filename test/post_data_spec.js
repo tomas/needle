@@ -40,7 +40,7 @@ describe('post data (e.g. request body)', function() {
 
   function spystub_request() {
     var http_req = http.request;
-    stub = sinon.stub(http, 'request', function(opts, cb) {
+    stub = sinon.stub(http, 'request').callsFake(function(opts, cb) {
       var req = http_req(opts, cb);
       spy = sinon.spy(req, 'write');
       return req;

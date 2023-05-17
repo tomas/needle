@@ -1,7 +1,12 @@
-Needle
+Needle (tray.io)
 ======
 
-[![NPM](https://nodei.co/npm/needle.png)](https://nodei.co/npm/needle/)
+[![NPM](https://nodei.co/npm/needle.png)](https://nodei.co/npm/needle/)<br />
+<!--[![npm version](https://img.shields.io/npm/v/needle.svg?style=flat-square)](https://www.npmjs.org/package/needle)-->
+[![npm downloads](https://img.shields.io/npm/dm/needle.svg?style=flat)](http://npm-stat.com/charts.html?package=needle)
+![Build status](https://github.com/tomas/needle/actions/workflows/nodejs.yml/badge.svg)
+
+**NOTE:** this is a tray.io fork of needle.
 
 The leanest and most handsome HTTP client in the Nodelands.
 
@@ -27,7 +32,7 @@ var data = {
 needle
   .post('https://my.server.com/foo', data, { multipart: true })
   .on('readable', function() { /* eat your chunks */ })
-  .on('done', function(err, resp) {
+  .on('done', function(err) {
     console.log('Ready-o!');
   })
 ```
@@ -72,7 +77,7 @@ Usage
 
 ```js
 // using promises
-needle('get', 'https://server.com/posts/12')
+needle('get', 'https://server.com/posts/123')
   .then(function(resp) {
     // ...
   })
@@ -90,10 +95,11 @@ needle.get('ifconfig.me/all.json', function(error, response, body) {
 });
 
 // no callback, using streams
-var out = fs.createWriteStream('logo.png');
-needle.get('https://google.com/images/logo.png').pipe(out).on('done', function() {
-  console.log('Pipe finished!');
-});
+needle.get('https://google.com/images/logo.png')
+  .pipe(fs.createWriteStream('logo.png'))
+  .on('done', function(err) {
+    console.log('Pipe finished!');
+  });
 ```
 
 As you can see, you can use Needle with Promises or without them. When using Promises or when a callback is passed, the response's body will be buffered and written to `response.body`, and the callback will be fired when all of the data has been collected and processed (e.g. decompressed, decoded and/or parsed).
@@ -149,7 +155,6 @@ Calling `needle()` directly returns a Promise. Besides `method` and `url`, all p
 needle('get', 'http://some.url.com')
   .then(function(resp) { console.log(resp.body) })
   .catch(function(err) { console.error(err) })
-})
 ```
 
 Except from the above, all of Needle's request methods return a Readable stream, and both `options` and `callback` are optional. If passed, the callback will return three arguments: `error`, `response` and `body`, which is basically an alias for `response.body`.
@@ -361,7 +366,7 @@ Redirect options
 
 These options only apply if the `follow_max` (or `follow`) option is higher than 0.
 
- - `follow_set_cookies`      : Sends the cookies received in the `set-cookie` header as part of the following request. `false` by default.
+ - `follow_set_cookies`      : Sends the cookies received in the `set-cookie` header as part of the following request, *if hosts match*. `false` by default.
  - `follow_set_referer`      : Sets the 'Referer' header to the requested URI when following a redirect. `false` by default.
  - `follow_keep_method`      : If enabled, resends the request using the original verb instead of being rewritten to `get` with no data. `false` by default.
  - `follow_if_same_host`     : When true, Needle will only follow redirects that point to the same host as the original request. `false` by default.
@@ -420,6 +425,16 @@ Unless you're running an old version of Node (< 0.11.4), by default Needle won't
 On older versions, however, this has the unwanted behaviour of preventing the runtime from exiting, either because of a bug or 'feature' that was changed on 0.11.4. To overcome this Needle does set the 'Connection' header to 'close' on those versions, however this also means that making new requests to the same host doesn't benefit from Keep-Alive.
 
 So if you're stuck on 0.10 or even lower and want full speed, you can simply set the Connection header to 'Keep-Alive' by using `{ connection: 'Keep-Alive' }`. Please note, though, that an event loop handler will prevent the runtime from exiting so you'll need to manually call `process.exit()` or the universe will collapse.
+
+By default, Node uses [http.globalAgent](https://nodejs.org/api/http.html#http_http_globalagent) with `keepAlive` option set to `false` to send HTTP(s) requests. That's why, by default, "Connection: close" header is sent, and the Connection is destroyed after the request.
+
+To keep the Connection alive, you should create `http(s).Agent` with `keepAlive: true` and pass it as request option:
+
+```js
+const keepAliveAgent = new require('https').Agent({ keepAlive: true, keepAliveMsecs: 10000 });
+needle(method, url, data, { agent: keepAliveAgent })
+    .then(function(response) {})
+```
 
 Examples Galore
 ---------------
@@ -608,7 +623,9 @@ Then you should be able to run `npm test` once you have the dependencies in plac
 Credits
 -------
 
-Written by Tomás Pollak, with the help of contributors.
+Written by Tomás Pollak, with the help of contributors. If Needle's of any help to you, please consider supporting its development!
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/A0A0ASWH3)
 
 Copyright
 ---------

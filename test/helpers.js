@@ -38,9 +38,9 @@ helpers.server = function(opts, cb) {
   var defaults = {
     code    : 200,
     headers : {'Content-Type': 'application/json'}
-    
+
   }
-  
+
 
   var mirror_response = function(req) {
     return JSON.stringify({
@@ -53,7 +53,7 @@ helpers.server = function(opts, cb) {
   var get = function(what) {
     if (!opts[what])
       return defaults[what];
-  
+
     if (typeof opts[what] == 'function')
       return opts[what](); // set them at runtime
     else
@@ -61,7 +61,9 @@ helpers.server = function(opts, cb) {
   }
 
   var finish = function(req, res) {
-    server.requestReceived = req
+	server.requestReceived = req; //Tray specific functionality
+    if (opts.handler) return opts.handler(req, res);
+
     res.writeHead(get('code'), get('headers'));
     res.end(opts.response || mirror_response(req));
   }
@@ -71,7 +73,7 @@ helpers.server = function(opts, cb) {
     req.setEncoding('utf8'); // get as string
     req.body = '';
     req.on('data', function(str) { req.body += str })
-    req.socket.on('error', function(e) { 
+    req.socket.on('error', function(e) {
       // res.writeHead(500, {'Content-Type': 'text/plain'});
       // res.end('Error: ' + e.message);
     })
@@ -86,7 +88,7 @@ helpers.server = function(opts, cb) {
   var server;
 
   if (protocol == 'https')
-    server = protocols[protocol].createServer(keys, handler);  
+    server = protocols[protocol].createServer(keys, handler);
   else
     server = protocols[protocol].createServer(handler);
 

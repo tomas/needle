@@ -1,17 +1,19 @@
-let helpers = require('./helpers'),
-    needle = require('./../'),
-    server;
+// NOTE: this is a tray specific test
+const helpers = require('./helpers'),
+    needle = require('./../');
 
 const port = 7708;
 
 describe('follow_authorization_header', () => {
+	let server;
     before(done => {
         server = helpers.server({
             port: port,
             headers: {
                 location: "home"
             },
-            code: 302
+            code: 302,
+			wait: 100
         }, done);
     })
 
@@ -28,7 +30,7 @@ describe('follow_authorization_header', () => {
                 headers: {
                     'authorization': 'token42'
                 }
-            },  () => {
+            },  (err, resp) => {
                 Object.keys(server.requestReceived.headers).should.not.containEql('authorization');
                 done();
             })

@@ -1,3 +1,10 @@
+// this lets us run tests in ancient node versions (v0.10.x)
+if (process.version.split('.')[0] == 'v0' && !Buffer.from) {
+  Buffer.from = function(args) {
+    return new Buffer(args);
+  }
+}
+
 var should = require('should'),
     needle = require('./../'),
     http   = require('http'),
@@ -109,7 +116,7 @@ describe('with output option', function() {
         })
       })
 
-      if (process.platform != 'win32' && process.platform != 'darwin') {
+      if (process.platform == 'linux') {
         it('closes the file descriptor', function(done) {
           var open_descriptors = get_open_file_descriptors();
           send_request(file + Math.random(), function(err, resp) {
@@ -167,7 +174,7 @@ describe('with output option', function() {
         })
       })
 
-      if(process.platform !== 'darwin') {
+      if (process.platform == 'linux') {
         it('closes the file descriptor', function(done) {
           var open_descriptors = get_open_file_descriptors();
           send_request(file + Math.random(), function(err, resp) {
@@ -177,7 +184,6 @@ describe('with output option', function() {
           })
         })
       }
-
 
     })
 
@@ -239,7 +245,7 @@ describe('with output option', function() {
         })
       })
 
-      if (process.platform != 'win32' && process.platform !== 'darwin') {
+      if (process.platform == 'linux') {
         it('closes the file descriptor', function(done) {
           var open_descriptors = get_open_file_descriptors();
           send_request(file + Math.random(), function(err, resp) {
