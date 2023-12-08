@@ -372,7 +372,7 @@ describe('errors', function() {
   
         needle.get(url, { timeout: 300 }, cb);
         needle.get(url, { timeout: 350 }, cb);
-        needle.get(url, { timeout: 400}, cb);
+        needle.get(url, { timeout: 400 }, cb);
   
         function abort() {
           cancel.abort();
