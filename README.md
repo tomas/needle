@@ -58,6 +58,7 @@ With only two real dependencies, Needle supports:
  - Automatic XML & JSON parsing
  - 301/302/303 redirect following, with fine-grained tuning, and
  - Streaming non-UTF-8 charset decoding, via `iconv-lite`
+ - Aborting any or all Needle requests using `AbortSignal` objects
 
 And yes, Mr. Wayne, it does come in black.
 
@@ -317,6 +318,7 @@ For information about options that've changed, there's always [the changelog](ht
  - `stream_length`: When sending streams, this lets you manually set the Content-Length header --if the stream's bytecount is known beforehand--, preventing ECONNRESET (socket hang up) errors on some servers that misbehave when receiving payloads of unknown size. Set it to `0` and Needle will get and set the stream's length for you, or leave unset for the default behaviour, which is no Content-Length header for stream payloads.
  - `localAddress`: <string>, IP address. Passed to http/https request. Local interface from which the request should be emitted.
  - `uri_modifier`: Anonymous function taking request (or redirect location if following redirects) URI as an argument and modifying it given logic. It has to return a valid URI string for successful request.
+ - `signal`      : An `AbortSignal` object that can be used to abort any or all Needle requests.
 
 Response options
 ----------------
