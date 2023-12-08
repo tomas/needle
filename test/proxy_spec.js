@@ -228,4 +228,41 @@ describe('proxy option', function() {
 
   })
 
+  describe('when environment variable is set', function() {
+
+    describe('and default is unchanged', function() {
+
+      before(function() {
+        process.env.HTTP_PROXY = 'foobar';
+      })
+
+      after(function() {
+        delete process.env.HTTP_PROXY;
+      })
+
+      it('tries to proxy', function(done) {
+        send_request({}, proxied('foobar', 80, done))
+      })
+
+    })
+
+    describe('and functionality is disabled', function() {
+
+      before(function() {
+        process.env.HTTP_PROXY = 'foobar';
+      })
+
+      after(function() {
+        delete process.env.HTTP_PROXY;
+      })
+
+      it('ignores proxy', function(done) {
+        send_request({
+          use_proxy_from_env_var: false
+        }, not_proxied(done))
+      })
+
+    })
+  })
+
 })
