@@ -613,7 +613,14 @@ To run the tests with debug logs, set the environment variable `NODE_DEBUG` to `
 
 > Note: Tests currently only work on linux-based environments that have `/proc/self/fd`. They *do not* work on MacOS environments.
 > You can use Docker to run tests by creating a container and mounting the needle project directory on `/app`
-> `docker create --name Needle -v $(pwd) -w /app -v $(pwd)/node_modules -i node:argon`
+
+    docker create --name Needle -v $(pwd) -w /app -v $(pwd)/node_modules -i node:argon
+
+Or alternatively:
+
+    docker run -it -w /app --name Needle \
+    --mount type=bind,source="$(pwd)",target=/app \
+    node:fermium bash
 
 Credits
 -------
