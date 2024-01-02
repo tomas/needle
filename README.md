@@ -62,7 +62,7 @@ With only two real dependencies, Needle supports:
 
 And yes, Mr. Wayne, it does come in black.
 
-This makes Needle an ideal alternative for performing quick HTTP requests in Node, either for API interaction, downloading or uploading streams of data, and so on. If you need OAuth, AWS support or anything fancier, you should check out mikeal's request module.
+This makes Needle an ideal alternative for performing quick HTTP requests in Node, either for API interaction, downloading or uploading streams of data, and so on. 
 
 Install
 -------
