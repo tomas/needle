@@ -265,6 +265,41 @@ describe('cookies', function() {
 
         })
 
+        describe('with multiple original request cookies', function() {
+
+          var opts = {
+            follow_set_cookies: true,
+            follow_max: 4,
+            cookies: { 'xxx': 123, 'yyy': 456 }
+          };
+
+          it('request cookie is passed passed to redirects, and response cookies are added too', function(done) {
+            needle.get('localhost:' + testPort + '/0', opts, function(err, resp) {
+              requestCookies.should.eql([
+                "xxx=123; yyy=456",
+                "xxx=123; yyy=456; wc=!'*+#()&-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~; bc=Y29va2llCg==; FOO=123",
+                "xxx=123; yyy=456; wc=!\'*+#()&-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~; bc=Y29va2llCg==; FOO=123; fc=%20%3B%22%5C%2C; nc=12354342",
+                "xxx=123; yyy=456; wc=!\'*+#()&-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~; bc=Y29va2llCg==; FOO=BAR; fc=%20%3B%22%5C%2C; nc=12354342",
+                "xxx=123; yyy=456; wc=!\'*+#()&-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~; bc=Y29va2llCg==; FOO=BAR; fc=%20%3B%22%5C%2C; nc=12354342"
+              ])
+              done();
+            });
+          });
+
+          it('response cookies are passed as well', function(done) {
+            needle.get('localhost:' + testPort + '/0', opts, function(err, resp) {
+              resp.cookies.should.have.property(WEIRD_COOKIE_NAME);
+              resp.cookies.should.have.property(BASE64_COOKIE_NAME);
+              resp.cookies.should.have.property(FORBIDDEN_COOKIE_NAME);
+              resp.cookies.should.have.property(NUMBER_COOKIE_NAME);
+              resp.cookies.should.have.property('FOO');
+              resp.cookies.FOO.should.eql('BAR'); // should overwrite previous one
+              done();
+            });
+          });
+
+        })
+
         describe('without original request cookie', function() {
 
           var opts = {
@@ -287,12 +322,12 @@ describe('cookies', function() {
 
           it('response cookies are passed as well', function(done) {
             needle.get('localhost:' + testPort + '/0', opts, function(err, resp) {
-              // resp.cookies.should.have.property(WEIRD_COOKIE_NAME);
-              // resp.cookies.should.have.property(BASE64_COOKIE_NAME);
-              // resp.cookies.should.have.property(FORBIDDEN_COOKIE_NAME);
-              // resp.cookies.should.have.property(NUMBER_COOKIE_NAME);
-              // resp.cookies.should.have.property('FOO');
-              // resp.cookies.FOO.should.eql('BAR'); // should overwrite previous one
+              resp.cookies.should.have.property(WEIRD_COOKIE_NAME);
+              resp.cookies.should.have.property(BASE64_COOKIE_NAME);
+              resp.cookies.should.have.property(FORBIDDEN_COOKIE_NAME);
+              resp.cookies.should.have.property(NUMBER_COOKIE_NAME);
+              resp.cookies.should.have.property('FOO');
+              resp.cookies.FOO.should.eql('BAR'); // should overwrite previous one
               done();
             });
           });
