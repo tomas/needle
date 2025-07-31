@@ -18,7 +18,7 @@ describe('compression', function(){
       server = http.createServer(function(req, res) {
         var raw = new stream.PassThrough();
 
-        var acceptEncoding = req.headers['accept-encoding'];
+        var acceptEncoding = req.headers['Accept-Encoding'];
         if (!acceptEncoding) {
           acceptEncoding = '';
         }
@@ -37,7 +37,7 @@ describe('compression', function(){
         }
 
         res.setHeader('Content-Type', 'application/json')
-        if (req.headers['with-bad']) {
+        if (req.headers['With-Bad']) {
           res.end('foo'); // end, no deflate data
         } else {
           raw.end(jsonData)

@@ -56,7 +56,7 @@ describe('request headers', function() {
 
       it('sends a Connection: close header', function(done) {
         send_request({}, function(err, resp) {
-          resp.body.headers['connection'].should.eql('close');
+          resp.body.headers['Connection'].should.eql('close');
           done();
         })
       })
@@ -75,14 +75,14 @@ describe('request headers', function() {
     describe('passing connection: close', function() {
 
       it('sends a Connection: close header', function(done) {
-        send_request({ connection: 'close' }, function(err, resp) {
-          resp.body.headers['connection'].should.eql('close');
+        send_request({ Connection: 'close' }, function(err, resp) {
+          resp.body.headers['Connection'].should.eql('close');
           done();
         })
       })
 
       it('no open sockets remain after request', function(done) {
-        send_request({ connection: 'close' }, function(err, resp) {
+        send_request({ Connection: 'close' }, function(err, resp) {
           setTimeout(function() {
             get_active_sockets().length.should.eql(existing_sockets);
             done();
@@ -94,22 +94,22 @@ describe('request headers', function() {
 
     describe('passing connection: keep-alive', function() {
 
-      it('sends a Connection: keep-alive header (using options.headers.connection)', function(done) {
-        send_request({ headers: { connection: 'keep-alive' }}, function(err, resp) {
-          resp.body.headers['connection'].should.eql('keep-alive');
+      it('sends a Connection: keep-alive header (using options.headers.Connection)', function(done) {
+        send_request({ headers: { Connection: 'keep-alive' }}, function(err, resp) {
+          resp.body.headers['Connection'].should.eql('keep-alive');
           done();
         })
       })
 
       it('sends a Connection: keep-alive header (using options.connection)', function(done) {
-        send_request({ connection: 'keep-alive' }, function(err, resp) {
-          resp.body.headers['connection'].should.eql('keep-alive');
+        send_request({ Connection: 'keep-alive' }, function(err, resp) {
+          resp.body.headers['Connection'].should.eql('keep-alive');
           done();
         })
       })
 
       it('one open socket remain after request', function(done) {
-        send_request({ connection: 'keep-alive' }, function(err, resp) {
+        send_request({ Connection: 'keep-alive' }, function(err, resp) {
           get_active_sockets().length.should.eql(existing_sockets + 1);
           done();
         });
@@ -141,7 +141,7 @@ describe('request headers', function() {
 
         it('sets Connection header to close (> v4)', function(done) {
           send_request({}, function(err, resp) {
-            resp.body.headers['connection'].should.eql('close');
+            resp.body.headers['Connection'].should.eql('close');
             done()
           })
         })
@@ -150,7 +150,7 @@ describe('request headers', function() {
 
         it('sets Connection header to keep-alive (< v4)', function(done) {
           send_request({}, function(err, resp) {
-            resp.body.headers['connection'].should.eql('keep-alive');
+            resp.body.headers['Connection'].should.eql('keep-alive');
             done();
           })
         })
@@ -193,7 +193,7 @@ describe('request headers', function() {
 
       it('sends a Connection: close header', function(done) {
         send_request({ connection: 'close' }, function(err, resp) {
-          resp.body.headers['connection'].should.eql('close');
+          resp.body.headers['Connection'].should.eql('close');
           done();
         })
       })
@@ -211,16 +211,16 @@ describe('request headers', function() {
 
     describe('passing connection: keep-alive', function() {
 
-      it('sends a Connection: keep-alive header (using options.headers.connection)', function(done) {
-        send_request({ headers: { connection: 'keep-alive' }}, function(err, resp) {
-          resp.body.headers['connection'].should.eql('keep-alive');
+      it('sends a Connection: keep-alive header (using options.headers.Connection)', function(done) {
+        send_request({ headers: { Connection: 'keep-alive' }}, function(err, resp) {
+          resp.body.headers['Connection'].should.eql('keep-alive');
           done();
         })
       })
 
       it('sends a Connection: keep-alive header (using options.connection)', function(done) {
         send_request({ connection: 'keep-alive' }, function(err, resp) {
-          resp.body.headers['connection'].should.eql('keep-alive');
+          resp.body.headers['Connection'].should.eql('keep-alive');
           done();
         })
       })
@@ -251,7 +251,7 @@ describe('request headers', function() {
 
       it('sends a Connection: keep-alive header', function(done) {
         send_request({}, function(err, resp) {
-          resp.body.headers['connection'].should.eql('keep-alive');
+          resp.body.headers['Connection'].should.eql('keep-alive');
           done();
         })
       })
@@ -271,7 +271,7 @@ describe('request headers', function() {
 
       it('sends a Connection: close header', function(done) {
         send_request({ connection: 'close' }, function(err, resp) {
-          resp.body.headers['connection'].should.eql('close');
+          resp.body.headers['Connection'].should.eql('close');
           done();
         })
       })
@@ -289,16 +289,16 @@ describe('request headers', function() {
 
     describe('passing connection: keep-alive', function() {
 
-      it('sends a Connection: keep-alive header (using options.headers.connection)', function(done) {
-        send_request({ headers: { connection: 'keep-alive' }}, function(err, resp) {
-          resp.body.headers['connection'].should.eql('keep-alive');
+      it('sends a Connection: keep-alive header (using options.headers.Connection)', function(done) {
+        send_request({ headers: { Connection: 'keep-alive' }}, function(err, resp) {
+          resp.body.headers['Connection'].should.eql('keep-alive');
           done();
         })
       })
 
       it('sends a Connection: keep-alive header (using options.connection)', function(done) {
         send_request({ connection: 'keep-alive' }, function(err, resp) {
-          resp.body.headers['connection'].should.eql('keep-alive');
+          resp.body.headers['Connection'].should.eql('keep-alive');
           done();
         })
       })

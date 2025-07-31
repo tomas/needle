@@ -54,7 +54,7 @@ describe('request stream length', function() {
 
     it('doesnt set Content-Length header', function(done) {
       send_request({}, function(err, resp) {
-        should.not.exist(resp.body.headers['content-length']);
+        should.not.exist(resp.body.headers['Content-Length']);
         done()
       })
     })
@@ -73,7 +73,7 @@ describe('request stream length', function() {
 
     it('sets Content-Length header to that value', function(done) {
       send_request({ stream_length: 11 }, function(err, resp) {
-        resp.body.headers['content-length'].should.eql('11');
+        resp.body.headers['Content-Length'].should.eql('11');
         done()
       })
     })
@@ -117,7 +117,7 @@ describe('request stream length', function() {
 
       it('sets Content-Length header to streams length', function(done) {
         send_request({ stream_length: 0 }, function(err, resp) {
-          resp.body.headers['content-length'].should.eql('11');
+          resp.body.headers['Content-Length'].should.eql('11');
           done()
         })
       })
@@ -145,7 +145,7 @@ describe('request stream length', function() {
 
       it('does not set Content-Length header', function(done) {
         send_request({ stream_length: 0 }, function(err, resp) {
-          should.not.exist(resp.body.headers['content-length']);
+          should.not.exist(resp.body.headers['Content-Length']);
           done()
         })
       })

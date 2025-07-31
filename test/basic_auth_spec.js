@@ -27,7 +27,7 @@ describe('Basic Auth', function() {
     it('doesnt send any Authorization headers', function(done) {
       needle.get('localhost:' + port, { parse: true }, function(err, resp) {
         var sent_headers = resp.body.headers;
-        Object.keys(sent_headers).should.not.containEql('authorization');
+        Object.keys(sent_headers).should.not.containEql('Authorization');
         done();
       })
     })
@@ -41,7 +41,7 @@ describe('Basic Auth', function() {
     it('doesnt send any Authorization headers', function(done) {
       needle.get('localhost:' + port, { parse: true }, function(err, resp) {
         var sent_headers = resp.body.headers;
-        Object.keys(sent_headers).should.not.containEql('authorization');
+        Object.keys(sent_headers).should.not.containEql('Authorization');
         done();
       })
     })
@@ -55,7 +55,7 @@ describe('Basic Auth', function() {
     it('sends Authorization header', function(done) {
       needle.get('localhost:' + port, opts, function(err, resp) {
         var sent_headers = resp.body.headers;
-        Object.keys(sent_headers).should.containEql('authorization');
+        Object.keys(sent_headers).should.containEql('Authorization');
         done();
       })
     })
@@ -63,7 +63,7 @@ describe('Basic Auth', function() {
     it('Basic Auth only includes username, without colon', function(done) {
       needle.get('localhost:' + port, opts, function(err, resp) {
         var sent_headers = resp.body.headers;
-        var auth = get_auth(sent_headers['authorization']);
+        var auth = get_auth(sent_headers['Authorization']);
         auth[0].should.equal('foobar');
         auth.should.have.lengthOf(1);
         done();
@@ -79,7 +79,7 @@ describe('Basic Auth', function() {
     it('sends Authorization header', function(done) {
       needle.get('localhost:' + port, opts, function(err, resp) {
         var sent_headers = resp.body.headers;
-        Object.keys(sent_headers).should.containEql('authorization');
+        Object.keys(sent_headers).should.containEql('Authorization');
         done();
       })
     })
@@ -87,7 +87,7 @@ describe('Basic Auth', function() {
     it('Basic Auth only includes both username and password', function(done) {
       needle.get('localhost:' + port, opts, function(err, resp) {
         var sent_headers = resp.body.headers;
-        var auth = get_auth(sent_headers['authorization']);
+        var auth = get_auth(sent_headers['Authorization']);
         auth[0].should.equal('foobar');
         auth[1].should.equal('');
         done();
@@ -103,7 +103,7 @@ describe('Basic Auth', function() {
     it('sends Authorization header', function(done) {
       needle.get('localhost:' + port, opts, function(err, resp) {
         var sent_headers = resp.body.headers;
-        Object.keys(sent_headers).should.containEql('authorization');
+        Object.keys(sent_headers).should.containEql('Authorization');
         done();
       })
     })
@@ -111,7 +111,7 @@ describe('Basic Auth', function() {
     it('Basic Auth only includes both username and password', function(done) {
       needle.get('localhost:' + port, opts, function(err, resp) {
         var sent_headers = resp.body.headers;
-        var auth = get_auth(sent_headers['authorization']);
+        var auth = get_auth(sent_headers['Authorization']);
         auth[0].should.equal('foobar');
         auth[1].should.equal('');
         auth.should.have.lengthOf(2);
@@ -128,7 +128,7 @@ describe('Basic Auth', function() {
     it('sends Authorization header', function(done) {
       needle.get('localhost:' + port, opts, function(err, resp) {
         var sent_headers = resp.body.headers;
-        Object.keys(sent_headers).should.containEql('authorization');
+        Object.keys(sent_headers).should.containEql('Authorization');
         done();
       })
     })
@@ -136,7 +136,7 @@ describe('Basic Auth', function() {
     it('Basic Auth only includes both user and password', function(done) {
       needle.get('localhost:' + port, opts, function(err, resp) {
         var sent_headers = resp.body.headers;
-        var auth = get_auth(sent_headers['authorization']);
+        var auth = get_auth(sent_headers['Authorization']);
         auth[0].should.equal('foobar');
         auth[1].should.equal('jakub');
         auth.should.have.lengthOf(2);
@@ -152,7 +152,7 @@ describe('Basic Auth', function() {
 
       needle.get(url, {}, function(err, resp) {
         var sent_headers = resp.body.headers;
-        Object.keys(sent_headers).should.not.containEql('authorization');
+        Object.keys(sent_headers).should.not.containEql('Authorization');
         done();
       })
     })
@@ -162,8 +162,8 @@ describe('Basic Auth', function() {
 
       needle.get(url, { username: 'foo' }, function(err, resp) {
         var sent_headers = resp.body.headers;
-        Object.keys(sent_headers).should.containEql('authorization');
-        sent_headers['authorization'].should.eql('Basic Zm9v')
+        Object.keys(sent_headers).should.containEql('Authorization');
+        sent_headers['Authorization'].should.eql('Basic Zm9v')
         done();
       })
     })
@@ -175,7 +175,7 @@ describe('Basic Auth', function() {
     it('sends Authorization header', function(done) {
       needle.get('foobar:jakub@localhost:' + port, opts, function(err, resp) {
         var sent_headers = resp.body.headers;
-        Object.keys(sent_headers).should.containEql('authorization');
+        Object.keys(sent_headers).should.containEql('Authorization');
         done();
       })
     })
@@ -183,7 +183,7 @@ describe('Basic Auth', function() {
     it('Basic Auth only includes both user and password', function(done) {
       needle.get('foobar:jakub@localhost:' + port, opts, function(err, resp) {
         var sent_headers = resp.body.headers;
-        var auth = get_auth(sent_headers['authorization']);
+        var auth = get_auth(sent_headers['Authorization']);
         auth[0].should.equal('foobar');
         auth[1].should.equal('jakub');
         auth.should.have.lengthOf(2);

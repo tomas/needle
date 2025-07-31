@@ -55,7 +55,7 @@ describe('cookies', function() {
     it('no cookie header is set on request', function(done) {
       needle.get(
         'localhost:' + ALL_COOKIES_TEST_PORT, function(err, response) {
-          should.not.exist(response.req._headers.cookie);
+          should.not.exist(response.req._headers['Cookie']);
           done();
         });
     });
@@ -158,7 +158,7 @@ describe('cookies', function() {
           var nextUrl = 'http://' + 'localhost:' + testPort + '/' + (number + 1);
 
           if (number == 0) requestCookies = []; // reset
-          requestCookies.push(req.headers['cookie']);
+          requestCookies.push(req.headers['Cookie']);
 
           if (responseCookies[number]) { // we should send cookies for this request
             res.statusCode = 302;
@@ -336,7 +336,7 @@ describe('cookies', function() {
       ].join('; ')
 
       needle.get('localhost:' + ALL_COOKIES_TEST_PORT, opts, function(error, response) {
-        var cookieString = response.req._headers.cookie;
+        var cookieString = response.req._headers['Cookie'];
         cookieString.should.be.type('string');
 
         cookieString.split(/\s*;\s*/).forEach(function(pair) {
@@ -355,7 +355,7 @@ describe('cookies', function() {
 
       needle.get('localhost:' + ALL_COOKIES_TEST_PORT, opts, function(error, response) {
         var cookieObj = {},
-          cookieString = response.req._headers.cookie;
+          cookieString = response.req._headers['Cookie'];
 
         cookieString.split(/\s*;\s*/).forEach(function(str) {
           var pair = COOKIE_PAIR.exec(str);
@@ -375,7 +375,7 @@ describe('cookies', function() {
 
       needle.get('localhost:' + ALL_COOKIES_TEST_PORT, opts, function(error, response) {
         var cookieObj = {},
-          cookieString = response.req._headers.cookie;
+          cookieString = response.req._headers['Cookie'];
 
         cookieString.split(/\s*;\s*/).forEach(function(str) {
           var pair = COOKIE_PAIR.exec(str);

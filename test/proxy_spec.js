@@ -57,7 +57,7 @@ describe('proxy option', function() {
   function no_proxy_auth(done) {
     return function(err, resp) {
       var headers = spy.args[0][0].headers;
-      Object.keys(headers).should.not.containEql('proxy-authorization');
+      Object.keys(headers).should.not.containEql('Proxy-Authorization');
       done();
     }
   }
