@@ -49,4 +49,17 @@ describe('redirects with bad redirector', function() {
       done();
     });
   });
+
+  it('calls back exactly once with follow_keep_method', function (done) {
+    const opts = {
+      follow: 5,
+      follow_keep_method: true,
+    }
+
+    const url = `http://localhost:${port}`
+    needle.head(url, opts, function (err, resp, body) {
+      //should(body && body.toString()).eql('Redirected successfully!');
+      done();
+    });
+  });
 });
