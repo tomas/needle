@@ -10,10 +10,10 @@ http.createServer(function(request, response) {
 
   console.log(request.headers);
   console.log("Got request: " + request.url);
-  console.log("Forwarding request to " + request.headers['host']);
+  console.log("Forwarding request to " + request.headers['Host']);
 
   if (request_auth) {
-      if (!request.headers['proxy-authorization']) {
+      if (!request.headers['Proxy-Authorization']) {
         response.writeHead(407, {'Proxy-Authenticate': 'Basic realm="proxy.com"'})
         return response.end('Hello.');        
       }
@@ -23,7 +23,7 @@ http.createServer(function(request, response) {
   var protocol = remote.protocol == 'https:' ? https : http;
 
   var opts = {
-    host: request.headers['host'],
+    host: request.headers['Host'],
     port: remote.port || (remote.protocol == 'https:' ? 443 : 80),
     method: request.method,
     path: remote.pathname,

@@ -265,7 +265,7 @@ describe('redirects', function() {
             opts.cookies = {foo: 'bar'};
             opts.follow_set_cookies = false;
             send_request(opts, function(err, resp) {
-              should.not.exist(spies.http.args[0][0].headers['cookie']);
+              should.not.exist(spies.http.args[0][0].headers['Cookie']);
               done();
             })
           })
@@ -274,7 +274,7 @@ describe('redirects', function() {
             opts.cookies = {foo: 'bar'};
             opts.follow_set_cookies = true;
             send_request(opts, function(err, resp) {
-              spies.http.args[0][0].headers['cookie'].should.eql('foo=bar')
+              spies.http.args[0][0].headers['Cookie'].should.eql('foo=bar')
               done();
             })
           })
@@ -301,7 +301,7 @@ describe('redirects', function() {
           it('sets Referer header when following redirect', function(done) {
             send_request(opts, function(err, resp) {
               // spies.http.args[0][3].should.eql({ foo: 'bar'});
-              spies.http.args[0][0].headers['referer'].should.eql("http://" + host + ":8888/hello");
+              spies.http.args[0][0].headers['Referer'].should.eql("http://" + host + ":8888/hello");
               done();
             })
           })
@@ -310,7 +310,7 @@ describe('redirects', function() {
             opts.cookies = {foo: 'bar'};
             opts.follow_set_cookies = false;
             send_request(opts, function(err, resp) {
-              should.not.exist(spies.http.args[0][0].headers['cookie']);
+              should.not.exist(spies.http.args[0][0].headers['Cookie']);
               done();
             })
           })
@@ -319,7 +319,7 @@ describe('redirects', function() {
             opts.cookies = {foo: 'bar'};
             opts.follow_set_cookies = true;
             send_request(opts, function(err, resp) {
-              spies.http.args[0][0].headers['cookie'].should.eql('foo=bar')
+              spies.http.args[0][0].headers['Cookie'].should.eql('foo=bar')
               done();
             })
           })
@@ -355,7 +355,7 @@ describe('redirects', function() {
             opts.cookies = {foo: 'bar'};
             opts.follow_set_cookies = false;
             send_request(opts, function(err, resp) {
-              should.not.exist(spies.http.args[0][0].headers['cookie']);
+              should.not.exist(spies.http.args[0][0].headers['Cookie']);
               done();
             })
           })
@@ -364,7 +364,7 @@ describe('redirects', function() {
             opts.cookies = {foo: 'bar'};
             opts.follow_set_cookies = true;
             send_request(opts, function(err, resp) {
-              spies.http.args[0][0].headers['cookie'].should.eql('foo=bar')
+              spies.http.args[0][0].headers['Cookie'].should.eql('foo=bar')
               done();
             })
           })
@@ -391,7 +391,7 @@ describe('redirects', function() {
             opts.cookies = {foo: 'bar'};
             opts.follow_set_cookies = true;
             send_request(opts, function(err, resp) {
-              should.not.exist(spies.http.args[0][0].headers['cookie']);
+              should.not.exist(spies.http.args[0][0].headers['Cookie']);
               done();
             })
           })
@@ -434,7 +434,7 @@ describe('redirects', function() {
             opts.cookies = {foo: 'bar'};
             opts.follow_set_cookies = true;
             send_request(opts, function(err, resp) {
-              should.not.exist(spies.http.args[0][0].headers['cookie']);
+              should.not.exist(spies.http.args[0][0].headers['Cookie']);
               done();
             })
           })

@@ -49,7 +49,7 @@ describe('post data (e.g. request body)', function() {
 
   function check_request(method) {
     stub.calledOnce.should.be.true;
-    stub.args[0][0]['headers']['host'].should.equal('localhost:4321');
+    stub.args[0][0]['headers']['Host'].should.equal('localhost:4321');
     stub.args[0][0]['method'].should.equal(method);
   }
 
@@ -68,7 +68,7 @@ describe('post data (e.g. request body)', function() {
 
       it('doesnt set Content-Type header', function(done) {
         post(null, { multipart: true }, function(err, resp) {
-          should.not.exist(resp.body.headers['content-type']);
+          should.not.exist(resp.body.headers['Content-Type']);
           done();
         })
       })
@@ -76,7 +76,7 @@ describe('post data (e.g. request body)', function() {
       it('doesnt change default Accept header', function(done) {
         post(null, { multipart: true }, function(err, resp) {
           // resp.body contains 'header' and 'body', mirroring what we sent
-          resp.body.headers['accept'].should.equal('*/*');
+          resp.body.headers['Accept'].should.equal('*/*');
           done();
         })
       })
@@ -118,14 +118,14 @@ describe('post data (e.g. request body)', function() {
 
         it('sets Content-Type header', function(done) {
           post({ foo: 'bar', test: '测试' }, { multipart: true }, function(err, resp) {
-            resp.body.headers['content-type'].should.equal('multipart/form-data; boundary=--------------------NODENEEDLEHTTPCLIENT');
+            resp.body.headers['Content-Type'].should.equal('multipart/form-data; boundary=--------------------NODENEEDLEHTTPCLIENT');
             done();
           })
         })
 
         it('doesnt change default Accept header', function(done) {
           post({ foo: 'bar', test: '测试' }, { multipart: true }, function(err, resp) {
-            resp.body.headers['accept'].should.equal('*/*');
+            resp.body.headers['Accept'].should.equal('*/*');
             done();
           })
         })
@@ -328,7 +328,7 @@ describe('post data (e.g. request body)', function() {
           it('doesnt set Content-Type header', function(done) {
             get('foo=bar', { json: false }, function(err, resp) {
               // resp.body contains 'header' and 'body', mirroring what we sent
-              should.not.exist(resp.body.headers['content-type']);
+              should.not.exist(resp.body.headers['Content-Type']);
               done();
             })
           })
@@ -336,7 +336,7 @@ describe('post data (e.g. request body)', function() {
           it('doesnt change default Accept header', function(done) {
             get('foo=bar', { json: false }, function(err, resp) {
               // resp.body contains 'header' and 'body', mirroring what we sent
-              resp.body.headers['accept'].should.equal('*/*');
+              resp.body.headers['Accept'].should.equal('*/*');
               done();
             })
           })
@@ -365,14 +365,14 @@ describe('post data (e.g. request body)', function() {
 
           it('sets Content-Type header', function(done) {
             get('foo=bar', { json: true }, function(err, resp) {
-              resp.body.headers['content-type'].should.equal('application/json; charset=utf-8');
+              resp.body.headers['Content-Type'].should.equal('application/json; charset=utf-8');
               done();
             })
           })
 
           it('set Accept header to application/json', function(done) {
             get('foo=bar', { json: true }, function(err, resp) {
-              resp.body.headers['accept'].should.equal('application/json');
+              resp.body.headers['Accept'].should.equal('application/json');
               done();
             })
           })
@@ -405,7 +405,7 @@ describe('post data (e.g. request body)', function() {
 
           it('sets Content-Type header to www-form-urlencoded', function(done) {
             post('foo=bar', { json: false }, function(err, resp) {
-              resp.body.headers['content-type'].should.equal('application/x-www-form-urlencoded');
+              resp.body.headers['Content-Type'].should.equal('application/x-www-form-urlencoded');
               done();
             })
           })
@@ -413,7 +413,7 @@ describe('post data (e.g. request body)', function() {
           it('doesnt change default Accept header', function(done) {
             post('foo=bar', { json: false }, function(err, resp) {
               // resp.body contains 'header' and 'body', mirroring what we sent
-              resp.body.headers['accept'].should.equal('*/*');
+              resp.body.headers['Accept'].should.equal('*/*');
               done();
             })
           })
@@ -443,14 +443,14 @@ describe('post data (e.g. request body)', function() {
 
           it('sets Content-Type header', function(done) {
             post('foo=bar', { json: true }, function(err, resp) {
-              resp.body.headers['content-type'].should.equal('application/json; charset=utf-8');
+              resp.body.headers['Content-Type'].should.equal('application/json; charset=utf-8');
               done();
             })
           })
 
           it('set Accept header to application/json', function(done) {
             post('foo=bar', { json: true }, function(err, resp) {
-              resp.body.headers['accept'].should.equal('application/json');
+              resp.body.headers['Accept'].should.equal('application/json');
               done();
             })
           })
@@ -490,7 +490,7 @@ describe('post data (e.g. request body)', function() {
           it('doesnt set Content-Type header', function(done) {
             get({ foo: 'bar', test: '测试' }, { json: false }, function(err, resp) {
               // resp.body contains 'header' and 'body', mirroring what we sent
-              should.not.exist(resp.body.headers['content-type']);
+              should.not.exist(resp.body.headers['Content-Type']);
               done();
             })
           })
@@ -498,7 +498,7 @@ describe('post data (e.g. request body)', function() {
           it('doesnt change default Accept header', function(done) {
             get({ foo: 'bar', test: '测试' }, { json: false }, function(err, resp) {
               // resp.body contains 'header' and 'body', mirroring what we sent
-              resp.body.headers['accept'].should.equal('*/*');
+              resp.body.headers['Accept'].should.equal('*/*');
               done();
             })
           })
@@ -527,14 +527,14 @@ describe('post data (e.g. request body)', function() {
 
           it('sets Content-Type header', function(done) {
             get({ foo: 'bar', test: '测试' }, { json: true }, function(err, resp) {
-              resp.body.headers['content-type'].should.equal('application/json; charset=utf-8');
+              resp.body.headers['Content-Type'].should.equal('application/json; charset=utf-8');
               done();
             })
           })
 
           it('set Accept header to application/json', function(done) {
             get({ foo: 'bar', test: '测试' }, { json: true }, function(err, resp) {
-              resp.body.headers['accept'].should.equal('application/json');
+              resp.body.headers['Accept'].should.equal('application/json');
               done();
             })
           })
@@ -568,7 +568,7 @@ describe('post data (e.g. request body)', function() {
 
           it('sets Content-Type header to www-form-urlencoded', function(done) {
             post({ foo: 'bar', test: '测试' }, { json: false }, function(err, resp) {
-              resp.body.headers['content-type'].should.equal('application/x-www-form-urlencoded');
+              resp.body.headers['Content-Type'].should.equal('application/x-www-form-urlencoded');
               done();
             })
           })
@@ -576,7 +576,7 @@ describe('post data (e.g. request body)', function() {
           it('doesnt change default Accept header', function(done) {
             post({ foo: 'bar', test: '测试' }, { json: false }, function(err, resp) {
               // resp.body contains 'header' and 'body', mirroring what we sent
-              resp.body.headers['accept'].should.equal('*/*');
+              resp.body.headers['Accept'].should.equal('*/*');
               done();
             })
           })
@@ -608,7 +608,7 @@ describe('post data (e.g. request body)', function() {
 
           it('sets Content-Type header to application/json', function(done) {
             post({ foo: 'bar', test: '测试' }, opts, function(err, resp) {
-              resp.body.headers['content-type'].should.equal('application/json');
+              resp.body.headers['Content-Type'].should.equal('application/json');
               done();
             })
           })
@@ -616,7 +616,7 @@ describe('post data (e.g. request body)', function() {
           it('doesnt change default Accept header', function(done) {
             post({ foo: 'bar', test: '测试' }, opts, function(err, resp) {
               // resp.body contains 'header' and 'body', mirroring what we sent
-              resp.body.headers['accept'].should.equal('*/*');
+              resp.body.headers['Accept'].should.equal('*/*');
               done();
             })
           })
@@ -635,7 +635,7 @@ describe('post data (e.g. request body)', function() {
 
         describe('with json: undefined but content-type = application/json', function() {
 
-          var opts = { headers: { 'content-type': 'application/json' } };
+          var opts = { headers: { 'Content-Type': 'application/json' } };
 
           it('sends request', function(done) {
             spystub_request();
@@ -648,14 +648,14 @@ describe('post data (e.g. request body)', function() {
 
           it('doesnt change Content-Type header', function(done) {
             post({ foo: 'bar', test: '测试' }, opts, function(err, resp) {
-              resp.body.headers['content-type'].should.equal('application/json');
+              resp.body.headers['Content-Type'].should.equal('application/json');
               done();
             })
           })
 
           it('leaves default Accept header', function(done) {
             post({ foo: 'bar', test: '测试' }, opts, function(err, resp) {
-              resp.body.headers['accept'].should.equal('*/*');
+              resp.body.headers['Accept'].should.equal('*/*');
               done();
             })
           })
@@ -684,14 +684,14 @@ describe('post data (e.g. request body)', function() {
 
           it('sets Content-Type header', function(done) {
             post({ foo: 'bar', test: '测试' }, { json: true }, function(err, resp) {
-              resp.body.headers['content-type'].should.equal('application/json; charset=utf-8');
+              resp.body.headers['Content-Type'].should.equal('application/json; charset=utf-8');
               done();
             })
           })
 
           it('set Accept header to application/json', function(done) {
             post({ foo: 'bar', test: '测试' }, { json: true }, function(err, resp) {
-              resp.body.headers['accept'].should.equal('application/json');
+              resp.body.headers['Accept'].should.equal('application/json');
               done();
             })
           })
@@ -724,14 +724,14 @@ describe('post data (e.g. request body)', function() {
 
           it('sets Content-Type header to application/json', function(done) {
             post({ foo: 'bar', test: '测试' }, opts, function(err, resp) {
-              resp.body.headers['content-type'].should.equal('application/json; charset=utf-8');
+              resp.body.headers['Content-Type'].should.equal('application/json; charset=utf-8');
               done();
             })
           })
 
           it('respects Accept header set by user', function(done) {
             post({ foo: 'bar', test: '测试' }, opts, function(err, resp) {
-              resp.body.headers['accept'].should.equal('*/*');
+              resp.body.headers['Accept'].should.equal('*/*');
               done();
             })
           })
@@ -769,8 +769,8 @@ describe('post data (e.g. request body)', function() {
 
           it('sets Content-Type header', function(done) {
             get(Buffer.from('foobar'), { json: false }, function(err, resp) {
-              // should.not.exist(resp.body.headers['content-type']);
-              resp.body.headers['content-type'].should.equal('application/x-www-form-urlencoded');
+              // should.not.exist(resp.body.headers['Content-Type']);
+              resp.body.headers['Content-Type'].should.equal('application/x-www-form-urlencoded');
 
               done();
             })
@@ -779,7 +779,7 @@ describe('post data (e.g. request body)', function() {
           it('doesnt change default Accept header', function(done) {
             get(Buffer.from('foobar'), { json: false }, function(err, resp) {
               // resp.body contains 'header' and 'body', mirroring what we sent
-              resp.body.headers['accept'].should.equal('*/*');
+              resp.body.headers['Accept'].should.equal('*/*');
               done();
             })
           })
@@ -809,14 +809,14 @@ describe('post data (e.g. request body)', function() {
 
           it('sets Content-Type header', function(done) {
             get(Buffer.from('foobar'), { json: true }, function(err, resp) {
-              resp.body.headers['content-type'].should.equal('application/json; charset=utf-8');
+              resp.body.headers['Content-Type'].should.equal('application/json; charset=utf-8');
               done();
             })
           })
 
           it('set Accept header to application/json', function(done) {
             get(Buffer.from('foobar'), { json: true }, function(err, resp) {
-              resp.body.headers['accept'].should.equal('application/json');
+              resp.body.headers['Accept'].should.equal('application/json');
               done();
             })
           })
@@ -849,7 +849,7 @@ describe('post data (e.g. request body)', function() {
 
           it('sets Content-Type header to www-form-urlencoded', function(done) {
             post(Buffer.from('foobar'), { json: false }, function(err, resp) {
-              resp.body.headers['content-type'].should.equal('application/x-www-form-urlencoded');
+              resp.body.headers['Content-Type'].should.equal('application/x-www-form-urlencoded');
               done();
             })
           })
@@ -857,7 +857,7 @@ describe('post data (e.g. request body)', function() {
           it('doesnt change default Accept header', function(done) {
             post(Buffer.from('foobar'), { json: false }, function(err, resp) {
               // resp.body contains 'header' and 'body', mirroring what we sent
-              resp.body.headers['accept'].should.equal('*/*');
+              resp.body.headers['Accept'].should.equal('*/*');
               done();
             })
           })
@@ -887,14 +887,14 @@ describe('post data (e.g. request body)', function() {
 
           it('sets Content-Type header', function(done) {
             post(Buffer.from('foobar'), { json: true }, function(err, resp) {
-              resp.body.headers['content-type'].should.equal('application/json; charset=utf-8');
+              resp.body.headers['Content-Type'].should.equal('application/json; charset=utf-8');
               done();
             })
           })
 
           it('set Accept header to application/json', function(done) {
             post(Buffer.from('foobar'), { json: true }, function(err, resp) {
-              resp.body.headers['accept'].should.equal('application/json');
+              resp.body.headers['Accept'].should.equal('application/json');
               done();
             })
           })
@@ -951,7 +951,7 @@ describe('post data (e.g. request body)', function() {
 
           it('sets Content-Type header to www-form-urlencoded', function(done) {
             post(input_stream, { json: false }, function(err, resp) {
-              resp.body.headers['content-type'].should.equal('application/x-www-form-urlencoded');
+              resp.body.headers['Content-Type'].should.equal('application/x-www-form-urlencoded');
               done();
             })
           })
@@ -959,7 +959,7 @@ describe('post data (e.g. request body)', function() {
           it('doesnt change default Accept header', function(done) {
             post(input_stream, { json: false }, function(err, resp) {
               // resp.body contains 'header' and 'body', mirroring what we sent
-              resp.body.headers['accept'].should.equal('*/*');
+              resp.body.headers['Accept'].should.equal('*/*');
               done();
             })
           })
@@ -989,14 +989,14 @@ describe('post data (e.g. request body)', function() {
 
           it('sets Content-Type header', function(done) {
             post(input_stream, { json: true }, function(err, resp) {
-              resp.body.headers['content-type'].should.equal('application/json; charset=utf-8');
+              resp.body.headers['Content-Type'].should.equal('application/json; charset=utf-8');
               done();
             })
           })
 
           it('set Accept header to application/json', function(done) {
             post(input_stream, { json: true }, function(err, resp) {
-              resp.body.headers['accept'].should.equal('application/json');
+              resp.body.headers['Accept'].should.equal('application/json');
               done();
             })
           })
