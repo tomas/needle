@@ -146,7 +146,7 @@ describe('post data (e.g. request body)', function() {
         it('writes japanese chars correctly as binary', function(done) {
           spystub_request();
 
-          get({ foo: 'bar', test: '测试' }, { multipart: true }, function(err, resp) {
+          post({ foo: 'bar', test: '测试' }, { multipart: true }, function(err, resp) {
             spy.called.should.be.true;
 
             spy.args[0][0].should.be.an.instanceof(String);
@@ -155,6 +155,33 @@ describe('post data (e.g. request body)', function() {
           })
         })
 
+        describe('when buffer', function() {
+
+          it('includes Content-Transfer-Encoding: binary header', function(done) {
+            spystub_request();
+
+            post({ foo: { buffer: Buffer.from('test content'), content_type: 'application/octet-stream' } }, { multipart: true }, function(err, resp) {
+              spy.called.should.be.true;
+              resp.body.body.should.containEql('Content-Transfer-Encoding: binary');
+              done();
+            })
+          })
+
+        })
+
+        describe('when file', function() {
+
+          it('includes Content-Transfer-Encoding: binary header', function(done) {
+            spystub_request();
+
+            post({ foo: { file: __dirname + '/keys/ssl.key', content_type: 'application/octet-stream' } }, { multipart: true }, function(err, resp) {
+              spy.called.should.be.true;
+              resp.body.body.should.containEql('Content-Transfer-Encoding: binary');
+              done();
+            })
+          })
+
+        })
 
       })
 
