@@ -462,4 +462,44 @@ describe('redirects', function() {
 
   })
 
+  describe('and redirected to the same host and port over a downgraded scheme', function() {
+
+    // The origin is the scheme, host and port together, so a redirect that only
+    // changes the scheme (https -> http on the same host and port) is still
+    // cross-origin and must not carry the original credential headers along.
+
+    before(function() {
+      needle.defaults({ follow_max: 1 });
+    })
+
+    after(function() {
+      needle.defaults({ follow_max: 0 });
+    })
+
+    it('strips credential headers from the redirected request', function(done) {
+      code = 301;
+      location = 'http://127.0.0.1:' + ports.https + '/hello';
+      spies.http.reset();
+
+      var opts = {
+        rejectUnauthorized: false,
+        headers: {
+          authorization: 'Bearer secret-token',
+          cookie: 'sid=secret',
+          'proxy-authorization': 'Basic secret'
+        }
+      };
+
+      needle.get('https://127.0.0.1:' + ports.https + '/hello', opts, function() {
+        spies.http.callCount.should.be.above(0);
+        var sent = spies.http.args[0][0].headers;
+        should.not.exist(sent['authorization']);
+        should.not.exist(sent['cookie']);
+        should.not.exist(sent['proxy-authorization']);
+        done();
+      });
+    })
+
+  })
+
 });
