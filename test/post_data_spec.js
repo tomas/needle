@@ -55,6 +55,73 @@ describe('post data (e.g. request body)', function() {
 
   describe('with multipart: true', function() {
 
+    describe('with falsy field values', function() {
+
+      var values = [
+        { name: 'zero', value: 0, text: '0' },
+        { name: 'false', value: false, text: 'false' },
+        { name: 'empty string', value: '', text: '' }
+      ];
+
+      values.forEach(function(item) {
+
+        function check(data, name, content_type, done) {
+          post(data, { multipart: true }, function(err, resp) {
+            should.not.exist(err);
+            var headers = 'Content-Disposition: form-data; name="' + name + '"';
+            if (content_type) headers += '\r\nContent-Type: ' + content_type;
+            resp.body.body.should.containEql(headers + '\r\n\r\n' + item.text + '\r\n');
+            done();
+          })
+        }
+
+        it('sends ' + item.name + ' as a field', function(done) {
+          check({ field: item.value }, 'field', null, done);
+        })
+
+        it('sends ' + item.name + ' as a nested field', function(done) {
+          check({ fields: { field: item.value } }, 'fields[field]', null, done);
+        })
+
+        it('sends ' + item.name + ' as an array item', function(done) {
+          check({ fields: [item.value] }, 'fields[0]', null, done);
+        })
+
+        it('sends ' + item.name + ' with a custom Content-Type', function(done) {
+          check({ field: { value: item.value, content_type: 'text/plain' } }, 'field', 'text/plain', done);
+        })
+
+      })
+
+    })
+
+    describe('with absent field values', function() {
+
+      [null, undefined].forEach(function(value) {
+        it('omits an ordinary ' + value + ' field', function(done) {
+          post({ omitted: value, field: 'kept' }, { multipart: true }, function(err, resp) {
+            should.not.exist(err);
+            resp.body.body.should.not.containEql('name="omitted"');
+            resp.body.body.should.containEql('name="field"\r\n\r\nkept\r\n');
+            done();
+          })
+        })
+      });
+
+      [
+        { name: 'missing', data: { content_type: 'text/plain' } },
+        { name: 'null', data: { value: null, content_type: 'text/plain' } },
+        { name: 'undefined', data: { value: undefined, content_type: 'text/plain' } }
+      ].forEach(function(item) {
+        it('rejects a field descriptor whose value is ' + item.name, function() {
+          (function() {
+            post({ field: item.data }, { multipart: true });
+          }).should.throw('value missing for multipart!');
+        })
+      })
+
+    })
+
     describe('when null', function() {
 
       it('sends request (non multipart)', function(done) {
