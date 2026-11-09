@@ -125,6 +125,27 @@ describe('redirects', function() {
       spies.https.restore();
     })
 
+    describe('when redirected to a non-HTTP protocol', function() {
+      before(function() {
+        location = 'farcaster://example.com/hello';
+      })
+
+      it('reports an error through the callback when following redirects', function(done) {
+        send_request({ follow_max: 1 }, function(err) {
+          should.exist(err);
+          err.code.should.eql('ERR_INVALID_PROTOCOL');
+          spies.http.callCount.should.eql(1);
+          spies.https.callCount.should.eql(0);
+          done();
+        });
+      })
+
+      it('returns the original response when redirects are disabled', function(done) {
+        opts = { follow_max: 0 };
+        not_followed(done);
+      })
+    })
+
     describe('when overriding defaults', function() {
 
       before(function() {
