@@ -524,3 +524,40 @@ describe('redirects', function() {
   })
 
 });
+
+describe('redirects with an agent limited to one socket', function() {
+
+  var http = require('http'),
+      server,
+      agent;
+
+  before(function(done) {
+    server = http.createServer(function(req, res) {
+      if (req.url == '/redirect') {
+        res.writeHead(302, { 'Location': '/target' });
+        return res.end('Moved');
+      }
+      res.end('OK');
+    }).listen(8890, done);
+    agent = new http.Agent({ keepAlive: true, maxSockets: 1 });
+  })
+
+  after(function(done) {
+    agent.destroy();
+    server.close(done);
+  })
+
+  it('releases the socket of the redirect response', function(done) {
+    var opts = { follow_max: 1, agent: agent };
+    needle.get('http://localhost:8890/redirect', opts, function(err, resp) {
+      if (err) return done(err);
+      // only works if the first request gave its socket back
+      needle.get('http://localhost:8890/redirect', opts, function(err, resp) {
+        if (err) return done(err);
+        resp.body.toString().should.eql('OK');
+        done();
+      })
+    })
+  })
+
+})
