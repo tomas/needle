@@ -426,6 +426,22 @@ describe('redirects', function() {
           opts = { follow_if_same_host: true };
         })
 
+        describe('and redirected to a different path on same host, same protocol', function() {
+          before(function() {
+            location = url.replace('/hello', '/goodbye');
+          })
+
+          it('follows redirect', followed_same_protocol);
+        })
+
+        describe('and redirected to a relative path', function() {
+          before(function() {
+            location = '/goodbye';
+          })
+
+          it('follows redirect', followed_same_protocol);
+        })
+
         // by default it will follow other protocols
         describe('and redirected to same path on another domain, same protocol', function() {
           before(function() {
@@ -467,6 +483,14 @@ describe('redirects', function() {
 
         before(function() {
           opts = { follow_if_same_protocol: true };
+        })
+
+        describe('and redirected to same path on another domain, same protocol', function() {
+          before(function() {
+            location = url.replace(host, hostname);
+          })
+
+          it('follows redirect', followed_same_protocol);
         })
 
         // by default it will follow other hosts
