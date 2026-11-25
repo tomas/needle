@@ -533,6 +533,10 @@ describe('redirects with an agent limited to one socket', function() {
 
   before(function(done) {
     server = http.createServer(function(req, res) {
+      if (req.url == '/loop') {
+        res.writeHead(302, { 'Location': '/loop' });
+        return res.end('Moved');
+      }
       if (req.url == '/redirect') {
         res.writeHead(302, { 'Location': '/target' });
         return res.end('Moved');
@@ -553,6 +557,18 @@ describe('redirects with an agent limited to one socket', function() {
       if (err) return done(err);
       // only works if the first request gave its socket back
       needle.get('http://localhost:8890/redirect', opts, function(err, resp) {
+        if (err) return done(err);
+        resp.body.toString().should.eql('OK');
+        done();
+      })
+    })
+  })
+
+  it('releases the socket when max redirects is reached', function(done) {
+    var opts = { follow_max: 1, agent: agent };
+    needle.get('http://localhost:8890/loop', opts, function(err) {
+      should.exist(err);
+      needle.get('http://localhost:8890/target', opts, function(err, resp) {
         if (err) return done(err);
         resp.body.toString().should.eql('OK');
         done();

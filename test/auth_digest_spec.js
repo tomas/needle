@@ -229,3 +229,32 @@ describe('auth_digest', function() {
     });
   });
 })
+
+describe('digest auth with an agent limited to one socket', function() {
+  var server, agent;
+
+  before(function(done) {
+    server = http.createServer(function(req, res) {
+      if (!/^Digest /.test(req.headers['authorization'] || '')) {
+        res.writeHead(401, { 'WWW-Authenticate': 'Digest realm="r", nonce="abc", qop="auth"' });
+        return res.end('Unauthorized');
+      }
+      res.end('OK');
+    }).listen(8891, done);
+    agent = new http.Agent({ keepAlive: true, maxSockets: 1 });
+  })
+
+  after(function(done) {
+    agent.destroy();
+    server.close(done);
+  })
+
+  it('releases the socket of the 401 response', function(done) {
+    var opts = { username: 'u', password: 'p', auth: 'digest', agent: agent };
+    needle.get('http://localhost:8891/', opts, function(err, resp) {
+      if (err) return done(err);
+      resp.body.toString().should.eql('OK');
+      done();
+    })
+  })
+})
